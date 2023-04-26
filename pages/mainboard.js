@@ -3,12 +3,21 @@ import styled from "styled-components";
 
 export default function MainBoardPage() {
   return (
-    <StyledDiv>
-      <Board />
-    </StyledDiv>
+    <StyledSection>
+      <StyledDiv>
+        <Board />
+      </StyledDiv>
+    </StyledSection>
   );
 }
 
+const StyledSection = styled.section`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 const StyledDiv = styled.div`
-  max-width: 100vh;
+  width: 80%;
+  max-width: 1000px;
 `;
