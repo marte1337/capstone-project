@@ -1,6 +1,6 @@
 import { Chessboard } from "react-chessboard";
 
-export default function MainBoard() {
+export default function Board() {
   return (
     <div>
       <Chessboard id="BasicBoard" />
