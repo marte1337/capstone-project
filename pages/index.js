@@ -1,7 +1,14 @@
+import Link from "next/link";
+
 export default function HomePage() {
   return (
-    <div>
-      <h1>Hello from Next.js</h1>
-    </div>
+    <>
+      <h1>TOTALLY UNHINGED CHESS</h1>
+      <div>
+        <Link href="/mainboard">
+          <button type="text">Go to Mainboard</button>
+        </Link>
+      </div>
+    </>
   );
 }
