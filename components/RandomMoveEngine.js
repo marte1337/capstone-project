@@ -40,6 +40,7 @@ export default function RandomMoveEngine() {
     return true;
   }
 
+  // --- get different move-infos
   // console.log(game.fen());
   // console.log(game.history());
   // console.log(game.in_check());
@@ -47,10 +48,14 @@ export default function RandomMoveEngine() {
   // console.log(game.moves({ verbose: true }));
   // console.log(game.history({ verbose: true }));
 
-  //get history-object from last move only
-  console.log(
-    game.history({ verbose: true })[game.history({ verbose: true }).length - 1]
-  );
+  // --- get history-object from last move only
+  // console.log(
+  //   game.history({ verbose: true })[game.history({ verbose: true }).length - 1]
+  // );
+  // console.log(
+  //   game.history({ verbose: true })[game.history({ verbose: true }).length - 1]
+  //     .from.value
+  // );
 
   return (
     <>
