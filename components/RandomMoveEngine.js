@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import Chess from "chess.js";
 import { Chessboard } from "react-chessboard";
+import Chess from "chess.js";
+import { useState, useEffect } from "react";
 
 export default function RandomMoveEngine() {
   const [game, setGame] = useState(null);

@@ -1,6 +1,6 @@
-import Board from "@/components/Board";
-import RandomMoveEngine from "@/components/RandomMoveEngine";
 import styled from "styled-components";
+// import Board from "@/components/Board";
+import RandomMoveEngine from "@/components/RandomMoveEngine";
 
 export default function MainBoardPage() {
   return (

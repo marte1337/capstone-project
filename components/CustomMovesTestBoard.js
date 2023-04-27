@@ -1,5 +1,4 @@
 import { Chessboard } from "react-chessboard";
-
 import Chess from "chess.js";
 
 // Create a new chess game instance
