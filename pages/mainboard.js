@@ -1,4 +1,4 @@
-// import Board from "@/components/Board";
+import Board from "@/components/Board";
 import RandomMoveEngine from "@/components/RandomMoveEngine";
 import styled from "styled-components";
 
@@ -7,6 +7,7 @@ export default function MainBoardPage() {
     <StyledSection>
       <StyledDiv>
         <RandomMoveEngine />
+        {/* {" - - - - - - - - - - - -"} */}
         {/* <Board /> */}
       </StyledDiv>
     </StyledSection>

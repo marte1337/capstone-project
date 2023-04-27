@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Chess from "chess.js";
 import { Chessboard } from "react-chessboard";
 
 export default function RandomMoveEngine() {
-  const [game, setGame] = useState(new Chess());
+  const [game, setGame] = useState(null);
+
+  useEffect(() => {
+    setGame(new Chess());
+  }, []);
 
   function makeAMove(move) {
     const gameCopy = { ...game };
@@ -15,8 +19,9 @@ export default function RandomMoveEngine() {
   function makeRandomMove() {
     const possibleMoves = game.moves();
 
-    if (game.game_over() || game.in_draw() || possibleMoves.length === 0)
+    if (game.game_over() || game.in_draw() || possibleMoves.length === 0) {
       return; // exit if the game is over
+    }
 
     const randomIndex = Math.floor(Math.random() * possibleMoves.length);
     makeAMove(possibleMoves[randomIndex]);
@@ -35,5 +40,11 @@ export default function RandomMoveEngine() {
     return true;
   }
 
-  return <Chessboard position={game.fen()} onPieceDrop={onDrop} />;
+  return (
+    <>
+      <h2>Play against the RandomMoveMachine!</h2>
+      {game && <Chessboard position={game.fen()} onPieceDrop={onDrop} />}
+      <h3>You are playing as White. Make your move...</h3>
+    </>
+  );
 }
