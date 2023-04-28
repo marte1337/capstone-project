@@ -1,17 +1,17 @@
 import styled from "styled-components";
-// import Board from "@/components/Board";
-import RandomMoveEngine from "@/components/RandomMoveEngine";
-import ClickToMoveBoard from "@/components/ClickToMoveBoard";
+// import Board from "@/components/Boards/Board";
+import RandomMoveEngine from "@/components/Boards/RandomMoveEngine";
+// import ClickToMoveBoard from "@/components/Boards/ClickToMoveBoard";
 
 export default function MainBoardPage() {
   return (
     <StyledSection>
       <StyledDiv>
         <RandomMoveEngine />
-        {" - - - - - - - - - - - -"}
+        {/* {" - - - - - - - - - - - -"} */}
         {/* <Board /> */}
-        {" - - - - - - - - - - - -"}
-        <ClickToMoveBoard />
+        {/* {" - - - - - - - - - - - -"} */}
+        {/* <ClickToMoveBoard /> */}
       </StyledDiv>
     </StyledSection>
   );
