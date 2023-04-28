@@ -6,6 +6,7 @@ import MoveInfo from "../MoveInfo";
 export default function RandomMoveEngine() {
   const [game, setGame] = useState(null);
   const [previousMove, setPreviousMove] = useState(null);
+  const [moveStatus, setMoveStatus] = useState({});
 
   useEffect(() => {
     setGame(new Chess());
@@ -20,6 +21,16 @@ export default function RandomMoveEngine() {
         game.history({ verbose: true }).length - 1
       ]
     );
+    setMoveStatus({
+      moveNumber: game.history().length,
+      inCheck: game.in_check(),
+      isCheckmate: game.in_checkmate(),
+      isDraw: game.in_draw(),
+      isThreefoldRep: game.in_threefold_repetition(),
+      isStalemate: game.in_stalemate(),
+      gameOver: game.game_over(),
+    });
+
     return result; // null if the move was illegal, the move object if the move was legal
   }
 
@@ -64,14 +75,12 @@ export default function RandomMoveEngine() {
   //     .from.value
   // );
 
-  // console.log(previousMove);
-
   return (
     <>
       <h2>Play against the RandomMoveMachine!</h2>
       {game && <Chessboard position={game.fen()} onPieceDrop={onDrop} />}
       {previousMove ? (
-        <MoveInfo previousMove={previousMove} />
+        <MoveInfo previousMove={previousMove} moveStatus={moveStatus} />
       ) : (
         <h3>You are playing as White. Make your move...</h3>
       )}
