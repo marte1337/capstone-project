@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export default function gameTerminal({ previousMove, moveStatus }) {
+export default function GameTerminal({ previousMove, moveStatus }) {
   console.log(previousMove);
   console.log(moveStatus);
 
