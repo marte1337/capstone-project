@@ -1,6 +1,7 @@
 import { Chessboard } from "react-chessboard";
 import Chess from "chess.js";
 import { useState, useEffect } from "react";
+import MoveInfo from "../MoveInfo";
 
 export default function RandomMoveEngine() {
   const [game, setGame] = useState(null);
@@ -63,13 +64,17 @@ export default function RandomMoveEngine() {
   //     .from.value
   // );
 
-  console.log(previousMove);
+  // console.log(previousMove);
 
   return (
     <>
       <h2>Play against the RandomMoveMachine!</h2>
       {game && <Chessboard position={game.fen()} onPieceDrop={onDrop} />}
-      <h3>You are playing as White. Make your move...</h3>
+      {previousMove ? (
+        <MoveInfo previousMove={previousMove} />
+      ) : (
+        <h3>You are playing as White. Make your move...</h3>
+      )}
     </>
   );
 }
