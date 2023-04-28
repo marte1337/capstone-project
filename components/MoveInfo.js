@@ -79,9 +79,11 @@ export default function MoveInfo({ previousMove, moveStatus }) {
 }
 
 const StyledSection = styled.section`
+  text-align: center;
   border: solid black 0.2rem;
   border-radius: 5px;
-  margin: 0.5rem;
+  margin-top: 0.5rem;
+  padding: 0.2rem 0.5rem;
   h4,
   h3 {
     margin: 0;
