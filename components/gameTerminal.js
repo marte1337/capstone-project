@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export default function MoveInfo({ previousMove, moveStatus }) {
+export default function gameTerminal({ previousMove, moveStatus }) {
   console.log(previousMove);
   console.log(moveStatus);
 
@@ -67,21 +67,25 @@ export default function MoveInfo({ previousMove, moveStatus }) {
   }
 
   return (
-    <StyledSection>
-      <h4>
-        Move {moveStatus.moveNumber}: {previousMove.san}{" "}
-        {moveStatus.inCheck && "Check!"}
-      </h4>
-      {previousMove.color === "w" ? "White" : "Black"} {piece} {flag}{" "}
-      {previousMove.from}-{previousMove.to}
-    </StyledSection>
+    <StyledGameTerminal>
+      {!moveStatus.gameOver && (
+        <h4>
+          {previousMove.color === "w" ? "Blacks turn." : "Whites turn."}{" "}
+          {moveStatus.inCheck
+            ? "CAREFUL, your King is in check!!"
+            : "Make a SICK move..."}
+        </h4>
+      )}
+      {moveStatus.gameOver && <h3>{gameEnd} GAME OVER!</h3>}
+    </StyledGameTerminal>
   );
 }
 
-const StyledSection = styled.section`
-  border: solid black 0.2rem;
-  border-radius: 5px;
-  margin: 0.5rem;
+const StyledGameTerminal = styled.section`
+  background-color: black;
+  color: white;
+  padding: 10px 1rem;
+  margin: 0;
   h4,
   h3 {
     margin: 0;
