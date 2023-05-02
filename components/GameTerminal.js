@@ -1,8 +1,6 @@
 import styled from "styled-components";
 
 export default function GameTerminal({ moveStatus }) {
-  console.log(moveStatus);
-
   let gameEnd;
   if (moveStatus.isDraw) {
     gameEnd = "Draw!";
@@ -17,7 +15,7 @@ export default function GameTerminal({ moveStatus }) {
   return (
     <StyledGameTerminal>
       <h4>{gameEnd}</h4>
-      <h3>GAME OVER</h3>
+      <StyledP>GAME OVER</StyledP>
     </StyledGameTerminal>
   );
 }
@@ -27,10 +25,16 @@ const StyledGameTerminal = styled.section`
   background-color: black;
   color: white;
   padding: 10px 1rem;
-  margin: 0;
-  h4,
-  h3 {
+  margin-top: 10px;
+  h4 {
     margin: 0;
     padding: 2px;
   }
+`;
+
+const StyledP = styled.p`
+  margin: 0;
+  font-weight: 900;
+  font-size: x-large;
+  letter-spacing: 5px;
 `;

@@ -15,8 +15,8 @@ export default function Board() {
   const [optionSquares, setOptionSquares] = useState({});
 
   function safeGameMutate(modify) {
-    setGame((g) => {
-      const update = { ...g };
+    setGame((game) => {
+      const update = { ...game };
       modify(update);
       return update;
     });

@@ -55,6 +55,7 @@ export default function MoveInfo({ previousMove, moveStatus }) {
 
 const StyledSection = styled.section`
   text-align: center;
+  color: black;
   background-color: beige;
   border: solid black 0.2rem;
   border-radius: 5px;
