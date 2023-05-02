@@ -48,7 +48,8 @@ export default function MoveInfo({ previousMove, moveStatus }) {
   return (
     <StyledSection>
       {moveStatus.moveNumber}: {previousMove.color === "w" ? "White" : "Black"}{" "}
-      {piece} {flag} {previousMove.san} {moveStatus.inCheck && "Check!"}
+      {piece} {flag} {previousMove.san}{" "}
+      {moveStatus.inCheck && <strong>Check!!</strong>}
     </StyledSection>
   );
 }

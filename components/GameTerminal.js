@@ -24,6 +24,7 @@ const StyledGameTerminal = styled.section`
   text-align: center;
   background-color: black;
   color: white;
+  border-radius: 5px;
   padding: 10px 1rem;
   margin-top: 10px;
   h4 {
