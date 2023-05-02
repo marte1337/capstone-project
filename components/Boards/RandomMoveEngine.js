@@ -2,12 +2,16 @@ import { Chessboard } from "react-chessboard";
 import Chess from "chess.js";
 import { useState, useEffect } from "react";
 import MoveInfo from "../MoveInfo";
+import PlayerNameDisplay from "../PlayerNameDisplay";
 import GameTerminal from "../GameTerminal";
 
 export default function RandomMoveEngine() {
   const [game, setGame] = useState(null);
   const [previousMove, setPreviousMove] = useState(null);
   const [moveStatus, setMoveStatus] = useState({});
+
+  const playerName = "Player One";
+  const oppenentName = "RandomMoveMachine";
 
   useEffect(() => {
     setGame(new Chess());
@@ -61,7 +65,9 @@ export default function RandomMoveEngine() {
 
   return (
     <>
-      <h2>Play against the RandomMoveMachine!</h2>
+      <h2>
+        TOTALLY <i>UNHINGED</i> CHESS
+      </h2>
       {game && <Chessboard position={game.fen()} onPieceDrop={onDrop} />}
       {moveStatus.gameOver && <GameTerminal moveStatus={moveStatus} />}
       {previousMove ? (
@@ -69,6 +75,7 @@ export default function RandomMoveEngine() {
       ) : (
         <p>Make your first move.</p>
       )}
+      <PlayerNameDisplay playerName={playerName} oppenentName={oppenentName} />
     </>
   );
 }
