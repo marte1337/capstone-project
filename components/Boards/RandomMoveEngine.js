@@ -67,7 +67,7 @@ export default function RandomMoveEngine() {
       {previousMove ? (
         <MoveInfo previousMove={previousMove} moveStatus={moveStatus} />
       ) : (
-        <h3>You are playing as White. Make your move...</h3>
+        <p>Make your first move.</p>
       )}
     </>
   );
