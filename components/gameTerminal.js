@@ -15,16 +15,10 @@ export default function GameTerminal({ moveStatus }) {
   }
 
   return (
-    moveStatus.gameOver && (
-      <StyledGameTerminal>
-        {
-          <>
-            <h4>{gameEnd}</h4>
-            <h3>GAME OVER</h3>
-          </>
-        }
-      </StyledGameTerminal>
-    )
+    <StyledGameTerminal>
+      <h4>{gameEnd}</h4>
+      <h3>GAME OVER</h3>
+    </StyledGameTerminal>
   );
 }
 
