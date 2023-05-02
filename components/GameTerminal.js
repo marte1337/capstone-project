@@ -31,6 +31,6 @@ const StyledGameTerminal = styled.section`
   h4,
   h3 {
     margin: 0;
-    padding: 12px;
+    padding: 2px;
   }
 `;
