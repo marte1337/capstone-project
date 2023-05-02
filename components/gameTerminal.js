@@ -15,14 +15,16 @@ export default function GameTerminal({ moveStatus }) {
   }
 
   return (
-    <StyledGameTerminal>
-      {moveStatus.gameOver && (
-        <>
-          <h4>{gameEnd}</h4>
-          <h3>GAME OVER</h3>
-        </>
-      )}
-    </StyledGameTerminal>
+    moveStatus.gameOver && (
+      <StyledGameTerminal>
+        {
+          <>
+            <h4>{gameEnd}</h4>
+            <h3>GAME OVER</h3>
+          </>
+        }
+      </StyledGameTerminal>
+    )
   );
 }
 
@@ -35,6 +37,6 @@ const StyledGameTerminal = styled.section`
   h4,
   h3 {
     margin: 0;
-    padding: 2px;
+    padding: 12px;
   }
 `;
