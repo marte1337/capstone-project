@@ -65,9 +65,7 @@ export default function RandomMoveEngine() {
       {game && <Chessboard position={game.fen()} onPieceDrop={onDrop} />}
       {moveStatus.gameOver && <GameTerminal moveStatus={moveStatus} />}
       {previousMove ? (
-        <>
-          <MoveInfo previousMove={previousMove} moveStatus={moveStatus} />
-        </>
+        <MoveInfo previousMove={previousMove} moveStatus={moveStatus} />
       ) : (
         <h3>You are playing as White. Make your move...</h3>
       )}
