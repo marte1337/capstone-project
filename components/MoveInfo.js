@@ -1,79 +1,54 @@
 import styled from "styled-components";
 
 export default function MoveInfo({ previousMove, moveStatus }) {
-  console.log(previousMove);
-  console.log(moveStatus);
+  const piece = resolvePiece(previousMove.piece);
 
-  let piece;
-  switch (previousMove.piece) {
-    case "p":
-      piece = "Pawn";
-      break;
-    case "b":
-      piece = "Bishop";
-      break;
-    case "n":
-      piece = "Knight";
-      break;
-    case "r":
-      piece = "Rook";
-      break;
-    case "q":
-      piece = "Queen";
-      break;
-    case "k":
-      piece = "King";
-      break;
-    default:
-      piece = "piece";
+  function resolvePiece(piece) {
+    switch (piece) {
+      case "p":
+        return "Pawn";
+      case "b":
+        return "Bishop";
+      case "n":
+        return "Knight";
+      case "r":
+        return "Rook";
+      case "q":
+        return "Queen";
+      case "k":
+        return "King";
+      default:
+        return "piece";
+    }
   }
 
-  let flag;
-  switch (previousMove.flags) {
-    case "b":
-      flag = "pushed two squares";
-      break;
-    case "e":
-      flag = "CAPTURED en passant";
-      break;
-    case "c":
-      flag = "CAPTURED";
-      break;
-    case "p":
-      flag = "PROMOTED";
-      break;
-    case "k":
-      flag = "castled kingside";
-      break;
-    case "q":
-      flag = "castled queenside";
-      break;
-    case "pc":
-      flag = "CAPTURED & PROMOTED";
-      break;
-    default:
-      flag = "moved";
-  }
+  const flag = resolveFlag(previousMove.flags);
 
-  let gameEnd;
-  if (moveStatus.isDraw) {
-    gameEnd = "Draw!";
-  } else if (moveStatus.isStalemate) {
-    gameEnd = "Stalemate!";
-  } else if (moveStatus.isThreefoldRep) {
-    gameEnd = "Threefold Repetition - Draw!";
-  } else {
-    gameEnd = "Checkmate!";
+  function resolveFlag(flag) {
+    switch (flag) {
+      case "b":
+        return "pushed";
+      case "e":
+        return "CAPTURED EP";
+      case "c":
+        return "CAPTURED";
+      case "p":
+        return "PROMOTED";
+      case "k":
+        return "castled KS";
+      case "q":
+        return "castled QS";
+      case "pc":
+        return "CAPT&PROM";
+      default:
+        return "moved";
+    }
   }
 
   return (
     <StyledSection>
-      <h4>
-        Move {moveStatus.moveNumber}: {previousMove.san}{" "}
-        {moveStatus.inCheck && "Check!"}
-      </h4>
-      {previousMove.color === "w" ? "White" : "Black"} {piece} {flag}{" "}
-      {previousMove.from}-{previousMove.to}
+      {moveStatus.moveNumber}: {previousMove.color === "w" ? "White" : "Black"}{" "}
+      {piece} {flag} {previousMove.san} {moveStatus.inCheck && "Check!"}
     </StyledSection>
   );
 }

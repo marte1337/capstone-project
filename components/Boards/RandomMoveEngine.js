@@ -2,7 +2,7 @@ import { Chessboard } from "react-chessboard";
 import Chess from "chess.js";
 import { useState, useEffect } from "react";
 import MoveInfo from "../MoveInfo";
-import GameTerminal from "../gameTerminal";
+import GameTerminal from "../GameTerminal";
 
 export default function RandomMoveEngine() {
   const [game, setGame] = useState(null);
@@ -59,30 +59,13 @@ export default function RandomMoveEngine() {
     return true;
   }
 
-  // --- get different move-infos
-  // console.log(game.fen());
-  // console.log(game.history());
-  // console.log(game.in_check());
-  // console.log(game.turn());
-  // console.log(game.moves({ verbose: true }));
-  // console.log(game.history({ verbose: true }));
-
-  // --- get history-object from last move only
-  // console.log(
-  //   game.history({ verbose: true })[game.history({ verbose: true }).length - 1]
-  // );
-  // console.log(
-  //   game.history({ verbose: true })[game.history({ verbose: true }).length - 1]
-  //     .from.value
-  // );
-
   return (
     <>
       <h2>Play against the RandomMoveMachine!</h2>
       {game && <Chessboard position={game.fen()} onPieceDrop={onDrop} />}
       {previousMove ? (
         <>
-          <GameTerminal previousMove={previousMove} moveStatus={moveStatus} />
+          <GameTerminal moveStatus={moveStatus} />
           <MoveInfo previousMove={previousMove} moveStatus={moveStatus} />
         </>
       ) : (
