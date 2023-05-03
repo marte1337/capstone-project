@@ -1,11 +1,14 @@
 import styled from "styled-components";
 import RandomMoveEngine from "@/components/Boards/RandomMoveEngine";
+import ClickToMoveBoard from "@/components/Boards/ClickToMoveBoard";
 
 export default function MainBoardPage() {
   return (
     <StyledSection>
       <StyledDiv>
-        <RandomMoveEngine />
+        {/* <RandomMoveEngine /> */}
+        {"..............."}
+        <ClickToMoveBoard />
       </StyledDiv>
     </StyledSection>
   );

@@ -4,15 +4,16 @@ import { useState, useEffect } from "react";
 
 export default function Board() {
   const [game, setGame] = useState(null);
+  const [moveFrom, setMoveFrom] = useState("");
+  const [optionSquares, setOptionSquares] = useState({});
+  const [moveSquares, setMoveSquares] = useState({});
+  const [rightClickedSquares, setRightClickedSquares] = useState({});
+
+  //FIND OUT IF moveFrom + moveSquares ARE REDUNDANT
 
   useEffect(() => {
     setGame(new Chess());
   }, []);
-
-  const [moveFrom, setMoveFrom] = useState("");
-  const [rightClickedSquares, setRightClickedSquares] = useState({});
-  const [moveSquares, setMoveSquares] = useState({});
-  const [optionSquares, setOptionSquares] = useState({});
 
   function safeGameMutate(modify) {
     setGame((game) => {
@@ -22,7 +23,10 @@ export default function Board() {
     });
   }
 
+  //---getMoveOptions---
   function getMoveOptions(square) {
+    //game.moves({ square: "e4", verbose: true }) returns a list of legal moves from the current position
+    //array of objects: {color: 'w', from: 'e4', to: 'e5', flags: 'n', piece: 'p', …}
     const moves = game.moves({
       square,
       verbose: true,
@@ -30,19 +34,21 @@ export default function Board() {
     if (moves.length === 0) {
       return false;
     }
-
+    //map over .to-value in moves, push value + background-color styles to newSquares-object
     const newSquares = {};
     moves.map((move) => {
       newSquares[move.to] = {
         background:
+          //.get(square): returns the piece on the square or null
+          //game.get('a5') -> { type: 'p', color: 'b' }
           game.get(move.to) &&
           game.get(move.to).color !== game.get(square).color
-            ? "radial-gradient(circle, rgba(0,0,0,.1) 85%, transparent 85%)"
-            : "radial-gradient(circle, rgba(0,0,0,.1) 25%, transparent 25%)",
-        borderRadius: "50%",
+            ? "radial-gradient(circle, rgba(255,0,0,.4) 60%, transparent 85%)"
+            : "radial-gradient(circle, rgba(85,0,133,.4) 32%, transparent 45%)",
       };
       return move;
     });
+    //also push current square to newSquares
     newSquares[square] = {
       background: "rgba(255, 255, 0, 0.4)",
     };
@@ -64,8 +70,6 @@ export default function Board() {
   }
 
   function onSquareClick(square) {
-    setRightClickedSquares({});
-
     function resetFirstMove(square) {
       const hasOptions = getMoveOptions(square);
       if (hasOptions) setMoveFrom(square);
@@ -88,11 +92,12 @@ export default function Board() {
 
     // if invalid, setMoveFrom and getMoveOptions
     if (move === null) {
-      resetFirstMove(square);
+      // resetFirstMove(square);
       return;
     }
 
     setTimeout(makeRandomMove, 300);
+    //empty current legal move option data for next move
     setMoveFrom("");
     setOptionSquares({});
   }
@@ -115,14 +120,14 @@ export default function Board() {
       {game && (
         <Chessboard
           id="ClickToMove"
+          position={game.fen()}
           animationDuration={200}
           arePiecesDraggable={false}
-          position={game.fen()}
           onSquareClick={onSquareClick}
           onSquareRightClick={onSquareRightClick}
           customBoardStyle={{
             borderRadius: "4px",
-            boxShadow: "0 2px 10px rgba(0, 0, 0, 0.5)",
+            boxShadow: "1px 2px 30px white",
           }}
           customSquareStyles={{
             ...moveSquares,
@@ -131,28 +136,6 @@ export default function Board() {
           }}
         />
       )}
-      <button
-        onClick={() => {
-          safeGameMutate((game) => {
-            game.reset();
-          });
-          setMoveSquares({});
-          setRightClickedSquares({});
-        }}
-      >
-        reset
-      </button>
-      <button
-        onClick={() => {
-          safeGameMutate((game) => {
-            game.undo();
-          });
-          setMoveSquares({});
-          setRightClickedSquares({});
-        }}
-      >
-        undo
-      </button>
     </div>
   );
 }
