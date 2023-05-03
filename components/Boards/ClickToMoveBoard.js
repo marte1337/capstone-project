@@ -2,18 +2,19 @@ import { Chessboard } from "react-chessboard";
 import Chess from "chess.js";
 import { useState, useEffect } from "react";
 
-export default function Board() {
+export default function ClickToMoveBoard() {
   const [game, setGame] = useState(null);
-  const [moveFrom, setMoveFrom] = useState("");
-  const [optionSquares, setOptionSquares] = useState({});
-  const [moveSquares, setMoveSquares] = useState({});
-  const [rightClickedSquares, setRightClickedSquares] = useState({});
-
-  //FIND OUT IF moveFrom + moveSquares ARE REDUNDANT
 
   useEffect(() => {
     setGame(new Chess());
   }, []);
+
+  const [moveFrom, setMoveFrom] = useState("");
+  const [rightClickedSquares, setRightClickedSquares] = useState({});
+  const [moveSquares, setMoveSquares] = useState({});
+  const [optionSquares, setOptionSquares] = useState({});
+
+  //FIND OUT IF moveFrom + moveSquares ARE REDUNDANT
 
   function safeGameMutate(modify) {
     setGame((game) => {
@@ -70,6 +71,8 @@ export default function Board() {
   }
 
   function onSquareClick(square) {
+    setRightClickedSquares({});
+
     function resetFirstMove(square) {
       const hasOptions = getMoveOptions(square);
       if (hasOptions) setMoveFrom(square);
@@ -92,7 +95,7 @@ export default function Board() {
 
     // if invalid, setMoveFrom and getMoveOptions
     if (move === null) {
-      // resetFirstMove(square);
+      resetFirstMove(square);
       return;
     }
 
@@ -120,9 +123,9 @@ export default function Board() {
       {game && (
         <Chessboard
           id="ClickToMove"
-          position={game.fen()}
           animationDuration={200}
           arePiecesDraggable={false}
+          position={game.fen()}
           onSquareClick={onSquareClick}
           onSquareRightClick={onSquareRightClick}
           customBoardStyle={{
