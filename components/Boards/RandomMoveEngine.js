@@ -10,17 +10,22 @@ export default function RandomMoveEngine() {
   const [previousMove, setPreviousMove] = useState(null);
   const [moveStatus, setMoveStatus] = useState({});
 
+  //temporarily static player-names
   const playerName = "Player One";
   const oppenentName = "RandomMoveMachine";
 
+  //---Create game object---
   useEffect(() => {
     setGame(new Chess());
   }, []);
 
+  //---make a move and add it to game object -> move = square---
   function makeAMove(move) {
     const gameCopy = { ...game };
     const result = gameCopy.move(move);
     setGame(gameCopy);
+
+    //gain move/gamestatus info (to be passed down)
     setPreviousMove(
       game.history({ verbose: true })[
         game.history({ verbose: true }).length - 1
@@ -39,27 +44,32 @@ export default function RandomMoveEngine() {
     return result; // null if the move was illegal, the move object if the move was legal
   }
 
+  //---RandomMoveEngine---
   function makeRandomMove() {
     const possibleMoves = game.moves();
 
-    //from chess.js V1_beta onwards: .game_over() => .isGameOver() - ect
+    //check game status (chess.js V1_beta onwards: .game_over() => .isGameOver() - ect)
     if (game.game_over() || game.in_draw() || possibleMoves.length === 0) {
       return; // exit if the game is over
     }
-
+    //create random move and feed it to makeAMove()
     const randomIndex = Math.floor(Math.random() * possibleMoves.length);
     makeAMove(possibleMoves[randomIndex]);
   }
 
+  //---trigger RandomMoveEngine "on drop"---
   function onDrop(sourceSquare, targetSquare) {
     const move = makeAMove({
       from: sourceSquare,
       to: targetSquare,
-      promotion: "q", // always promote to a queen for example simplicity
+      promotion: "q", // always promote to a queen for simplicity sake
     });
-    // illegal move
+
+    // checks illegal move
     if (move === null) return false;
-    setTimeout(makeRandomMove, 200);
+
+    //"thinking-time" before RandomMoveEngine trigger
+    setTimeout(makeRandomMove, 2000);
     return true;
   }
 
@@ -68,7 +78,14 @@ export default function RandomMoveEngine() {
       <h2>
         TOTALLY <i>UNHINGED</i> CHESS
       </h2>
-      {game && <Chessboard position={game.fen()} onPieceDrop={onDrop} />}
+      {game && (
+        <Chessboard
+          position={game.fen()}
+          onPieceDrop={onDrop}
+          // animationDuration={200}
+          // arePiecesDraggable={false}
+        />
+      )}
       {moveStatus.gameOver && <GameTerminal moveStatus={moveStatus} />}
       {previousMove ? (
         <MoveInfo previousMove={previousMove} moveStatus={moveStatus} />
