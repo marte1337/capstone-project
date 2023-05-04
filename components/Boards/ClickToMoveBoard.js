@@ -98,7 +98,7 @@ export default function ClickToMoveBoard() {
     }
 
     //"thinking-time" before RandomMoveEngine trigger
-    setTimeout(makeRandomMove, 300);
+    setTimeout(makeRandomMove, 800);
     //empty current legal move option data for next move
     setMoveFrom("");
     setOptionSquares({});
