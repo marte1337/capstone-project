@@ -78,14 +78,7 @@ export default function RandomMoveEngine() {
       <h2>
         TOTALLY <i>UNHINGED</i> CHESS
       </h2>
-      {game && (
-        <Chessboard
-          position={game.fen()}
-          onPieceDrop={onDrop}
-          // animationDuration={200}
-          // arePiecesDraggable={false}
-        />
-      )}
+      {game && <Chessboard position={game.fen()} onPieceDrop={onDrop} />}
       {moveStatus.gameOver && <GameTerminal moveStatus={moveStatus} />}
       {previousMove ? (
         <MoveInfo previousMove={previousMove} moveStatus={moveStatus} />
