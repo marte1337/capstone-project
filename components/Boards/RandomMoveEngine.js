@@ -11,6 +11,7 @@ export default function RandomMoveEngine() {
   const [moveStatus, setMoveStatus] = useState({});
   const [moveFrom, setMoveFrom] = useState("");
   const [optionSquares, setOptionSquares] = useState({});
+  console.log(moveStatus);
 
   //temporarily static player-names
   const playerName = "Player One";
@@ -26,7 +27,7 @@ export default function RandomMoveEngine() {
       const update = { ...game };
       modify(update);
 
-      //gain move/gamestatus info (to be passed down)
+      //gain BLACK move/gamestatus info (to be passed down)
       setPreviousMove(
         game.history({ verbose: true })[
           game.history({ verbose: true }).length - 1
@@ -45,12 +46,10 @@ export default function RandomMoveEngine() {
       return update; // null if the move was illegal, the move object if the move was legal
     });
   }
+
   //---RandomMoveEngine---
   function makeRandomMove() {
     const possibleMoves = game.moves();
-
-    console.log(possibleMoves);
-
     //check game status (chess.js V1_beta onwards: .game_over() => .isGameOver() - ect)
     if (game.game_over() || game.in_draw() || possibleMoves.length === 0) {
       return; // exit if the game is over
@@ -126,6 +125,23 @@ export default function RandomMoveEngine() {
       return;
     }
 
+    //gain WHITE move/gamestatus info
+    //safeGameMutate only updates with black moves (White moves/checkmates arent displayed)!
+    setPreviousMove(
+      game.history({ verbose: true })[
+        game.history({ verbose: true }).length - 1
+      ]
+    );
+    setMoveStatus({
+      moveNumber: game.history().length,
+      inCheck: game.in_check(),
+      isCheckmate: game.in_checkmate(),
+      isDraw: game.in_draw(),
+      isThreefoldRep: game.in_threefold_repetition(),
+      isStalemate: game.in_stalemate(),
+      gameOver: game.game_over(),
+    });
+
     //"thinking-time" before RandomMoveEngine trigger
     setTimeout(makeRandomMove, 800);
     //empty current legal move option data for next move
@@ -146,7 +162,7 @@ export default function RandomMoveEngine() {
           onSquareClick={onSquareClick}
           customBoardStyle={{
             borderRadius: "4px",
-            boxShadow: "1px 2px 30px white",
+            boxShadow: "1px -2px 30px white",
           }}
           customSquareStyles={{
             ...optionSquares,
