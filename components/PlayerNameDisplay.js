@@ -4,10 +4,12 @@ export default function PlayerNameDisplay({ playerName, oppenentName }) {
   return (
     <StyledContainer>
       <StyledBox>
-        PLAYER: <strong>{playerName}</strong>
+        PLAYER: <br />
+        <strong>{playerName}</strong>
       </StyledBox>
       <StyledBox>
-        OPPONENT: <strong>{oppenentName}</strong>
+        OPPONENT: <br />
+        <strong>{oppenentName}</strong>
       </StyledBox>
     </StyledContainer>
   );
@@ -15,6 +17,8 @@ export default function PlayerNameDisplay({ playerName, oppenentName }) {
 
 const StyledContainer = styled.section`
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 `;
 
 const StyledBox = styled.div`
