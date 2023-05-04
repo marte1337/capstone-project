@@ -48,6 +48,8 @@ export default function RandomMoveEngine() {
   function makeRandomMove() {
     const possibleMoves = game.moves();
 
+    console.log(possibleMoves);
+
     //check game status (chess.js V1_beta onwards: .game_over() => .isGameOver() - ect)
     if (game.game_over() || game.in_draw() || possibleMoves.length === 0) {
       return; // exit if the game is over
@@ -69,7 +71,7 @@ export default function RandomMoveEngine() {
     if (move === null) return false;
 
     //"thinking-time" before RandomMoveEngine trigger
-    setTimeout(makeRandomMove, 2000);
+    setTimeout(makeRandomMove, 800);
     return true;
   }
 
