@@ -17,7 +17,7 @@ export default function RandomMoveEngine() {
   const playerName = "Player One";
   const oppenentName = "RandomMoveMachine";
 
-  //---Create Game Object---
+  //---CREATE GAME OBJECT---
   useEffect(() => {
     setGame(new Chess());
   }, []);
@@ -47,7 +47,7 @@ export default function RandomMoveEngine() {
     });
   }
 
-  //---RandomMoveEngine---
+  //---RRANDOM MOVE ENGINE---
   function makeRandomMove() {
     const possibleMoves = game.moves();
     //check game status (chess.js V1_beta onwards: .game_over() => .isGameOver() - ect)
@@ -96,7 +96,7 @@ export default function RandomMoveEngine() {
     return true;
   }
 
-  //---ON SQUARE CLICK---
+  //---ON SQUARE CLICK ()---
   function onSquareClick(square) {
     // reset getMoveOptions if user clicks on a new/different square
     // set moveFrom if new square has legal moves
@@ -124,9 +124,15 @@ export default function RandomMoveEngine() {
       resetFirstMove(square);
       return;
     }
+    //"thinking-time" before RandomMoveEngine trigger
+    setTimeout(makeRandomMove, 800);
+    //empty current legal move option data for next move
+    setMoveFrom("");
+    setOptionSquares({});
 
-    //gain WHITE move/gamestatus info
+    //Gain WHITE move/gamestatus info
     //safeGameMutate only updates with black moves (White moves/checkmates arent displayed)!
+    //Small problem: Does update on every click, even when switching between pieces
     setPreviousMove(
       game.history({ verbose: true })[
         game.history({ verbose: true }).length - 1
@@ -141,12 +147,6 @@ export default function RandomMoveEngine() {
       isStalemate: game.in_stalemate(),
       gameOver: game.game_over(),
     });
-
-    //"thinking-time" before RandomMoveEngine trigger
-    setTimeout(makeRandomMove, 800);
-    //empty current legal move option data for next move
-    setMoveFrom("");
-    setOptionSquares({});
   }
 
   return (
