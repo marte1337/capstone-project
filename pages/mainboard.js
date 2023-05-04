@@ -21,6 +21,6 @@ const StyledSection = styled.section`
 
 const StyledDiv = styled.div`
   width: 80%;
-  max-width: 1000px;
+  max-width: 800px;
   padding: 0.5rem 0;
 `;
