@@ -77,9 +77,7 @@ export default function RandomMoveEngine() {
     if (game.game_over() || game.in_draw() || possibleMoves.length === 0) {
       return; // exit if the game is over
     }
-
     const randomIndex = Math.floor(Math.random() * possibleMoves.length); //create random move
-
     makeAMove(possibleMoves[randomIndex]); //trigger black makeAMove (only targetsquare)
   }
 
