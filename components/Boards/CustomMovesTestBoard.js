@@ -14,29 +14,14 @@ export default function RandomMoveEngine() {
   const playerName = "Player One";
   const oppenentName = "RandomMoveMachine";
 
-  //---Create game object---
+  // // ---CREATE GAME OBJECT---
   useEffect(() => {
     setGame(new Chess());
   }, []);
 
-  //  ---use previousMove to check captures (flags = "c") => respawn captured piece as a zombie if applicable---
-  console.log("OUTSIDE makeMove: log previousMove + fen");
-  console.log(previousMove);
-  console.log(game?.fen());
-  useEffect(() => {
-    if (previousMove?.flags === "c") {
-      const newGame = new Chess(game.fen());
-      newGame.put(
-        { type: previousMove.captured, color: previousMove.color },
-        previousMove.from
-      );
-      setGame(newGame);
-    }
-  }, [previousMove]);
-
-  //---make a move and add it to game object -> move = square---
+  // // ---MAKE A MOVE AND UPDATE GAME OBJECT---
   function makeAMove(move) {
-    //logs white and black "move" but only logs black previousMove!
+    // logs white and black "move" but only logs black previousMove!
     // console.log("log move from within makeMove:");
     // console.log(move);
     // console.log("log previousMove from within makeMove:");
@@ -64,23 +49,7 @@ export default function RandomMoveEngine() {
     return result; // null if the move was illegal, the move object if the move was legal
   }
 
-  //---RandomMoveEngine---
-  function makeRandomMove() {
-    const possibleMoves = game.moves();
-    //check game status (chess.js V1_beta onwards: .game_over() => .isGameOver() - ect)
-    if (game.game_over() || game.in_draw() || possibleMoves.length === 0) {
-      return; // exit if the game is over
-    }
-    //create random move and feed it to makeAMove()
-    const randomIndex = Math.floor(Math.random() * possibleMoves.length);
-
-    // console.log(possibleMoves);
-    // console.log(possibleMoves[randomIndex]);
-
-    //trigger black makeAMove (only targetsquare)
-    makeAMove(possibleMoves[randomIndex]);
-  }
-
+  // // ---ON DROP = PASS WHITE MOVE TO makeAMove + TRIGGER BLACK MOVE CREATION
   //---make white move + trigger black random move "on drop"---
   function onDrop(sourceSquare, targetSquare) {
     //trigger white makeAMove (sourcesquare, targetsquare, promotion)
@@ -102,6 +71,39 @@ export default function RandomMoveEngine() {
 
     return true;
   }
+
+  // // ---CREATE A RANDOM MOVE FOR BLACK + PASS MOVE TO makeAMove---
+  function makeRandomMove() {
+    const possibleMoves = game.moves();
+    //check game status (chess.js V1_beta onwards: .game_over() => .isGameOver() - ect)
+    if (game.game_over() || game.in_draw() || possibleMoves.length === 0) {
+      return; // exit if the game is over
+    }
+    //create random move and feed it to makeAMove()
+    const randomIndex = Math.floor(Math.random() * possibleMoves.length);
+
+    // console.log(possibleMoves);
+    // console.log(possibleMoves[randomIndex]);
+
+    //trigger black makeAMove (only targetsquare)
+    makeAMove(possibleMoves[randomIndex]);
+  }
+
+  // // ---CHECK FOR ZOMBIE PIECE => RESPAWN ZOMBIE => SET NEW GAME OBJECT WITH THROUGH .fen() ---
+  //  ---use previousMove to check captures (flags = "c")
+  console.log("OUTSIDE makeMove: log previousMove + fen");
+  console.log(previousMove);
+  console.log(game?.fen());
+  useEffect(() => {
+    if (previousMove?.flags === "c") {
+      const newGame = new Chess(game.fen());
+      newGame.put(
+        { type: previousMove.captured, color: previousMove.color },
+        previousMove.from
+      );
+      setGame(newGame);
+    }
+  }, [previousMove]);
 
   return (
     <>
