@@ -81,7 +81,7 @@ export default function RandomMoveEngine() {
     makeAMove(possibleMoves[randomIndex]); //trigger black makeAMove (only targetsquare)
   }
 
-  // // ---CHECK FOR ZOMBIE PIECE => RESPAWN ZOMBIE => SET NEW GAME OBJECT WITH THROUGH .fen() ---
+  // // ---CHECK FOR ZOMBIE PIECE => RESPAWN ZOMBIE => SET NEW GAME OBJECT WITH .fen() ---
   //  ---use previousMove to check captures (flags = "c")
   console.log("OUTSIDE makeMove: log previousMove + fen");
   console.log(previousMove);
