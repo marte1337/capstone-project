@@ -19,8 +19,29 @@ export default function RandomMoveEngine() {
     setGame(new Chess());
   }, []);
 
+  //  ---use previousMove to check captures (flags = "c") => respawn captured piece as a zombie if applicable---
+  console.log("OUTSIDE makeMove: log previousMove + fen");
+  console.log(previousMove);
+  console.log(game?.fen());
+  useEffect(() => {
+    if (previousMove?.flags === "c") {
+      const newGame = new Chess(game.fen());
+      newGame.put(
+        { type: previousMove.captured, color: previousMove.color },
+        previousMove.from
+      );
+      setGame(newGame);
+    }
+  }, [previousMove]);
+
   //---make a move and add it to game object -> move = square---
   function makeAMove(move) {
+    //logs white and black "move" but only logs black previousMove!
+    // console.log("log move from within makeMove:");
+    // console.log(move);
+    // console.log("log previousMove from within makeMove:");
+    // console.log(previousMove);
+
     const gameCopy = { ...game };
     const result = gameCopy.move(move);
     setGame(gameCopy);
@@ -40,54 +61,45 @@ export default function RandomMoveEngine() {
       isStalemate: game.in_stalemate(),
       gameOver: game.game_over(),
     });
-
     return result; // null if the move was illegal, the move object if the move was legal
   }
-
-  // //---respawn captured piece as a zombie if applicable---
-
-  useEffect(() => {
-    if (previousMove?.flags === "c") {
-      const newGame = new Chess(game.fen());
-      newGame.put(
-        { type: previousMove.captured, color: previousMove.color },
-        previousMove.from
-      );
-      // setGame(game.clear());
-      setGame(newGame);
-    }
-  }, [previousMove]);
-
-  // game?.put({ type: "n", color: "w" }, "h5");
-  // game?.put({ type: "n", color: "w" }, "h4");
-  console.log(game?.fen());
 
   //---RandomMoveEngine---
   function makeRandomMove() {
     const possibleMoves = game.moves();
-
     //check game status (chess.js V1_beta onwards: .game_over() => .isGameOver() - ect)
     if (game.game_over() || game.in_draw() || possibleMoves.length === 0) {
       return; // exit if the game is over
     }
     //create random move and feed it to makeAMove()
     const randomIndex = Math.floor(Math.random() * possibleMoves.length);
+
+    // console.log(possibleMoves);
+    // console.log(possibleMoves[randomIndex]);
+
+    //trigger black makeAMove (only targetsquare)
     makeAMove(possibleMoves[randomIndex]);
   }
 
-  //---trigger RandomMoveEngine "on drop"---
+  //---make white move + trigger black random move "on drop"---
   function onDrop(sourceSquare, targetSquare) {
+    //trigger white makeAMove (sourcesquare, targetsquare, promotion)
     const move = makeAMove({
       from: sourceSquare,
       to: targetSquare,
-      promotion: "q", // always promote to a queen for simplicity sake
+      promotion: "q", // always promote to a queen for simplicity
     });
-    console.log(move);
-    // checks illegal move
+
+    // check illegal move
     if (move === null) return false;
 
-    //"thinking-time" before RandomMoveEngine trigger
+    //"thinking-time" before black RandomMoveEngine trigger
     setTimeout(makeRandomMove, 800);
+
+    // onDrop only logs white moves!
+    // console.log("onDrop:");
+    // console.log(move);
+
     return true;
   }
 
