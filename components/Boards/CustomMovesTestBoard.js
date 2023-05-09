@@ -31,7 +31,7 @@ export default function RandomMoveEngine() {
     const result = gameCopy.move(move);
     setGame(gameCopy);
 
-    //gain move/gamestatus info (to be passed down)
+    //gain data for moveStatus and previousMove
     setPreviousMove(
       gameCopy.history({ verbose: true })[
         gameCopy.history({ verbose: true }).length - 1
@@ -50,7 +50,6 @@ export default function RandomMoveEngine() {
   }
 
   // // ---ON DROP = PASS WHITE MOVE TO makeAMove + TRIGGER BLACK MOVE CREATION
-  //---make white move + trigger black random move "on drop"---
   function onDrop(sourceSquare, targetSquare) {
     //trigger white makeAMove (sourcesquare, targetsquare, promotion)
     const move = makeAMove({
@@ -59,8 +58,7 @@ export default function RandomMoveEngine() {
       promotion: "q", // always promote to a queen for simplicity
     });
 
-    // check illegal move
-    if (move === null) return false;
+    if (move === null) return false; // check illegal move
 
     //"thinking-time" before black RandomMoveEngine trigger
     setTimeout(makeRandomMove, 800);
@@ -79,14 +77,10 @@ export default function RandomMoveEngine() {
     if (game.game_over() || game.in_draw() || possibleMoves.length === 0) {
       return; // exit if the game is over
     }
-    //create random move and feed it to makeAMove()
-    const randomIndex = Math.floor(Math.random() * possibleMoves.length);
 
-    // console.log(possibleMoves);
-    // console.log(possibleMoves[randomIndex]);
+    const randomIndex = Math.floor(Math.random() * possibleMoves.length); //create random move
 
-    //trigger black makeAMove (only targetsquare)
-    makeAMove(possibleMoves[randomIndex]);
+    makeAMove(possibleMoves[randomIndex]); //trigger black makeAMove (only targetsquare)
   }
 
   // // ---CHECK FOR ZOMBIE PIECE => RESPAWN ZOMBIE => SET NEW GAME OBJECT WITH THROUGH .fen() ---
