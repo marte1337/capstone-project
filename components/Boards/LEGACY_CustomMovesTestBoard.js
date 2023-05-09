@@ -19,38 +19,24 @@ export default function RandomMoveEngine() {
     setGame(new Chess());
   }, []);
 
-  function zombieMove(previousMove, game) {
-    game.put(
-      { type: previousMove.captured, color: previousMove.color },
-      previousMove.from
-    );
-    const newGame = new Chess(game.fen());
-
-    setGame(newGame);
-  }
-
   // // ---MAKE A MOVE AND UPDATE GAME OBJECT---
   function makeAMove(move) {
     // logs white and black "move" but only logs black previousMove!
     // console.log("log move from within makeMove:");
-    // console.log(move, "––– move");
+    // console.log(move);
     // console.log("log previousMove from within makeMove:");
     // console.log(previousMove);
 
     const gameCopy = { ...game };
     const result = gameCopy.move(move);
+    setGame(gameCopy);
 
     //gain data for moveStatus and previousMove
-    setPreviousMove((previousMove) => {
-      if (previousMove?.flags === "c") {
-        zombieMove(previousMove, { ...game });
-        return undefined;
-      }
-      return gameCopy.history({ verbose: true })[
+    setPreviousMove(
+      gameCopy.history({ verbose: true })[
         gameCopy.history({ verbose: true }).length - 1
-      ];
-    });
-
+      ]
+    );
     setMoveStatus({
       moveNumber: game.history().length,
       inCheck: game.in_check(),
@@ -75,7 +61,7 @@ export default function RandomMoveEngine() {
     if (move === null) return false; // check illegal move
 
     //"thinking-time" before black RandomMoveEngine trigger
-    setTimeout(makeRandomMove, 1500);
+    setTimeout(makeRandomMove, 800);
 
     // onDrop only logs white moves!
     // console.log("onDrop:");
@@ -95,32 +81,28 @@ export default function RandomMoveEngine() {
     makeAMove(possibleMoves[randomIndex]); //trigger black makeAMove (only targetsquare)
   }
 
-  // // ---CHECK FOR ZOMBIE PIECE => RESPAWN ZOMBIE => SET NEW GAME OBJECT WITH THROUGH .fen() ---
+  // // ---CHECK FOR ZOMBIE PIECE => RESPAWN ZOMBIE => SET NEW GAME OBJECT WITH .fen() ---
   //  ---use previousMove to check captures (flags = "c")
   console.log("OUTSIDE makeMove: log previousMove + fen");
   console.log(previousMove);
   console.log(game?.fen());
-  // useEffect(() => {
-  //   if (previousMove?.flags === "c") {
-  //     const newGame = new Chess(game.fen());
-  //     newGame.put(
-  //       { type: previousMove.captured, color: previousMove.color },
-  //       previousMove.from
-  //     );
-  //     setGame(newGame);
-  //   }
-  // }, [previousMove]);
-  // console.log("GAME");
+  useEffect(() => {
+    if (previousMove?.flags === "c") {
+      const newGame = new Chess(game.fen());
+      newGame.put(
+        { type: previousMove.captured, color: previousMove.color },
+        previousMove.from
+      );
+      setGame(newGame);
+    }
+  }, [previousMove]);
 
-  const gameConstellation = game ? game.fen() : null;
   return (
     <>
       <h2>
         TOTALLY <i>UNHINGED</i> CHESS
       </h2>
-      {gameConstellation && (
-        <Chessboard position={gameConstellation} onPieceDrop={onDrop} />
-      )}
+      {game && <Chessboard position={game.fen()} onPieceDrop={onDrop} />}
       {moveStatus.gameOver && <GameTerminal moveStatus={moveStatus} />}
       {previousMove ? (
         <MoveInfo previousMove={previousMove} moveStatus={moveStatus} />
