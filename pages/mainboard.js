@@ -1,11 +1,12 @@
 import styled from "styled-components";
 import CustomMovesTestBoard from "@/components/Boards/CustomMovesTestBoard";
+import PlayerVsPlayer from "@/components/Boards/PlayerVsPlayer";
 
 export default function MainBoardPage() {
   return (
     <StyledSection>
       <StyledDiv>
-        <CustomMovesTestBoard />
+        <PlayerVsPlayer />
       </StyledDiv>
     </StyledSection>
   );
