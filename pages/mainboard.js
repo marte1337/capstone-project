@@ -1,11 +1,11 @@
 import styled from "styled-components";
-import PlayerVsPlayer from "@/components/Boards/PlayerVsPlayer";
+import PlayerVsRandomMove from "@/components/Boards/PlayerVsRandomMove";
 
 export default function MainBoardPage() {
   return (
     <StyledSection>
       <StyledDiv>
-        <PlayerVsPlayer />
+        <PlayerVsRandomMove />
       </StyledDiv>
     </StyledSection>
   );

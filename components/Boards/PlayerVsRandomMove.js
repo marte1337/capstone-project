@@ -114,10 +114,16 @@ export default function RandomMoveEngine() {
     return true;
   }
 
-  // This triggers endless moves until game ends
+  // ---This triggers endless moves until game ends:---
   //   useEffect(() => {
   //     setTimeout(makeRandomMove, 800);
   //   }, [onDrop]);
+
+  // ---This also dpoesn´t work:---
+  // function onPieceDrop() {
+  //   onDrop();
+  //   setTimeout(makeRandomMove, 800);
+  // }
 
   return (
     <>
