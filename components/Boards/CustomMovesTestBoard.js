@@ -12,6 +12,8 @@ export default function RandomMoveEngine() {
   const [moveStatus, setMoveStatus] = useState({});
   const [history, setHistory] = useState([]);
 
+  const latestHistory = history[history.length - 1];
+
   //temporarily static player-names
   const playerName = "Player One";
   const oppenentName = "Player Two";
@@ -38,7 +40,7 @@ export default function RandomMoveEngine() {
     }
   }
 
-  // // ---CHECK FOR ZOMBIE PIECE => RESPAWN ZOMBIE => SET NEW GAME OBJECT WITH .fen() ---
+  // // ---CHECK FOR ZOMBIE PIECE => RESPAWN ZOMBIE => RESET GAME OBJECT WITH .fen()---
   //  ---use previousMove to check captures (flags = "c")
   useEffect(() => {
     if (previousMove?.flags === "c") {
@@ -67,7 +69,7 @@ export default function RandomMoveEngine() {
     );
 
     setMoveStatus({
-      moveNumber: game.history().length,
+      moveNumber: history.length + 1,
       inCheck: game.in_check(),
       isCheckmate: game.in_checkmate(),
       isDraw: game.in_draw(),
@@ -92,17 +94,15 @@ export default function RandomMoveEngine() {
     return true;
   }
 
-  console.log(history);
-
   return (
     <>
       <h2>
-        TOTALLY <i>UNHINGED</i> CHESS
+        TOTALLY <i>ZOMBIFIED</i> CHESS
       </h2>
       {game && <Chessboard position={fen} onPieceDrop={onDrop} />}
       {moveStatus.gameOver && <GameTerminal moveStatus={moveStatus} />}
       {previousMove ? (
-        <MoveInfo previousMove={previousMove} moveStatus={moveStatus} />
+        <MoveInfo previousMove={latestHistory} moveStatus={moveStatus} />
       ) : (
         <p>Make your first move.</p>
       )}

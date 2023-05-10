@@ -4,13 +4,13 @@ export default function HomePage() {
   return (
     <>
       <h2>
-        TOTALLY <i>UNHINGED</i> CHESS
+        TOTALLY <i>ZOMBIFIED</i> CHESS
       </h2>
       <h2>
-        TOTALLY <i>UNHINGED</i> CHESS
+        TOTALLY <i>ZOMBIFIED</i> CHESS
       </h2>
       <h2>
-        TOTALLY <i>UNHINGED</i> CHESS
+        TOTALLY <i>ZOMBIFIED</i> CHESS
       </h2>
       <div>
         <Link href="/mainboard">
