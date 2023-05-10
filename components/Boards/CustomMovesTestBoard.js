@@ -26,7 +26,7 @@ export default function RandomMoveEngine() {
   // // ---CREATE SEPERATE GAME HISTORY TO BYPASS GAME RESETS---
   function historyStorage() {
     if (
-      history[history.length - 1]?.color !==
+      latestHistory?.color !==
       game?.history({ verbose: true })[
         game.history({ verbose: true }).length - 1
       ]?.color

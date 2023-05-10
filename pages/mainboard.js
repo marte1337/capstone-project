@@ -1,12 +1,10 @@
 import styled from "styled-components";
 import CustomMovesTestBoard from "@/components/Boards/CustomMovesTestBoard";
-import PlayerVsRandomMove from "@/components/Boards/PlayerVsRandomMove";
 
 export default function MainBoardPage() {
   return (
     <StyledSection>
       <StyledDiv>
-        <PlayerVsRandomMove />
         <CustomMovesTestBoard />
       </StyledDiv>
     </StyledSection>
