@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export default function MoveInfo({ previousMove, moveStatus }) {
-  const piece = resolvePiece(previousMove.piece);
+  const piece = resolvePiece(previousMove?.piece);
 
   function resolvePiece(piece) {
     switch (piece) {
@@ -22,7 +22,7 @@ export default function MoveInfo({ previousMove, moveStatus }) {
     }
   }
 
-  const flag = resolveFlag(previousMove.flags);
+  const flag = resolveFlag(previousMove?.flags);
 
   function resolveFlag(flag) {
     switch (flag) {

@@ -14,9 +14,11 @@ export default function RandomMoveEngine() {
 
   const latestHistory = history[history.length - 1];
 
+  console.log(history);
+
   //temporarily static player-names
   const playerName = "Player One";
-  const oppenentName = "Player Two";
+  const oppenentName = "RandomMoveMachine";
 
   // // ---CREATE GAME OBJECT---
   useEffect(() => {
@@ -26,7 +28,7 @@ export default function RandomMoveEngine() {
   // // ---CREATE SEPERATE GAME HISTORY TO BYPASS GAME RESETS---
   function historyStorage() {
     if (
-      history[history.length - 1]?.color !==
+      latestHistory?.color !==
       game?.history({ verbose: true })[
         game.history({ verbose: true }).length - 1
       ]?.color
@@ -83,6 +85,19 @@ export default function RandomMoveEngine() {
     return result; // null if the move was illegal, the move object if the move was legal
   }
 
+  //---RandomMoveEngine---
+  function makeRandomMove() {
+    const possibleMoves = game.moves();
+
+    //check game status (chess.js V1_beta onwards: .game_over() => .isGameOver() - ect)
+    if (game.game_over() || game.in_draw() || possibleMoves.length === 0) {
+      return; // exit if the game is over
+    }
+    //create random move and feed it to makeAMove()
+    const randomIndex = Math.floor(Math.random() * possibleMoves.length);
+    makeAMove(possibleMoves[randomIndex]);
+  }
+
   // // ---ON DROP = PASS WHITE MOVE TO makeAMove + TRIGGER BLACK MOVE CREATION
   function onDrop(sourceSquare, targetSquare) {
     const move = makeAMove({
@@ -91,6 +106,9 @@ export default function RandomMoveEngine() {
       promotion: "q",
     });
     if (move === null) return false; // check illegal move
+
+    //"thinking-time" before RandomMoveEngine trigger
+    setTimeout(makeRandomMove, 800);
     return true;
   }
 
