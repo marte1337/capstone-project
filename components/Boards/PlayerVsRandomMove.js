@@ -87,7 +87,7 @@ export default function RandomMoveEngine() {
 
   //---RandomMoveEngine---
   function makeRandomMove() {
-    const possibleMoves = game.moves();
+    const possibleMoves = game?.moves();
 
     //check game status (chess.js V1_beta onwards: .game_over() => .isGameOver() - ect)
     if (game.game_over() || game.in_draw() || possibleMoves.length === 0) {
@@ -107,10 +107,17 @@ export default function RandomMoveEngine() {
     });
     if (move === null) return false; // check illegal move
 
-    //"thinking-time" before RandomMoveEngine trigger
+    // THIS IS THE PROBLEM:
+    // makeRandomMove is being called (together with makeAMove) within onDrop
+    // so only one history is created for two moves, thats why moves are getting overwritten etc.
     setTimeout(makeRandomMove, 800);
     return true;
   }
+
+  // This triggers endless moves until game ends
+  //   useEffect(() => {
+  //     setTimeout(makeRandomMove, 800);
+  //   }, [onDrop]);
 
   return (
     <>
