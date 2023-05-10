@@ -36,6 +36,6 @@ yarn-error.log*
 next-env.d.ts
 
 # not to be reviewed (yet)
-/Boards/LegacyBoards
-/Boards/RandomMoveEngine.js
-/Boards/PlayerVsRandomMove.js
+/components/Boards/LegacyBoards
+/components/Boards/RandomMoveEngine.js
+/components/Boards/PlayerVsRandomMove.js
