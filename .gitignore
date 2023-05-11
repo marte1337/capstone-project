@@ -34,8 +34,3 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-# not to be reviewed (yet)
-/components/Boards/LegacyBoards
-/components/Boards/RandomMoveEngine.js
-/components/Boards/PlayerVsRandomMove.js
