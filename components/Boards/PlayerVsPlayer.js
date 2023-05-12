@@ -83,7 +83,9 @@ export default function RandomMoveEngine() {
     return result; // null if the move was illegal, the move object if the move was legal
   }
 
-  // // ---ON DROP = PASS WHITE MOVE TO makeAMove + TRIGGER BLACK MOVE CREATION
+  // // ---ON DROP---
+  // User function that is run when piece is dropped on a square. Must return whether the move was successful or not.
+  // (sourceSquare: Square, targetSquare: Square, piece: Piece) => boolean
   function onDrop(sourceSquare, targetSquare) {
     const move = makeAMove({
       from: sourceSquare,

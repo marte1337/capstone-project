@@ -15,8 +15,6 @@ export default function RandomMoveEngine() {
   const [fen, setFen] = useState(game?.fen());
   const [fenHistory, setFenHistory] = useState([]);
 
-  const [isBlacksTurn, setIsBlacksTurn] = useState(false);
-
   const latestHistory = history[history.length - 1];
 
   // console.log(fen);
@@ -55,7 +53,6 @@ export default function RandomMoveEngine() {
   useEffect(() => {
     fenStorage();
     setGame(new Chess(game?.fen()));
-    // debugger;
   }, [fen]);
 
   // // ---MAKE A MOVE AND UPDATE GAME OBJECT---
@@ -70,7 +67,6 @@ export default function RandomMoveEngine() {
         game.history({ verbose: true }).length - 1
       ]
     );
-
     setMoveStatus({
       moveNumber: history.length + 1,
       inCheck: game.in_check(),
@@ -80,12 +76,7 @@ export default function RandomMoveEngine() {
       isStalemate: game.in_stalemate(),
       gameOver: game.game_over(),
     });
-
     historyStorage();
-
-    // console.log(result);
-    // setHistory([...history, result]);
-
     return result; // null if the move was illegal, the move object if the move was legal
   }
 
@@ -93,16 +84,11 @@ export default function RandomMoveEngine() {
   //  ---use previousMove to check captures (flags = "c")
   useEffect(() => {
     if (previousMove?.flags === "c") {
-      const gameCopy = { ...game };
-      gameCopy.put(
+      game.put(
         { type: previousMove.captured, color: previousMove.color },
         previousMove.from
       );
-      setGame(gameCopy);
-      const newGame = new Chess(gameCopy.fen());
-
-      console.log(newGame.fen());
-
+      const newGame = new Chess(game.fen());
       setGame(newGame);
       setFen(newGame.fen());
       historyStorage();
@@ -110,8 +96,6 @@ export default function RandomMoveEngine() {
   }, [previousMove]);
 
   // // ---ON DROP = PASS WHITE MOVE TO makeAMove + TRIGGER BLACK MOVE CREATION
-  // User function that is run when piece is dropped on a square. Must return whether the move was successful or not.
-  // (sourceSquare: Square, targetSquare: Square, piece: Piece) => boolean
   function onDrop(sourceSquare, targetSquare) {
     const move = makeAMove({
       from: sourceSquare,
@@ -120,35 +104,22 @@ export default function RandomMoveEngine() {
     });
     if (move === null) return false; // check illegal move
 
-    // THIS IS THE PROBLEM:
-    // setTimeout(makeRandomMove, 1200);
-    // makeRandomMove is being called (together with makeAMove) within onDrop
-    // so only one history is created for two moves, thats why moves are getting overwritten etc.
-
     return true; // successful move
   }
 
+  // ---TRIGGER BLACK MOVE---
   useEffect(() => {
     if (latestHistory?.color === "w") {
-      // setIsBlacksTurn(true);
       setTimeout(makeRandomMove, 1200);
     }
   }, [latestHistory]);
 
-  if (isBlacksTurn) {
-    setTimeout(makeRandomMove, 1200);
-    setIsBlacksTurn(false);
-  }
-
   // // ---CREATE A RANDOMMOVE---
   function makeRandomMove() {
     const possibleMoves = game?.moves();
-
-    //check game status (chess.js V1_beta onwards: .game_over() => .isGameOver() - ect)
     if (game.game_over() || game.in_draw() || possibleMoves.length === 0) {
       return; // exit if the game is over
     }
-    //create random move and feed it to makeAMove()
     const randomIndex = Math.floor(Math.random() * possibleMoves.length);
     makeAMove(possibleMoves[randomIndex]);
   }
