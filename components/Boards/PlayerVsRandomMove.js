@@ -12,9 +12,11 @@ export default function RandomMoveEngine() {
   const [moveStatus, setMoveStatus] = useState({});
   const [history, setHistory] = useState([]);
 
+  const [isBlacksTurn, setIsBlacksTurn] = useState(false);
+
   const latestHistory = history[history.length - 1];
 
-  console.log(history);
+  console.log(fen);
 
   //temporarily static player-names
   const playerName = "Player One";
@@ -42,26 +44,12 @@ export default function RandomMoveEngine() {
     }
   }
 
-  // // ---CHECK FOR ZOMBIE PIECE => RESPAWN ZOMBIE => RESET GAME OBJECT WITH .fen()---
-  //  ---use previousMove to check captures (flags = "c")
-  useEffect(() => {
-    if (previousMove?.flags === "c") {
-      game.put(
-        { type: previousMove.captured, color: previousMove.color },
-        previousMove.from
-      );
-      const newGame = new Chess(game.fen());
-      setGame(newGame);
-      setFen(newGame.fen());
-      historyStorage();
-    }
-  }, [previousMove]);
-
   // // ---MAKE A MOVE AND UPDATE GAME OBJECT---
   function makeAMove(move) {
     const gameCopy = { ...game };
     const result = gameCopy.move(move);
-    // setGame(gameCopy);
+    setGame(gameCopy); //This one seems to be optional?
+    debugger;
     setFen(gameCopy.fen());
 
     setPreviousMove(
@@ -85,7 +73,53 @@ export default function RandomMoveEngine() {
     return result; // null if the move was illegal, the move object if the move was legal
   }
 
-  //---RandomMoveEngine---
+  // // ---CHECK FOR ZOMBIE PIECE => RESPAWN ZOMBIE => RESET GAME OBJECT WITH .fen()---
+  //  ---use previousMove to check captures (flags = "c")
+  useEffect(() => {
+    if (previousMove?.flags === "c") {
+      game.put(
+        { type: previousMove.captured, color: previousMove.color },
+        previousMove.from
+      );
+      const newGame = new Chess(game.fen());
+      setGame(newGame);
+      debugger;
+      setFen(newGame.fen());
+      historyStorage();
+    }
+  }, [previousMove]);
+
+  // // ---ON DROP = PASS WHITE MOVE TO makeAMove + TRIGGER BLACK MOVE CREATION
+  // User function that is run when piece is dropped on a square. Must return whether the move was successful or not.
+  // (sourceSquare: Square, targetSquare: Square, piece: Piece) => boolean
+  function onDrop(sourceSquare, targetSquare) {
+    const move = makeAMove({
+      from: sourceSquare,
+      to: targetSquare,
+      promotion: "q",
+    });
+    if (move === null) return false; // check illegal move
+
+    // THIS IS THE PROBLEM:
+    // setTimeout(makeRandomMove, 1200);
+    // makeRandomMove is being called (together with makeAMove) within onDrop
+    // so only one history is created for two moves, thats why moves are getting overwritten etc.
+
+    return true; // successful move
+  }
+  useEffect(() => {
+    if (latestHistory?.color === "w") {
+      // setIsBlacksTurn(true);
+      setTimeout(makeRandomMove, 1200);
+    }
+  }, [latestHistory]);
+
+  if (isBlacksTurn) {
+    setTimeout(makeRandomMove, 1200);
+    setIsBlacksTurn(false);
+  }
+
+  // // ---CREATE A RANDOMMOVE---
   function makeRandomMove() {
     const possibleMoves = game?.moves();
 
@@ -97,33 +131,6 @@ export default function RandomMoveEngine() {
     const randomIndex = Math.floor(Math.random() * possibleMoves.length);
     makeAMove(possibleMoves[randomIndex]);
   }
-
-  // // ---ON DROP = PASS WHITE MOVE TO makeAMove + TRIGGER BLACK MOVE CREATION
-  function onDrop(sourceSquare, targetSquare) {
-    const move = makeAMove({
-      from: sourceSquare,
-      to: targetSquare,
-      promotion: "q",
-    });
-    if (move === null) return false; // check illegal move
-
-    // THIS IS THE PROBLEM:
-    // makeRandomMove is being called (together with makeAMove) within onDrop
-    // so only one history is created for two moves, thats why moves are getting overwritten etc.
-    setTimeout(makeRandomMove, 800);
-    return true;
-  }
-
-  // ---This triggers endless moves until game ends:---
-  //   useEffect(() => {
-  //     setTimeout(makeRandomMove, 800);
-  //   }, [onDrop]);
-
-  // ---This also dpoesn´t work:---
-  // function onPieceDrop() {
-  //   onDrop();
-  //   setTimeout(makeRandomMove, 800);
-  // }
 
   return (
     <>
