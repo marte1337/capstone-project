@@ -79,10 +79,10 @@ export default function RandomMoveEngine() {
       gameOver: game.game_over(),
     });
 
-    // historyStorage();
-    console.log(result);
+    historyStorage();
 
-    setHistory([...history, result]);
+    // console.log(result);
+    // setHistory([...history, result]);
 
     return result; // null if the move was illegal, the move object if the move was legal
   }
@@ -99,7 +99,7 @@ export default function RandomMoveEngine() {
       // debugger;
       setGame(newGame);
       setFen(newGame.fen());
-      // historyStorage();
+      historyStorage();
     }
   }, [previousMove]);
 
