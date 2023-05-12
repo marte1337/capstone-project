@@ -54,6 +54,8 @@ export default function RandomMoveEngine() {
   }
   useEffect(() => {
     fenStorage();
+    setGame(new Chess(game?.fen()));
+    // debugger;
   }, [fen]);
 
   // // ---MAKE A MOVE AND UPDATE GAME OBJECT---
@@ -91,12 +93,16 @@ export default function RandomMoveEngine() {
   //  ---use previousMove to check captures (flags = "c")
   useEffect(() => {
     if (previousMove?.flags === "c") {
-      game.put(
+      const gameCopy = { ...game };
+      gameCopy.put(
         { type: previousMove.captured, color: previousMove.color },
         previousMove.from
       );
-      const newGame = new Chess(game.fen());
-      // debugger;
+      setGame(gameCopy);
+      const newGame = new Chess(gameCopy.fen());
+
+      console.log(newGame.fen());
+
       setGame(newGame);
       setFen(newGame.fen());
       historyStorage();
@@ -121,6 +127,7 @@ export default function RandomMoveEngine() {
 
     return true; // successful move
   }
+
   useEffect(() => {
     if (latestHistory?.color === "w") {
       // setIsBlacksTurn(true);
@@ -145,7 +152,7 @@ export default function RandomMoveEngine() {
     const randomIndex = Math.floor(Math.random() * possibleMoves.length);
     makeAMove(possibleMoves[randomIndex]);
   }
-  console.log(game?.fen());
+
   return (
     <>
       <h2>
