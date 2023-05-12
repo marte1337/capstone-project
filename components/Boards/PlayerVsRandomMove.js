@@ -52,21 +52,39 @@ export default function RandomMoveEngine() {
   }
   useEffect(() => {
     fenStorage();
-    setGame(new Chess(game?.fen()));
+    // setGame(new Chess(game?.fen()));
   }, [fen]);
+
+  function zombieMove(previousMove, game) {
+    game.put(
+      { type: previousMove.captured, color: previousMove.color },
+      previousMove.from
+    );
+    const newGame = new Chess(game.fen());
+    setGame(newGame);
+    setFen(newGame.fen());
+    console.log("zombie-fen: ", newGame.fen());
+
+    historyStorage();
+  }
 
   // // ---MAKE A MOVE AND UPDATE GAME OBJECT---
   function makeAMove(move) {
     const gameCopy = { ...game };
     const result = gameCopy.move(move);
-    setGame(gameCopy); //This one seems to be optional?
+    // setGame(gameCopy); //This one seems to be optional?
     setFen(gameCopy.fen());
+    console.log("makeAMove-fen: ", gameCopy.fen());
 
-    setPreviousMove(
-      game.history({ verbose: true })[
-        game.history({ verbose: true }).length - 1
-      ]
-    );
+    setPreviousMove((previousMove) => {
+      if (previousMove?.flags === "c") {
+        zombieMove(previousMove, { ...game });
+        return undefined;
+      }
+      return gameCopy.history({ verbose: true })[
+        gameCopy.history({ verbose: true }).length - 1
+      ];
+    });
     setMoveStatus({
       moveNumber: history.length + 1,
       inCheck: game.in_check(),
@@ -82,18 +100,19 @@ export default function RandomMoveEngine() {
 
   // // ---CHECK FOR ZOMBIE PIECE => RESPAWN ZOMBIE => RESET GAME OBJECT WITH .fen()---
   //  ---use previousMove to check captures (flags = "c")
-  useEffect(() => {
-    if (previousMove?.flags === "c") {
-      game.put(
-        { type: previousMove.captured, color: previousMove.color },
-        previousMove.from
-      );
-      const newGame = new Chess(game.fen());
-      setGame(newGame);
-      setFen(newGame.fen());
-      historyStorage();
-    }
-  }, [previousMove]);
+  // useEffect(() => {
+  //   if (previousMove?.flags === "c") {
+  //     game.put(
+  //       { type: previousMove.captured, color: previousMove.color },
+  //       previousMove.from
+  //     );
+  //     const newGame = new Chess(game.fen());
+  //     // setGame(newGame);
+  //     setFen(newGame.fen());
+
+  //     historyStorage();
+  //   }
+  // }, [previousMove]);
 
   // // ---ON DROP = PASS WHITE MOVE TO makeAMove + TRIGGER BLACK MOVE CREATION
   function onDrop(sourceSquare, targetSquare) {
@@ -110,6 +129,8 @@ export default function RandomMoveEngine() {
   // ---TRIGGER BLACK MOVE---
   useEffect(() => {
     if (latestHistory?.color === "w") {
+      setFen(game.fen());
+      console.log("BlackMoveTrigger-fen: ", game.fen());
       setTimeout(makeRandomMove, 1200);
     }
   }, [latestHistory]);
