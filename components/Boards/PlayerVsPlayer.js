@@ -59,7 +59,7 @@ export default function RandomMoveEngine() {
   function makeAMove(move) {
     const gameCopy = { ...game };
     const result = gameCopy.move(move);
-    // setGame(gameCopy);
+    setGame(gameCopy);
     setFen(gameCopy.fen());
 
     setPreviousMove(

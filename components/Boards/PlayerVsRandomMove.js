@@ -7,16 +7,20 @@ import GameTerminal from "../GameTerminal";
 
 export default function RandomMoveEngine() {
   const [game, setGame] = useState(null);
-  const [fen, setFen] = useState(game?.fen());
-  const [previousMove, setPreviousMove] = useState(null);
   const [moveStatus, setMoveStatus] = useState({});
+
+  const [previousMove, setPreviousMove] = useState(null);
   const [history, setHistory] = useState([]);
+
+  const [fen, setFen] = useState(game?.fen());
+  const [fenHistory, setFenHistory] = useState([]);
 
   const [isBlacksTurn, setIsBlacksTurn] = useState(false);
 
   const latestHistory = history[history.length - 1];
 
-  console.log(fen);
+  // console.log(fen);
+  // console.log(fenHistory);
 
   //temporarily static player-names
   const playerName = "Player One";
@@ -44,12 +48,18 @@ export default function RandomMoveEngine() {
     }
   }
 
+  function fenStorage() {
+    setFenHistory([...fenHistory, fen]);
+  }
+  useEffect(() => {
+    fenStorage();
+  }, [fen]);
+
   // // ---MAKE A MOVE AND UPDATE GAME OBJECT---
   function makeAMove(move) {
     const gameCopy = { ...game };
     const result = gameCopy.move(move);
     setGame(gameCopy); //This one seems to be optional?
-    debugger;
     setFen(gameCopy.fen());
 
     setPreviousMove(
@@ -82,8 +92,8 @@ export default function RandomMoveEngine() {
         previousMove.from
       );
       const newGame = new Chess(game.fen());
+      // debugger;
       setGame(newGame);
-      debugger;
       setFen(newGame.fen());
       historyStorage();
     }
@@ -131,7 +141,7 @@ export default function RandomMoveEngine() {
     const randomIndex = Math.floor(Math.random() * possibleMoves.length);
     makeAMove(possibleMoves[randomIndex]);
   }
-
+  console.log(game?.fen());
   return (
     <>
       <h2>
