@@ -32,6 +32,7 @@ export default function RandomMoveEngine() {
   }, []);
 
   // // ---CREATE SEPERATE GAME HISTORY TO BYPASS GAME RESETS---
+  // could maybe be substituted with "result" from makeAMove
   function historyStorage() {
     if (
       latestHistory?.color !==
@@ -63,8 +64,8 @@ export default function RandomMoveEngine() {
     setFen(gameCopy.fen());
 
     setPreviousMove(
-      gameCopy.history({ verbose: true })[
-        gameCopy.history({ verbose: true }).length - 1
+      game.history({ verbose: true })[
+        game.history({ verbose: true }).length - 1
       ]
     );
 
@@ -78,7 +79,10 @@ export default function RandomMoveEngine() {
       gameOver: game.game_over(),
     });
 
-    historyStorage();
+    // historyStorage();
+    console.log(result);
+
+    setHistory([...history, result]);
 
     return result; // null if the move was illegal, the move object if the move was legal
   }
@@ -95,7 +99,7 @@ export default function RandomMoveEngine() {
       // debugger;
       setGame(newGame);
       setFen(newGame.fen());
-      historyStorage();
+      // historyStorage();
     }
   }, [previousMove]);
 
