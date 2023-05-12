@@ -73,18 +73,18 @@ export default function RandomMoveEngine() {
     const gameCopy = { ...game };
     const result = gameCopy.move(move);
     // setGame(gameCopy); //This one seems to be optional?
+    if (result?.flags === "c") {
+      zombieMove(result, { ...game });
+      return undefined;
+    }
     setFen(gameCopy.fen());
     console.log("makeAMove-fen: ", gameCopy.fen());
 
-    setPreviousMove((previousMove) => {
-      if (previousMove?.flags === "c") {
-        zombieMove(previousMove, { ...game });
-        return undefined;
-      }
-      return gameCopy.history({ verbose: true })[
+    setPreviousMove(
+      gameCopy.history({ verbose: true })[
         gameCopy.history({ verbose: true }).length - 1
-      ];
-    });
+      ]
+    );
     setMoveStatus({
       moveNumber: history.length + 1,
       inCheck: game.in_check(),
