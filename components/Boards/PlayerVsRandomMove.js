@@ -20,6 +20,8 @@ export default function RandomMoveEngine() {
   // console.log(fen);
   // console.log(fenHistory);
 
+  console.log(history);
+
   //temporarily static player-names
   const playerName = "Player One";
   const oppenentName = "RandomMoveMachine";
@@ -31,21 +33,27 @@ export default function RandomMoveEngine() {
 
   // // ---CREATE SEPERATE GAME HISTORY TO BYPASS GAME RESETS---
   // could maybe be substituted with "result" from makeAMove
-  function historyStorage() {
-    if (
-      latestHistory?.color !==
-      game?.history({ verbose: true })[
-        game.history({ verbose: true }).length - 1
-      ]?.color
-    ) {
-      setHistory([
-        ...history,
-        game?.history({ verbose: true })[
-          game.history({ verbose: true }).length - 1
-        ],
-      ]);
+  function historyStorage(latestResult) {
+    if (latestResult !== null) {
+      setHistory([...history, latestResult]);
     }
   }
+
+  // function historyStorage() {
+  //   if (
+  //     latestHistory?.color !==
+  //     game?.history({ verbose: true })[
+  //       game.history({ verbose: true }).length - 1
+  //     ]?.color
+  //   ) {
+  //     setHistory([
+  //       ...history,
+  //       game?.history({ verbose: true })[
+  //         game.history({ verbose: true }).length - 1
+  //       ],
+  //     ]);
+  //   }
+  // }
 
   function fenStorage() {
     setFenHistory([...fenHistory, fen]);
@@ -54,6 +62,7 @@ export default function RandomMoveEngine() {
     fenStorage();
   }, [fen]);
 
+  // ---ZOMBIE FUNCTION => RESPAWN ZOMBIE => RESET GAME OBJECT WITH .fen()---
   function zombieMove(previousMove, game) {
     game.put(
       { type: previousMove.captured, color: previousMove.color },
@@ -62,9 +71,8 @@ export default function RandomMoveEngine() {
     const newGame = new Chess(game.fen());
     setGame(newGame);
     setFen(newGame.fen());
-    console.log("zombie-fen: ", newGame.fen());
 
-    historyStorage();
+    // historyStorage();
   }
 
   // // ---MAKE A MOVE AND UPDATE GAME OBJECT---
@@ -73,7 +81,8 @@ export default function RandomMoveEngine() {
     const result = gameCopy.move(move);
     // setGame(gameCopy); //This one seems to be optional?
     setFen(gameCopy.fen());
-    console.log("makeAMove-fen: ", gameCopy.fen());
+
+    // ---CHECK FOR ZOMBIE PIECE---
     if (result?.flags === "c") {
       zombieMove(result, { ...game });
     }
@@ -92,25 +101,10 @@ export default function RandomMoveEngine() {
       isStalemate: game.in_stalemate(),
       gameOver: game.game_over(),
     });
-    historyStorage();
+    historyStorage(result);
+    // console.log(result);
     return result; // null if the move was illegal, the move object if the move was legal
   }
-
-  // // ---CHECK FOR ZOMBIE PIECE => RESPAWN ZOMBIE => RESET GAME OBJECT WITH .fen()---
-  //  ---use previousMove to check captures (flags = "c")
-  // useEffect(() => {
-  //   if (previousMove?.flags === "c") {
-  //     game.put(
-  //       { type: previousMove.captured, color: previousMove.color },
-  //       previousMove.from
-  //     );
-  //     const newGame = new Chess(game.fen());
-  //     // setGame(newGame);
-  //     setFen(newGame.fen());
-
-  //     historyStorage();
-  //   }
-  // }, [previousMove]);
 
   // // ---ON DROP = PASS WHITE MOVE TO makeAMove + TRIGGER BLACK MOVE CREATION
   function onDrop(sourceSquare, targetSquare) {
@@ -128,7 +122,6 @@ export default function RandomMoveEngine() {
   useEffect(() => {
     if (latestHistory?.color === "w") {
       setFen(game.fen());
-      console.log("BlackMoveTrigger-fen: ", game.fen());
       setTimeout(makeRandomMove, 1200);
     }
   }, [latestHistory]);
