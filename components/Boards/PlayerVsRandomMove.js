@@ -12,15 +12,17 @@ export default function RandomMoveEngine() {
   const [previousMove, setPreviousMove] = useState(null);
   const [history, setHistory] = useState([]);
 
-  const [fen, setFen] = useState(game?.fen());
+  const [fen, setFen] = useState(
+    "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+  );
   const [fenHistory, setFenHistory] = useState([]);
 
   const latestHistory = history[history.length - 1];
 
-  // console.log(fen);
-  // console.log(fenHistory);
+  console.log(fen);
+  console.log(fenHistory);
 
-  console.log(history);
+  // console.log(history);
 
   //temporarily static player-names
   const playerName = "Player One";
@@ -31,35 +33,16 @@ export default function RandomMoveEngine() {
     setGame(new Chess());
   }, []);
 
-  // // ---CREATE SEPERATE GAME HISTORY TO BYPASS GAME RESETS---
+  // // ---CREATE SEPERATE MOVE/FEN HISTORY TO BYPASS GAME RESETS---
   // could maybe be substituted with "result" from makeAMove
   function historyStorage(latestResult) {
     if (latestResult !== null) {
       setHistory([...history, latestResult]);
     }
   }
-
-  // function historyStorage() {
-  //   if (
-  //     latestHistory?.color !==
-  //     game?.history({ verbose: true })[
-  //       game.history({ verbose: true }).length - 1
-  //     ]?.color
-  //   ) {
-  //     setHistory([
-  //       ...history,
-  //       game?.history({ verbose: true })[
-  //         game.history({ verbose: true }).length - 1
-  //       ],
-  //     ]);
-  //   }
-  // }
-
-  function fenStorage() {
-    setFenHistory([...fenHistory, fen]);
-  }
+  //Without useEffect,fenHistory only updates one before latest
   useEffect(() => {
-    fenStorage();
+    setFenHistory([...fenHistory, fen]);
   }, [fen]);
 
   // ---ZOMBIE FUNCTION => RESPAWN ZOMBIE => RESET GAME OBJECT WITH .fen()---
@@ -102,7 +85,7 @@ export default function RandomMoveEngine() {
       gameOver: game.game_over(),
     });
     historyStorage(result);
-    // console.log(result);
+
     return result; // null if the move was illegal, the move object if the move was legal
   }
 
