@@ -10,16 +10,14 @@ export default function RandomMoveEngine() {
   const [moveStatus, setMoveStatus] = useState({});
 
   const [previousMove, setPreviousMove] = useState(null);
-  const [history, setHistory] = useState([]);
+  const [moveHistory, setMoveHistory] = useState([]);
 
   const [fen, setFen] = useState(
     "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
   );
   const [fenHistory, setFenHistory] = useState([]);
 
-  const latestHistory = history[history.length - 1];
-
-  console.log(history);
+  const latestMoveHistory = moveHistory[moveHistory.length - 1];
 
   //temporarily static player-names
   const playerName = "Player One";
@@ -34,7 +32,7 @@ export default function RandomMoveEngine() {
   // could maybe be substituted with "result" from makeAMove
   function historyStorage(latestResult) {
     if (latestResult !== null) {
-      setHistory([...history, latestResult]);
+      setMoveHistory([...moveHistory, latestResult]);
     }
   }
   //Without useEffect,fenHistory only updates one before last
@@ -76,7 +74,7 @@ export default function RandomMoveEngine() {
       ]
     );
     setMoveStatus({
-      moveNumber: history.length + 1,
+      moveNumber: moveHistory.length + 1,
       inCheck: game.in_check(),
       isCheckmate: game.in_checkmate(),
       isDraw: game.in_draw(),
@@ -103,11 +101,11 @@ export default function RandomMoveEngine() {
 
   // ---TRIGGER BLACK MOVE---
   useEffect(() => {
-    if (latestHistory?.color === "w") {
+    if (latestMoveHistory?.color === "w") {
       setFen(game.fen());
       setTimeout(makeRandomMove, 1200);
     }
-  }, [latestHistory]);
+  }, [latestMoveHistory]);
 
   // // ---CREATE A RANDOMMOVE---
   function makeRandomMove() {
@@ -119,6 +117,11 @@ export default function RandomMoveEngine() {
     makeAMove(possibleMoves[randomIndex]);
   }
 
+  //log complete game history after game is over
+  if (game?.game_over()) {
+    console.log(moveHistory);
+    console.log(fenHistory);
+  }
   return (
     <>
       <h2>
@@ -127,7 +130,7 @@ export default function RandomMoveEngine() {
       {game && <Chessboard position={fen} onPieceDrop={onDrop} />}
       {moveStatus.gameOver && <GameTerminal moveStatus={moveStatus} />}
       {previousMove ? (
-        <MoveInfo previousMove={latestHistory} moveStatus={moveStatus} />
+        <MoveInfo previousMove={latestMoveHistory} moveStatus={moveStatus} />
       ) : (
         <p>Make a move...</p>
       )}
