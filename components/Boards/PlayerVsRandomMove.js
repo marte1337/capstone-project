@@ -73,6 +73,7 @@ export default function RandomMoveEngine() {
         gameCopy.history({ verbose: true }).length - 1
       ]
     );
+    historyStorage(result);
     setMoveStatus({
       moveNumber: moveHistory.length + 1,
       inCheck: game.in_check(),
@@ -82,7 +83,6 @@ export default function RandomMoveEngine() {
       isStalemate: game.in_stalemate(),
       gameOver: game.game_over(),
     });
-    historyStorage(result);
 
     return result; // null if the move was illegal, the move object if the move was legal
   }
@@ -122,6 +122,7 @@ export default function RandomMoveEngine() {
     console.log(moveHistory);
     console.log(fenHistory);
   }
+
   return (
     <>
       <h2>
@@ -129,8 +130,8 @@ export default function RandomMoveEngine() {
       </h2>
       {game && <Chessboard position={fen} onPieceDrop={onDrop} />}
       {moveStatus.gameOver && <GameTerminal moveStatus={moveStatus} />}
-      {previousMove ? (
-        <MoveInfo previousMove={latestMoveHistory} moveStatus={moveStatus} />
+      {latestMoveHistory ? (
+        <MoveInfo moveData={latestMoveHistory} moveStatus={moveStatus} />
       ) : (
         <p>Make a move...</p>
       )}

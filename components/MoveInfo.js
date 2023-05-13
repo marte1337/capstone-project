@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
-export default function MoveInfo({ previousMove, moveStatus }) {
-  const piece = resolvePiece(previousMove?.piece);
+export default function MoveInfo({ moveData, moveStatus }) {
+  const piece = resolvePiece(moveData?.piece);
 
   function resolvePiece(piece) {
     switch (piece) {
@@ -22,7 +22,7 @@ export default function MoveInfo({ previousMove, moveStatus }) {
     }
   }
 
-  const flag = resolveFlag(previousMove?.flags);
+  const flag = resolveFlag(moveData?.flags);
 
   function resolveFlag(flag) {
     switch (flag) {
@@ -47,8 +47,8 @@ export default function MoveInfo({ previousMove, moveStatus }) {
 
   return (
     <StyledSection>
-      {moveStatus.moveNumber}: {previousMove.color === "w" ? "White" : "Black"}{" "}
-      {piece} {flag} {previousMove.san}{" "}
+      {moveStatus.moveNumber}: {moveData.color === "w" ? "White" : "Black"}{" "}
+      {piece} {flag} {moveData.san}{" "}
       {moveStatus.inCheck && <strong>Check!!</strong>}
     </StyledSection>
   );
