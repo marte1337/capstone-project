@@ -55,6 +55,10 @@ export default function RandomMoveEngine() {
     setGame(newGame);
     setFen(newGame.fen());
 
+    if (game.game_over() || game.in_draw() || possibleMoves.length === 0) {
+      return; // exit if the game is over
+    }
+
     // historyStorage();
   }
 
