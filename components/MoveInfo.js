@@ -27,21 +27,21 @@ export default function MoveInfo({ previousMove, moveStatus }) {
   function resolveFlag(flag) {
     switch (flag) {
       case "b":
-        return "pushed";
+        return "pushes";
       case "e":
-        return "CAPTURED EP";
+        return "CAPTURES EP";
       case "c":
-        return "CAPTURED";
+        return "CAPTURES";
       case "p":
-        return "PROMOTED";
+        return "PROMOTES";
       case "k":
-        return "castled KS";
+        return "castles KS";
       case "q":
-        return "castled QS";
+        return "castles QS";
       case "pc":
         return "CAPT&PROM";
       default:
-        return "moved";
+        return "moves";
     }
   }
 

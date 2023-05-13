@@ -129,7 +129,7 @@ export default function RandomMoveEngine() {
       {previousMove ? (
         <MoveInfo previousMove={latestHistory} moveStatus={moveStatus} />
       ) : (
-        <p>Make your first move.</p>
+        <p>Make a move...</p>
       )}
       <PlayerNameDisplay playerName={playerName} oppenentName={oppenentName} />
     </>
