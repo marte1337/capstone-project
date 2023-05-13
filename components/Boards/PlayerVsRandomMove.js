@@ -19,10 +19,7 @@ export default function RandomMoveEngine() {
 
   const latestHistory = history[history.length - 1];
 
-  console.log(fen);
-  console.log(fenHistory);
-
-  // console.log(history);
+  console.log(history);
 
   //temporarily static player-names
   const playerName = "Player One";
@@ -40,7 +37,7 @@ export default function RandomMoveEngine() {
       setHistory([...history, latestResult]);
     }
   }
-  //Without useEffect,fenHistory only updates one before latest
+  //Without useEffect,fenHistory only updates one before last
   useEffect(() => {
     setFenHistory([...fenHistory, fen]);
   }, [fen]);
@@ -55,11 +52,10 @@ export default function RandomMoveEngine() {
     setGame(newGame);
     setFen(newGame.fen());
 
+    const possibleMoves = game?.moves();
     if (game.game_over() || game.in_draw() || possibleMoves.length === 0) {
       return; // exit if the game is over
     }
-
-    // historyStorage();
   }
 
   // // ---MAKE A MOVE AND UPDATE GAME OBJECT---
