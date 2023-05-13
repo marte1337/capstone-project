@@ -52,7 +52,6 @@ export default function RandomMoveEngine() {
   }
   useEffect(() => {
     fenStorage();
-    // setGame(new Chess(game?.fen()));
   }, [fen]);
 
   function zombieMove(previousMove, game) {
@@ -73,12 +72,11 @@ export default function RandomMoveEngine() {
     const gameCopy = { ...game };
     const result = gameCopy.move(move);
     // setGame(gameCopy); //This one seems to be optional?
-    if (result?.flags === "c") {
-      zombieMove(result, { ...game });
-      return undefined;
-    }
     setFen(gameCopy.fen());
     console.log("makeAMove-fen: ", gameCopy.fen());
+    if (result?.flags === "c") {
+      zombieMove(result, { ...game });
+    }
 
     setPreviousMove(
       gameCopy.history({ verbose: true })[
