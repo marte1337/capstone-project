@@ -29,7 +29,6 @@ export default function RandomMoveEngine() {
   }, []);
 
   // // ---CREATE SEPERATE MOVE/FEN HISTORY TO BYPASS GAME RESETS---
-  // could maybe be substituted with "result" from makeAMove
   function historyStorage(latestResult) {
     if (latestResult !== null) {
       setMoveHistory([...moveHistory, latestResult]);
@@ -41,10 +40,10 @@ export default function RandomMoveEngine() {
   }, [fen]);
 
   // ---ZOMBIE FUNCTION => RESPAWN ZOMBIE => RESET GAME OBJECT WITH .fen()---
-  function zombieMove(previousMove, game) {
+  function zombieMove(latestResult, game) {
     game.put(
-      { type: previousMove.captured, color: previousMove.color },
-      previousMove.from
+      { type: latestResult.captured, color: latestResult.color },
+      latestResult.from
     );
     const newGame = new Chess(game.fen());
     setGame(newGame);
@@ -67,12 +66,7 @@ export default function RandomMoveEngine() {
     if (result?.flags === "c") {
       zombieMove(result, { ...game });
     }
-
-    setPreviousMove(
-      gameCopy.history({ verbose: true })[
-        gameCopy.history({ verbose: true }).length - 1
-      ]
-    );
+    // fetch move-history/game-data
     historyStorage(result);
     setMoveStatus({
       moveNumber: moveHistory.length + 1,
@@ -117,10 +111,12 @@ export default function RandomMoveEngine() {
     makeAMove(possibleMoves[randomIndex]);
   }
 
-  //log complete game history after game is over
+  //set up payload on game over
   if (game?.game_over()) {
-    console.log(moveHistory);
-    console.log(fenHistory);
+    console.log("Date: ", new Date().toLocaleString());
+    console.log("Player Names: ", playerName, ", ", oppenentName);
+    console.log("Move History: ", moveHistory);
+    console.log("Fen History: ", fenHistory);
   }
 
   return (

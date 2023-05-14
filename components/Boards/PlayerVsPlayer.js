@@ -67,7 +67,7 @@ export default function PlayerVsPlayer() {
       zombieMove(result, { ...game });
     }
 
-    // set game/move histories
+    // fetch move-history/game-data
     historyStorage(result);
     setMoveStatus({
       moveNumber: moveHistory.length + 1,
@@ -94,10 +94,10 @@ export default function PlayerVsPlayer() {
     return true; // successful move
   }
 
-  //create payload after game is over
+  //set up payload on game over
   if (game?.game_over()) {
     console.log("Date: ", new Date().toLocaleString());
-    console.log("Player Names: ", playerName, oppenentName);
+    console.log("Player Names: ", playerName, ", ", oppenentName);
     console.log("Move History: ", moveHistory);
     console.log("Fen History: ", fenHistory);
   }
