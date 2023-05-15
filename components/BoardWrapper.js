@@ -1,12 +1,9 @@
 import styled from "styled-components";
-import PlayerVsRandomMove from "@/components/Boards/PlayerVsRandomMove";
 
-export default function MainBoardPage() {
+export default function BoardWrapper({ children }) {
   return (
     <StyledSection>
-      <StyledDiv>
-        <PlayerVsRandomMove />
-      </StyledDiv>
+      <StyledDiv>{children}</StyledDiv>
     </StyledSection>
   );
 }
