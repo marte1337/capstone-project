@@ -8,10 +8,7 @@ import GameTerminal from "../GameTerminal";
 export default function RandomMoveEngine() {
   const [game, setGame] = useState(null);
   const [moveStatus, setMoveStatus] = useState({});
-
-  const [previousMove, setPreviousMove] = useState(null);
   const [moveHistory, setMoveHistory] = useState([]);
-
   const [fen, setFen] = useState(
     "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
   );
@@ -59,7 +56,6 @@ export default function RandomMoveEngine() {
   function makeAMove(move) {
     const gameCopy = { ...game };
     const result = gameCopy.move(move);
-    // setGame(gameCopy); //This one seems to be optional?
     setFen(gameCopy.fen());
 
     // ---CHECK FOR ZOMBIE PIECE---
