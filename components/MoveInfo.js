@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
-export default function MoveInfo({ previousMove, moveStatus }) {
-  const piece = resolvePiece(previousMove?.piece);
+export default function MoveInfo({ moveData, moveStatus }) {
+  const piece = resolvePiece(moveData?.piece);
 
   function resolvePiece(piece) {
     switch (piece) {
@@ -22,33 +22,33 @@ export default function MoveInfo({ previousMove, moveStatus }) {
     }
   }
 
-  const flag = resolveFlag(previousMove?.flags);
+  const flag = resolveFlag(moveData?.flags);
 
   function resolveFlag(flag) {
     switch (flag) {
       case "b":
-        return "pushed";
+        return "pushes";
       case "e":
-        return "CAPTURED EP";
+        return "CAPTURES EP";
       case "c":
-        return "CAPTURED";
+        return "CAPTURES";
       case "p":
-        return "PROMOTED";
+        return "PROMOTES";
       case "k":
-        return "castled KS";
+        return "castles KS";
       case "q":
-        return "castled QS";
+        return "castles QS";
       case "pc":
         return "CAPT&PROM";
       default:
-        return "moved";
+        return "moves";
     }
   }
 
   return (
     <StyledSection>
-      {moveStatus.moveNumber}: {previousMove.color === "w" ? "White" : "Black"}{" "}
-      {piece} {flag} {previousMove.san}{" "}
+      {moveStatus.moveNumber}: {moveData.color === "w" ? "White" : "Black"}{" "}
+      {piece} {flag} {moveData.san}{" "}
       {moveStatus.inCheck && <strong>Check!!</strong>}
     </StyledSection>
   );

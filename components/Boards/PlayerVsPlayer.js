@@ -5,14 +5,16 @@ import MoveInfo from "../MoveInfo";
 import PlayerNameDisplay from "../PlayerNameDisplay";
 import GameTerminal from "../GameTerminal";
 
-export default function RandomMoveEngine() {
+export default function PlayerVsPlayer() {
   const [game, setGame] = useState(null);
-  const [fen, setFen] = useState(game?.fen());
-  const [previousMove, setPreviousMove] = useState(null);
   const [moveStatus, setMoveStatus] = useState({});
-  const [history, setHistory] = useState([]);
+  const [moveHistory, setMoveHistory] = useState([]);
+  const [fen, setFen] = useState(
+    "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+  );
+  const [fenHistory, setFenHistory] = useState([]);
 
-  const latestHistory = history[history.length - 1];
+  const latestMoveHistory = moveHistory[moveHistory.length - 1];
 
   //temporarily static player-names
   const playerName = "Player One";
@@ -23,53 +25,48 @@ export default function RandomMoveEngine() {
     setGame(new Chess());
   }, []);
 
-  // // ---CREATE SEPERATE GAME HISTORY TO BYPASS GAME RESETS---
-  function historyStorage() {
-    if (
-      latestHistory?.color !==
-      game?.history({ verbose: true })[
-        game.history({ verbose: true }).length - 1
-      ]?.color
-    ) {
-      setHistory([
-        ...history,
-        game?.history({ verbose: true })[
-          game.history({ verbose: true }).length - 1
-        ],
-      ]);
+  // // ---CREATE SEPERATE MOVE/FEN HISTORY TO BYPASS GAME RESETS---
+  function historyStorage(latestResult) {
+    if (latestResult !== null) {
+      setMoveHistory([...moveHistory, latestResult]);
     }
   }
-
-  // // ---CHECK FOR ZOMBIE PIECE => RESPAWN ZOMBIE => RESET GAME OBJECT WITH .fen()---
-  //  ---use previousMove to check captures (flags = "c")
+  //Without useEffect,fenHistory only updates one before last
   useEffect(() => {
-    if (previousMove?.flags === "c") {
-      game.put(
-        { type: previousMove.captured, color: previousMove.color },
-        previousMove.from
-      );
-      const newGame = new Chess(game.fen());
-      setGame(newGame);
-      setFen(newGame.fen());
-      historyStorage();
+    setFenHistory([...fenHistory, fen]);
+  }, [fen]);
+
+  // ---ZOMBIE FUNCTION => RESPAWN ZOMBIE => RESET GAME OBJECT WITH .fen()---
+  function zombieMove(latestResult, game) {
+    game.put(
+      { type: latestResult.captured, color: latestResult.color },
+      latestResult.from
+    );
+    const newGame = new Chess(game.fen());
+    setGame(newGame);
+    setFen(newGame.fen());
+
+    const possibleMoves = game?.moves();
+    if (game.game_over() || game.in_draw() || possibleMoves.length === 0) {
+      return; // exit if the game is over
     }
-  }, [previousMove]);
+  }
 
   // // ---MAKE A MOVE AND UPDATE GAME OBJECT---
   function makeAMove(move) {
     const gameCopy = { ...game };
     const result = gameCopy.move(move);
-    // setGame(gameCopy);
     setFen(gameCopy.fen());
 
-    setPreviousMove(
-      gameCopy.history({ verbose: true })[
-        gameCopy.history({ verbose: true }).length - 1
-      ]
-    );
+    // ---CHECK FOR ZOMBIE PIECE---
+    if (result?.flags === "c") {
+      zombieMove(result, { ...game });
+    }
 
+    // fetch move-history/game-data
+    historyStorage(result);
     setMoveStatus({
-      moveNumber: history.length + 1,
+      moveNumber: moveHistory.length + 1,
       inCheck: game.in_check(),
       isCheckmate: game.in_checkmate(),
       isDraw: game.in_draw(),
@@ -77,8 +74,6 @@ export default function RandomMoveEngine() {
       isStalemate: game.in_stalemate(),
       gameOver: game.game_over(),
     });
-
-    historyStorage();
 
     return result; // null if the move was illegal, the move object if the move was legal
   }
@@ -91,7 +86,8 @@ export default function RandomMoveEngine() {
       promotion: "q",
     });
     if (move === null) return false; // check illegal move
-    return true;
+
+    return true; // successful move
   }
 
   return (
@@ -101,12 +97,21 @@ export default function RandomMoveEngine() {
       </h2>
       {game && <Chessboard position={fen} onPieceDrop={onDrop} />}
       {moveStatus.gameOver && <GameTerminal moveStatus={moveStatus} />}
-      {previousMove ? (
-        <MoveInfo previousMove={latestHistory} moveStatus={moveStatus} />
+      {latestMoveHistory ? (
+        <MoveInfo moveData={latestMoveHistory} moveStatus={moveStatus} />
       ) : (
-        <p>Make your first move.</p>
+        <p>Make a move...</p>
       )}
       <PlayerNameDisplay playerName={playerName} oppenentName={oppenentName} />
+      {moveStatus.gameOver && (
+        <>
+          <p>Date: {new Date().toLocaleString()}</p>
+          <p>
+            Player Names: {playerName}, {oppenentName}
+          </p>
+          <p>Fen History: {fenHistory}</p>
+        </>
+      )}
     </>
   );
 }
