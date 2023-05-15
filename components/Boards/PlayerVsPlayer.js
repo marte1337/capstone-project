@@ -90,14 +90,6 @@ export default function PlayerVsPlayer() {
     return true; // successful move
   }
 
-  //set up payload on game over
-  if (game?.game_over()) {
-    console.log("Date: ", new Date().toLocaleString());
-    console.log("Player Names: ", playerName, ", ", oppenentName);
-    console.log("Move History: ", moveHistory);
-    console.log("Fen History: ", fenHistory);
-  }
-
   return (
     <>
       <h2>
@@ -111,6 +103,15 @@ export default function PlayerVsPlayer() {
         <p>Make a move...</p>
       )}
       <PlayerNameDisplay playerName={playerName} oppenentName={oppenentName} />
+      {moveStatus.gameOver && (
+        <>
+          <p>Date: {new Date().toLocaleString()}</p>
+          <p>
+            Player Names: {playerName}, {oppenentName}
+          </p>
+          <p>Fen History: {fenHistory}</p>
+        </>
+      )}
     </>
   );
 }
