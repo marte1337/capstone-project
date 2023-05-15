@@ -23,6 +23,13 @@ export default function PlayerVsPlayer() {
   const playerName = "Player One";
   const oppenentName = "Player Two";
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const inputValue = event.target.elements.myInput.value;
+    console.log(inputValue);
+    makeAMove(inputValue);
+  };
+
   // // ---CREATE GAME OBJECT---
   useEffect(() => {
     setGame(new Chess());
@@ -78,7 +85,7 @@ export default function PlayerVsPlayer() {
       isStalemate: game.in_stalemate(),
       gameOver: game.game_over(),
     });
-
+    console.log("send this to server: ", result?.san);
     return result; // null if the move was illegal, the move object if the move was legal
   }
 
@@ -115,6 +122,10 @@ export default function PlayerVsPlayer() {
         <p>Make a move...</p>
       )}
       <PlayerNameDisplay playerName={playerName} oppenentName={oppenentName} />
+      <form onSubmit={handleSubmit}>
+        <input type="text" name="myInput" />
+        <button type="submit">Submit Move</button>
+      </form>
     </>
   );
 }
