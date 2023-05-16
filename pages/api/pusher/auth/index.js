@@ -1,4 +1,4 @@
-import { pusher } from "../../../../lib/pusher";
+import { pusher } from "../../../../lib/index";
 
 export default async function handler(req, res) {
   // see https://pusher.com/docs/channels/server_api/authenticating-users
@@ -16,7 +16,6 @@ export default async function handler(req, res) {
 
   try {
     const auth = pusher.authenticate(socket_id, channel_name, presenceData);
-    //check...
     res.send(auth);
   } catch (error) {
     console.error(error);

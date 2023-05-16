@@ -5,7 +5,8 @@ import axios from "axios";
 
 export default function Lobby({ username }) {
   const router = useRouter();
-  const pusher = new Pusher(process.env.NEXT_PUBLIC_KEY, {
+  //   const pusher = new Pusher(process.env.NEXT_PUBLIC_KEY, {
+  const pusher = new Pusher("2fd14399437ec77964ee", {
     cluster: "eu",
     // use jwts in prod
     authEndpoint: `api/pusher/auth`,
@@ -62,7 +63,8 @@ export default function Lobby({ username }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios.post("/api/pusher/chat-update", {
+    // await axios.post("/api/pusher/chat-update", {
+    await axios.post("/api/pusher", {
       message: messageToSend,
       username,
     });
@@ -72,7 +74,7 @@ export default function Lobby({ username }) {
     <>
       <div>
         <p>
-          Hello, <span>{sender}</span>
+          Hello, <span>{username}</span>
         </p>
         <div>
           <button onClick={handleSignOut}>Sign out</button>
@@ -115,9 +117,9 @@ export default function Lobby({ username }) {
               type="text"
               value={messageToSend}
               onChange={(e) => setMessageToSend(e.target.value)}
-              handleSubmit={(e) => {
-                handleSubmit(e);
-              }}
+              //   handleSubmit={(e) => {
+              //     handleSubmit(e);
+              //   }}
               placeholder="start typing...."
             />
             <button type="submit">Send</button>
