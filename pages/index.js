@@ -21,8 +21,8 @@ export default function HomePage() {
           </Link>
         </div>
         <div>
-          <Link href="/multiplayer">
-            <StyledButton type="text">Player VS Player</StyledButton>
+          <Link href="/prelobby">
+            <StyledButton type="text">Enter Game Lobby</StyledButton>
           </Link>
         </div>
       </StyledSection>

@@ -3,11 +3,11 @@ import { useRouter } from "next/router";
 import Pusher from "pusher-js";
 import axios from "axios";
 
+//prevents undefined
 let pusher = null;
 
 export default function Lobby({ username }) {
   const router = useRouter();
-  //   const pusher = new Pusher(process.env.NEXT_PUBLIC_KEY, {
 
   const [chats, setChats] = useState([]);
   const [messageToSend, setMessageToSend] = useState("");
@@ -15,25 +15,25 @@ export default function Lobby({ username }) {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [usersRemoved, setUsersRemoved] = useState([]);
 
+  // Derived from: https://pusher.com/docs/channels/getting_started/javascript-realtime-user-list/
+
   useEffect(() => {
+    // pusher = new Pusher(process.env.NEXT_PUBLIC_KEY, {
     pusher = new Pusher("2fd14399437ec77964ee", {
       cluster: "eu",
-      // use jwts in prod
       authEndpoint: `api/pusher/auth`,
       auth: { params: { username } },
     });
 
     const channel = pusher.subscribe("presence-channel");
 
-    // when a new member successfully subscribes to the channel
+    // count: when a new member successfully subscribes to the channel
     channel.bind("pusher:subscription_succeeded", (members) => {
-      // subscribed members count
       setOnlineUsersCount(members.count);
     });
 
-    // when a new member joins the chat
+    // count: when a new member joins the chat
     channel.bind("pusher:member_added", (member) => {
-      // console.log("count",channel.members.count)
       setOnlineUsersCount(channel.members.count);
       setOnlineUsers((prevState) => [
         ...prevState,
@@ -41,22 +41,20 @@ export default function Lobby({ username }) {
       ]);
     });
 
-    // when a member leaves the chat
+    // update count: when a member leaves the chat
     channel.bind("pusher:member_removed", (member) => {
       setOnlineUsersCount(channel.members.count);
       setUsersRemoved((prevState) => [...prevState, member.info.username]);
     });
 
-    // updates chats
-    channel.bind("chat-update", function (data) {
+    // ---PERFORM CHAT---
+    channel.bind("chat-update", (data) => {
       const { username, message } = data;
       setChats((prevState) => [...prevState, { username, message }]);
     });
 
-    // when closing channel, unsubscribe user
-    return () => {
-      pusher.unsubscribe("presence-channel");
-    };
+    // when closing channel: unsubscribe user
+    return () => pusher.unsubscribe("presence-channel");
   }, [username]);
 
   const handleSignOut = () => {
@@ -64,13 +62,14 @@ export default function Lobby({ username }) {
     router.push("/");
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    // await axios.post("/api/pusher/chat-update", {
+  // post chat to api
+  const handleSubmit = async (event) => {
+    event.preventDefault();
     await axios.post("/api/pusher", {
       message: messageToSend,
       username,
     });
+    setMessageToSend("");
   };
 
   return (
@@ -84,14 +83,14 @@ export default function Lobby({ username }) {
         </div>
         <div>{onlineUsersCount} user(s) online now</div>
 
-        <h2>Notifications</h2>
+        <h2>Chat</h2>
         <div>
           {/* show online users */}
           {onlineUsers.map((user, id) => (
             <div key={id}>
               <small>
                 {" "}
-                <span>{user.username}</span> just joined the chat
+                <span>{user.username}</span> joined the chat!
               </small>
             </div>
           ))}
@@ -100,7 +99,7 @@ export default function Lobby({ username }) {
           {usersRemoved.map((user, id) => (
             <small key={id}>
               {" "}
-              <span>{user}</span> just left the chat!
+              <span>{user}</span> left the chat.
             </small>
           ))}
         </div>
@@ -119,10 +118,7 @@ export default function Lobby({ username }) {
             <input
               type="text"
               value={messageToSend}
-              onChange={(e) => setMessageToSend(e.target.value)}
-              //   handleSubmit={(e) => {
-              //     handleSubmit(e);
-              //   }}
+              onChange={(event) => setMessageToSend(event.target.value)}
               placeholder="start typing...."
             />
             <button type="submit">Send</button>

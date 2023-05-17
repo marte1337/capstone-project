@@ -2,14 +2,14 @@ export default function PreGameLobby({ handleLogin, handleLoginChange }) {
   return (
     <>
       <form onSubmit={handleLogin}>
-        <p>Enter your playername to start:</p>
+        <p>Choose your Playername:</p>
         <div>
           <input
             type="text"
             onChange={handleLoginChange}
-            placeholder="your playername"
+            placeholder="playername..."
           />
-          <button type="submit">Sign in to get started</button>
+          <button type="submit">Enter Lobby</button>
         </div>
       </form>
     </>
