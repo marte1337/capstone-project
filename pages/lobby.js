@@ -3,6 +3,8 @@ import { useRouter } from "next/router";
 import Pusher from "pusher-js";
 import axios from "axios";
 
+import Link from "next/link";
+
 //prevents undefined
 let pusher = null;
 
@@ -126,6 +128,9 @@ export default function Lobby({ username }) {
           </form>
         </div>
       </div>
+      <Link href="/multiplayer">
+        <button type="text">Go to Chess-Board</button>
+      </Link>
     </>
   );
 }
