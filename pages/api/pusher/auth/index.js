@@ -4,7 +4,7 @@ import { pusher } from "../../../../lib/index";
 export default async function handler(request, response) {
   const { socket_id, channel_name, username } = request.body;
 
-  // use JWTs / UID here to authenticate users before continuing
+  // use JWTs / UID in production
   const randomString = Math.random().toString(36).slice(2);
 
   const presenceData = {
