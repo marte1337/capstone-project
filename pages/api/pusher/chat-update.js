@@ -1,14 +1,14 @@
-import { pusher } from "../../../../lib/index";
+// import { pusher } from "../../../../lib/index";
 
-// presence channel handler
-export default async function handler(req, res) {
-  const { message, username } = req.body;
+// // presence channel handler
+// export default async function handler(req, res) {
+//   const { message, username } = req.body;
 
-  // trigger a new post event via pusher
-  await pusher.trigger("presence-channel", "chat-update", {
-    message,
-    username,
-  });
+//   // trigger a new post event via pusher
+//   await pusher.trigger("presence-channel", "chat-update", {
+//     message,
+//     username,
+//   });
 
-  res.json({ status: 200 });
-}
+//   res.json({ status: 200 });
+// }
