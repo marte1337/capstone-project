@@ -3,15 +3,11 @@ import { useRouter } from "next/router";
 import Pusher from "pusher-js";
 import axios from "axios";
 
+let pusher = null;
+
 export default function Lobby({ username }) {
   const router = useRouter();
   //   const pusher = new Pusher(process.env.NEXT_PUBLIC_KEY, {
-  const pusher = new Pusher("2fd14399437ec77964ee", {
-    cluster: "eu",
-    // use jwts in prod
-    authEndpoint: `api/pusher/auth`,
-    auth: { params: { username } },
-  });
 
   const [chats, setChats] = useState([]);
   const [messageToSend, setMessageToSend] = useState("");
@@ -20,6 +16,13 @@ export default function Lobby({ username }) {
   const [usersRemoved, setUsersRemoved] = useState([]);
 
   useEffect(() => {
+    pusher = new Pusher("2fd14399437ec77964ee", {
+      cluster: "eu",
+      // use jwts in prod
+      authEndpoint: `api/pusher/auth`,
+      auth: { params: { username } },
+    });
+
     const channel = pusher.subscribe("presence-channel");
 
     // when a new member successfully subscribes to the channel
@@ -54,10 +57,10 @@ export default function Lobby({ username }) {
     return () => {
       pusher.unsubscribe("presence-channel");
     };
-  }, []);
+  }, [username]);
 
   const handleSignOut = () => {
-    pusher.unsubscribe("presence-channel");
+    pusher?.unsubscribe("presence-channel");
     router.push("/");
   };
 
