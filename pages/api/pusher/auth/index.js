@@ -1,5 +1,6 @@
 import { pusher } from "../../../../lib/index";
 
+// ---Authorization Endpoint---
 export default async function handler(request, response) {
   const { socket_id, channel_name, username } = request.body;
 
@@ -9,7 +10,7 @@ export default async function handler(request, response) {
   const presenceData = {
     user_id: randomString,
     user_info: {
-      username: "@" + username,
+      username: username,
     },
   };
 

@@ -25,6 +25,7 @@ export default function Lobby({ username }) {
       auth: { params: { username } },
     });
 
+    // Subscribe to "presence-channel" (relying on user authorization)
     const channel = pusher.subscribe("presence-channel");
 
     // count: when a new member successfully subscribes to the channel
