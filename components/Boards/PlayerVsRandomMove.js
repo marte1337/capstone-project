@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import MoveInfo from "../MoveInfo";
 import PlayerNameDisplay from "../PlayerNameDisplay";
 import GameTerminal from "../GameTerminal";
+import styled from "styled-components";
 
 export default function RandomMoveEngine() {
   const [game, setGame] = useState(null);
@@ -13,7 +14,8 @@ export default function RandomMoveEngine() {
     "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
   );
   const [fenHistory, setFenHistory] = useState([]);
-
+  const [showReplayBoard, setShowReplayBoard] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const latestMoveHistory = moveHistory[moveHistory.length - 1];
 
   //temporarily static player-names
@@ -107,28 +109,66 @@ export default function RandomMoveEngine() {
     makeAMove(possibleMoves[randomIndex]);
   }
 
+  console.log(fenHistory);
+
+  const handleShowReplayBoard = () => {
+    setShowReplayBoard(true);
+  };
+  const handleNextClick = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % fenHistory.length);
+  };
+  const handlePreviousClick = () => {
+    setCurrentIndex(
+      (prevIndex) => (prevIndex - 1 + fenHistory.length) % fenHistory.length
+    );
+  };
+
   return (
     <>
       <h2>
         TOTALLY <i>ZOMBIFIED</i> CHESS
       </h2>
-      {game && <Chessboard position={fen} onPieceDrop={onDrop} />}
-      {moveStatus.gameOver && <GameTerminal moveStatus={moveStatus} />}
-      {latestMoveHistory ? (
+      {game && !showReplayBoard && (
+        <Chessboard position={fen} onPieceDrop={onDrop} id={"PlayBoard"} />
+      )}
+      {showReplayBoard && (
+        <Chessboard position={fenHistory[currentIndex]} id={"ReplayBoard"} />
+      )}
+      {moveStatus.gameOver && !showReplayBoard && (
+        <GameTerminal moveStatus={moveStatus} />
+      )}
+      {!moveStatus.gameOver && latestMoveHistory && (
         <MoveInfo moveData={latestMoveHistory} moveStatus={moveStatus} />
-      ) : (
-        <p>Make a move...</p>
       )}
       <PlayerNameDisplay playerName={playerName} oppenentName={oppenentName} />
-      {moveStatus.gameOver && (
+      {!showReplayBoard && moveStatus.gameOver && (
+        <StyledButton onClick={handleShowReplayBoard}>
+          Show Game Replay?
+        </StyledButton>
+      )}
+      {showReplayBoard && (
         <>
+          <div>
+            <StyledButton onClick={handlePreviousClick}>
+              Previous Move
+            </StyledButton>
+            <StyledButton onClick={handleNextClick}>Next Move</StyledButton>
+          </div>
           <p>Date: {new Date().toLocaleString()}</p>
-          <p>
-            Player Names: {playerName}, {oppenentName}
-          </p>
-          <p>Fen History: {fenHistory}</p>
         </>
       )}
     </>
   );
 }
+
+const StyledButton = styled.button`
+  text-align: center;
+  font-size: large;
+  font-weight: bold;
+  color: black;
+  background-color: beige;
+  border: solid black 0.2rem;
+  border-radius: 5px;
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+`;
