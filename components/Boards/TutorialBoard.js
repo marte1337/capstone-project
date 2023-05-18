@@ -10,7 +10,7 @@ export default function RandomMoveEngine() {
   const [moveStatus, setMoveStatus] = useState({});
   const [moveHistory, setMoveHistory] = useState([]);
   const [fen, setFen] = useState(
-    "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+    "8/2rkr3/2rrr3/8/8/3RRR2/3RKR2/8 w KQkq - 0 1"
   );
   const [fenHistory, setFenHistory] = useState([]);
 
