@@ -1,24 +1,49 @@
 import { Chessboard } from "react-chessboard";
 import Chess from "chess.js";
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
+import styled from "styled-components";
 import MoveInfo from "../MoveInfo";
-import PlayerNameDisplay from "../PlayerNameDisplay";
 import GameTerminal from "../GameTerminal";
+
+// const tutorialFens = [
+//   "8/2rkr3/2rrr3/8/8/3RRR2/3RKR2/8 w KQkq - 0 1",
+//   "3k4/8/pppppppp/8/8/PPPPPPPP/8/4K3 w KQkq - 0 1",
+//   "8/2nkn3/2nnn3/8/8/3NNN2/3NKN2/8 w KQkq - 0 1",
+//   "3k4/nnnnnnnn/bbbbbbbb/8/8/BBBBBBBB/NNNNNNNN/4K3 w KQkq - 0 1",
+// ];
+const tutorialFens = [
+  {
+    fen: "8/2rkr3/2rrr3/8/8/3RRR2/3RKR2/8 w KQkq - 0 1",
+    text: "In this ZOMBIFIED CHESS tutorial you will get used to the zombie-mechanics. It´s pretty simple though: If you capture an opponent piece, it will respawn as your piece on the square it has been attacked from. Try to zombify some of your enemies and checkmate their king...",
+  },
+  {
+    fen: "3k4/8/pppppppp/8/8/PPPPPPPP/8/4K3 w KQkq - 0 1",
+    text: "Now how about that!? You can get pretty interesting pawn-stand-offs in ZOMBIFIED CHESS, see for yourself! Be aware that, while you can capture & promote with a pawn, you can not respawn and promote. Respawned pawns on their final rank are doomed to stay on their square forever...true dead undead zombies!",
+  },
+  {
+    fen: "8/2nkn3/2nnn3/8/8/3NNN2/3NKN2/8 w KQkq - 0 1",
+    text: "We all know that producing a chackmate with knights only is an artform in itself, but how about a zombieknight army?",
+  },
+  {
+    fen: "3k4/nnnnnnnn/bbbbbbbb/8/8/BBBBBBBB/NNNNNNNN/4K3 w KQkq - 0 1",
+    text: "Well...whatever, just have some fun!",
+  },
+];
 
 export default function RandomMoveEngine() {
   const [game, setGame] = useState(null);
   const [moveStatus, setMoveStatus] = useState({});
   const [moveHistory, setMoveHistory] = useState([]);
-  const [fen, setFen] = useState(
-    "8/2rkr3/2rrr3/8/8/3RRR2/3RKR2/8 w KQkq - 0 1"
-  );
   const [fenHistory, setFenHistory] = useState([]);
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [fen, setFen] = useState(tutorialFens[currentIndex].fen);
 
   const latestMoveHistory = moveHistory[moveHistory.length - 1];
 
   // // ---CREATE GAME OBJECT---
   useEffect(() => {
-    setGame(new Chess());
+    setGame(new Chess(fen));
   }, []);
 
   // // ---CREATE SEPERATE MOVE/FEN HISTORY TO BYPASS GAME RESETS---
@@ -103,26 +128,66 @@ export default function RandomMoveEngine() {
     makeAMove(possibleMoves[randomIndex]);
   }
 
+  const handleNextClick = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % tutorialFens.length);
+  };
+
+  useEffect(() => {
+    const newGameFen = tutorialFens[currentIndex].fen;
+    const newGame = new Chess(newGameFen);
+    setGame(newGame);
+    setFen(newGame.fen());
+    setMoveStatus({});
+    setMoveHistory([]);
+  }, [currentIndex]);
+
+  //   const handlePreviousClick = () => {
+  //     setCurrentIndex(
+  //       (prevIndex) => (prevIndex - 1 + tutorialFens.length) % tutorialFens.length
+  //     );
+  //     const newGame = new Chess(tutorialFens[currentIndex]);
+  //     setGame(newGame);
+  //     setFen(newGame.fen());
+  //     setMoveStatus({});
+  //   };
+
   return (
     <>
       <h2>
         TOTALLY <i>ZOMBIFIED</i> CHESS
       </h2>
-      <h2>TUTORIALS</h2>
+      <h3>TUTORIALS</h3>
       {game && <Chessboard position={fen} onPieceDrop={onDrop} />}
       {moveStatus.gameOver && <GameTerminal moveStatus={moveStatus} />}
       {latestMoveHistory ? (
         <MoveInfo moveData={latestMoveHistory} moveStatus={moveStatus} />
       ) : (
-        <p>Make a move...</p>
+        <p>Make a move.</p>
       )}
+
+      {moveStatus.gameOver ? (
+        <p>Well done...</p>
+      ) : (
+        <div>{tutorialFens[currentIndex].text}</div>
+      )}
+
       <div>
-        In this ZOMBIFIED CHESS tutorial you will get used to the
-        zombie-mechanics. It´s pretty simple though: If you capture an opponent
-        piece, it will respawn as your piece on the square it has been attacked
-        from. Just try it out, zombify some of your enemies and checkmate their
-        king...
+        <StyledButton onClick={handleNextClick}>
+          Play Next Tutorial
+        </StyledButton>
       </div>
     </>
   );
 }
+
+const StyledButton = styled.button`
+  text-align: center;
+  font-size: large;
+  font-weight: bold;
+  color: black;
+  background-color: beige;
+  border: solid black 0.2rem;
+  border-radius: 5px;
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+`;
