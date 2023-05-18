@@ -16,11 +16,11 @@ const tutorialFens = [
   },
   {
     fen: "8/2nkn3/2nnn3/8/8/3NNN2/3NKN2/8 w KQkq - 0 1",
-    text: "We all know that producing a chackmate with knights only is an artform in itself, but how about a zombieknight army?",
+    text: "We all appreceate a good ol´ knights-only-chackmate as an artform in itself, but how about knights-only ZOMBIEARMYSTYLE?",
   },
   {
     fen: "3k4/nnnnnnnn/bbbbbbbb/8/8/BBBBBBBB/NNNNNNNN/4K3 w KQkq - 0 1",
-    text: "Well...whatever, just have some fun!",
+    text: "Well...whatever, you know what to do.",
   },
 ];
 
