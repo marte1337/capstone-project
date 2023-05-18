@@ -5,12 +5,6 @@ import styled from "styled-components";
 import MoveInfo from "../MoveInfo";
 import GameTerminal from "../GameTerminal";
 
-// const tutorialFens = [
-//   "8/2rkr3/2rrr3/8/8/3RRR2/3RKR2/8 w KQkq - 0 1",
-//   "3k4/8/pppppppp/8/8/PPPPPPPP/8/4K3 w KQkq - 0 1",
-//   "8/2nkn3/2nnn3/8/8/3NNN2/3NKN2/8 w KQkq - 0 1",
-//   "3k4/nnnnnnnn/bbbbbbbb/8/8/BBBBBBBB/NNNNNNNN/4K3 w KQkq - 0 1",
-// ];
 const tutorialFens = [
   {
     fen: "8/2rkr3/2rrr3/8/8/3RRR2/3RKR2/8 w KQkq - 0 1",
@@ -140,16 +134,6 @@ export default function RandomMoveEngine() {
     setMoveStatus({});
     setMoveHistory([]);
   }, [currentIndex]);
-
-  //   const handlePreviousClick = () => {
-  //     setCurrentIndex(
-  //       (prevIndex) => (prevIndex - 1 + tutorialFens.length) % tutorialFens.length
-  //     );
-  //     const newGame = new Chess(tutorialFens[currentIndex]);
-  //     setGame(newGame);
-  //     setFen(newGame.fen());
-  //     setMoveStatus({});
-  //   };
 
   return (
     <>
