@@ -11,8 +11,8 @@ const tutorialFens = [
     text: "In this ZOMBIFIED CHESS tutorial you will get used to the zombie-mechanics. It´s pretty simple though: If you capture an opponent piece, it will respawn as your piece on the square it has been attacked from. Try to zombify some of your enemies and checkmate their king...",
   },
   {
-    fen: "3k4/8/pppppppp/8/8/PPPPPPPP/8/4K3 w KQkq - 0 1",
-    text: "Now how about that!? You can get pretty interesting pawn-stand-offs in ZOMBIFIED CHESS, see for yourself! Be aware that, while you can capture & promote with a pawn, you can not respawn and promote. Respawned pawns on their final rank are doomed to stay on their square forever...true dead undead zombies!",
+    fen: "3k4/pppppppp/8/8/8/8/PPPPPPPP/4K3 w KQkq - 0 1",
+    text: "You can get pretty interesting pawn-stand-offs in ZOMBIFIED CHESS, see for yourself! Be aware that, while you can capture & promote with a pawn, you can not respawn and promote. Respawned pawns on their final rank are doomed to stay on their square forever...true dead undead zombies!",
   },
   {
     fen: "8/2nkn3/2nnn3/8/8/3NNN2/3NKN2/8 w KQkq - 0 1",
