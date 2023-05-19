@@ -1,30 +1,43 @@
 import { Chessboard } from "react-chessboard";
 import Chess from "chess.js";
-import { useState, useEffect } from "react";
-import MoveInfo from "../MoveInfo";
-import PlayerNameDisplay from "../PlayerNameDisplay";
-import GameTerminal from "../GameTerminal";
+import { useState, useEffect, use } from "react";
 import styled from "styled-components";
+import MoveInfo from "../MoveInfo";
+import GameTerminal from "../GameTerminal";
+
+const tutorialFens = [
+  {
+    fen: "8/2rkr3/2rrr3/8/8/3RRR2/3RKR2/8 w KQkq - 0 1",
+    text: "In this ZOMBIFIED CHESS tutorial you will get used to the zombie-mechanics. It´s pretty simple though: If you capture an opponent piece, it will respawn as your piece on the square it has been attacked from. Try to zombify some of your enemies and checkmate their king...",
+  },
+  {
+    fen: "3k4/pppppppp/8/8/8/8/PPPPPPPP/4K3 w KQkq - 0 1",
+    text: "You can get pretty interesting pawn-stand-offs in ZOMBIFIED CHESS, see for yourself! Be aware that, while you can capture & promote with a pawn, you can not respawn and promote. Respawned pawns on their final rank are doomed to stay on their square forever...true dead undead zombies!",
+  },
+  {
+    fen: "8/2nkn3/2nnn3/8/8/3NNN2/3NKN2/8 w KQkq - 0 1",
+    text: "We all appreceate a good ol´ knights-only-chackmate as an artform in itself, but how about knights-only ZOMBIEARMYSTYLE?",
+  },
+  {
+    fen: "3k4/nnnnnnnn/bbbbbbbb/8/8/BBBBBBBB/NNNNNNNN/4K3 w KQkq - 0 1",
+    text: "Well...whatever, you know what to do.",
+  },
+];
 
 export default function RandomMoveEngine() {
   const [game, setGame] = useState(null);
   const [moveStatus, setMoveStatus] = useState({});
   const [moveHistory, setMoveHistory] = useState([]);
-  const [fen, setFen] = useState(
-    "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-  );
   const [fenHistory, setFenHistory] = useState([]);
-  const [showReplayBoard, setShowReplayBoard] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const latestMoveHistory = moveHistory[moveHistory.length - 1];
 
-  //temporarily static player-names
-  const playerName = "Player One";
-  const oppenentName = "RandomMoveMachine";
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [fen, setFen] = useState(tutorialFens[currentIndex].fen);
+
+  const latestMoveHistory = moveHistory[moveHistory.length - 1];
 
   // // ---CREATE GAME OBJECT---
   useEffect(() => {
-    setGame(new Chess());
+    setGame(new Chess(fen));
   }, []);
 
   // // ---CREATE SEPERATE MOVE/FEN HISTORY TO BYPASS GAME RESETS---
@@ -109,68 +122,53 @@ export default function RandomMoveEngine() {
     makeAMove(possibleMoves[randomIndex]);
   }
 
-  const handleShowReplayBoard = () => {
-    setShowReplayBoard(true);
-  };
   const handleNextClick = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % fenHistory.length);
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % tutorialFens.length);
   };
-  const handlePreviousClick = () => {
-    setCurrentIndex(
-      (prevIndex) => (prevIndex - 1 + fenHistory.length) % fenHistory.length
-    );
-  };
+
+  useEffect(() => {
+    const newGameFen = tutorialFens[currentIndex].fen;
+    const newGame = new Chess(newGameFen);
+    setGame(newGame);
+    setFen(newGame.fen());
+    setMoveStatus({});
+    setMoveHistory([]);
+  }, [currentIndex]);
 
   return (
     <>
       <h2>
         TOTALLY <i>ZOMBIFIED</i> CHESS
       </h2>
-      {game && !showReplayBoard && (
-        <Chessboard position={fen} onPieceDrop={onDrop} id={"PlayBoard"} />
+      <h3>TUTORIALS</h3>
+      {game && <Chessboard position={fen} onPieceDrop={onDrop} />}
+      {moveStatus.gameOver && <GameTerminal moveStatus={moveStatus} />}
+
+      <MoveInfo moveData={latestMoveHistory} moveStatus={moveStatus} />
+
+      {moveStatus.gameOver ? (
+        <p>Well done...</p>
+      ) : (
+        <div>{tutorialFens[currentIndex].text}</div>
       )}
-      {showReplayBoard && (
-        <>
-          <h3>GAME REPLAY</h3>
-          <Chessboard position={fenHistory[currentIndex]} id={"ReplayBoard"} />
-        </>
-      )}
-      {moveStatus.gameOver && !showReplayBoard && (
-        <GameTerminal moveStatus={moveStatus} />
-      )}
-      {!moveStatus.gameOver && (
-        <MoveInfo moveData={latestMoveHistory} moveStatus={moveStatus} />
-      )}
-      <PlayerNameDisplay playerName={playerName} oppenentName={oppenentName} />
-      {!showReplayBoard && moveStatus.gameOver && (
-        <StyledButton onClick={handleShowReplayBoard}>
-          Show Game Replay?
+
+      <div>
+        <StyledButton onClick={handleNextClick}>
+          Play Next Tutorial
         </StyledButton>
-      )}
-      {showReplayBoard && (
-        <>
-          <div>
-            <StyledButton onClick={handlePreviousClick}>
-              Previous Move
-            </StyledButton>
-            <StyledButton onClick={handleNextClick}>Next Move</StyledButton>
-          </div>
-          <small>Date: {new Date().toLocaleString()}</small>
-        </>
-      )}
+      </div>
     </>
   );
 }
 
 const StyledButton = styled.button`
   text-align: center;
-  font-size: large;
+
   font-weight: bold;
   color: black;
   background-color: beige;
   border: solid black 0.2rem;
   border-radius: 5px;
   margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
   padding: 0.5rem 1rem;
 `;

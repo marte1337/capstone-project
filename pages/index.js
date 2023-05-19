@@ -16,6 +16,11 @@ export default function HomePage() {
       <StyledSection>
         <h3>CHOOSE YOUR BOARD:</h3>
         <div>
+          <Link href="/tutorials">
+            <StyledButton type="text">Tutorials</StyledButton>
+          </Link>
+        </div>
+        <div>
           <Link href="/singleplayer">
             <StyledButton type="text">Player VS RandomMoveMachine</StyledButton>
           </Link>
