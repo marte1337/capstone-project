@@ -163,7 +163,7 @@ export default function RandomMoveEngine() {
 
 const StyledButton = styled.button`
   text-align: center;
-  font-size: large;
+
   font-weight: bold;
   color: black;
   background-color: beige;
