@@ -47,9 +47,15 @@ export default function MoveInfo({ moveData, moveStatus }) {
 
   return (
     <StyledSection>
-      {moveStatus.moveNumber}: {moveData.color === "w" ? "White" : "Black"}{" "}
-      {piece} {flag} {moveData.san}{" "}
-      {moveStatus.inCheck && <strong>Check!!</strong>}
+      {moveData ? (
+        <>
+          {moveStatus.moveNumber}: {moveData.color === "w" ? "White" : "Black"}{" "}
+          {piece} {flag} {moveData.san}{" "}
+          {moveStatus.inCheck && <strong>Check!!</strong>}
+        </>
+      ) : (
+        <>Make a move.</>
+      )}
     </StyledSection>
   );
 }

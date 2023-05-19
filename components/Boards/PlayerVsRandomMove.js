@@ -137,7 +137,7 @@ export default function RandomMoveEngine() {
       {moveStatus.gameOver && !showReplayBoard && (
         <GameTerminal moveStatus={moveStatus} />
       )}
-      {!moveStatus.gameOver && latestMoveHistory && (
+      {!moveStatus.gameOver && (
         <MoveInfo moveData={latestMoveHistory} moveStatus={moveStatus} />
       )}
       <PlayerNameDisplay playerName={playerName} oppenentName={oppenentName} />

@@ -143,11 +143,8 @@ export default function RandomMoveEngine() {
       <h3>TUTORIALS</h3>
       {game && <Chessboard position={fen} onPieceDrop={onDrop} />}
       {moveStatus.gameOver && <GameTerminal moveStatus={moveStatus} />}
-      {latestMoveHistory ? (
-        <MoveInfo moveData={latestMoveHistory} moveStatus={moveStatus} />
-      ) : (
-        <p>Make a move.</p>
-      )}
+
+      <MoveInfo moveData={latestMoveHistory} moveStatus={moveStatus} />
 
       {moveStatus.gameOver ? (
         <p>Well done...</p>
