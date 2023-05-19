@@ -15,5 +15,6 @@ export default createGlobalStyle`
     background: rgb(24,0,45);
 background: linear-gradient(124deg, rgba(24,0,45,1) 0%, rgba(85,0,133,1) 100%);
 min-height: 100vh;
+
   }
 `;
