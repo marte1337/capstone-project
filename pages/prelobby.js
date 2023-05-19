@@ -8,6 +8,7 @@ export default function PreGameLobby({ handleLogin, handleLoginChange }) {
             type="text"
             onChange={handleLoginChange}
             placeholder="playername..."
+            required
           />
           <button type="submit">Enter Lobby</button>
         </div>
