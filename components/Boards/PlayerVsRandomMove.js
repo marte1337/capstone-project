@@ -132,7 +132,10 @@ export default function RandomMoveEngine() {
         <Chessboard position={fen} onPieceDrop={onDrop} id={"PlayBoard"} />
       )}
       {showReplayBoard && (
-        <Chessboard position={fenHistory[currentIndex]} id={"ReplayBoard"} />
+        <>
+          <h3>GAME REPLAY</h3>
+          <Chessboard position={fenHistory[currentIndex]} id={"ReplayBoard"} />
+        </>
       )}
       {moveStatus.gameOver && !showReplayBoard && (
         <GameTerminal moveStatus={moveStatus} />
@@ -154,7 +157,7 @@ export default function RandomMoveEngine() {
             </StyledButton>
             <StyledButton onClick={handleNextClick}>Next Move</StyledButton>
           </div>
-          <p>Date: {new Date().toLocaleString()}</p>
+          <small>Date: {new Date().toLocaleString()}</small>
         </>
       )}
     </>
@@ -170,5 +173,6 @@ const StyledButton = styled.button`
   border: solid black 0.2rem;
   border-radius: 5px;
   margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
   padding: 0.5rem 1rem;
 `;
