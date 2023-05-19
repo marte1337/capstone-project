@@ -109,8 +109,6 @@ export default function RandomMoveEngine() {
     makeAMove(possibleMoves[randomIndex]);
   }
 
-  console.log(fenHistory);
-
   const handleShowReplayBoard = () => {
     setShowReplayBoard(true);
   };
