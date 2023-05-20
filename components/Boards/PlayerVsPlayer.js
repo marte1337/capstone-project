@@ -5,12 +5,12 @@ import MoveInfo from "../MoveInfo";
 import PlayerNameDisplay from "../PlayerNameDisplay";
 import GameTerminal from "../GameTerminal";
 
-import { useRouter } from "next/router";
-import Pusher from "pusher-js";
-import axios from "axios";
+// import { useRouter } from "next/router";
+// import Pusher from "pusher-js";
+// import axios from "axios";
 
-//prevents undefined
-let pusher = null;
+// //prevents undefined
+// let pusher = null;
 
 export default function PlayerVsPlayer({ username }) {
   const [game, setGame] = useState(null);
@@ -31,7 +31,6 @@ export default function PlayerVsPlayer({ username }) {
 
   // useEffect(() => {
   //   // pusher = new Pusher(process.env.NEXT_PUBLIC_KEY, {
-  //   pusher = new Pusher("2fd14399437ec77964ee", {
   //     cluster: "eu",
   //     authEndpoint: `api/pusher/auth`,
   //     auth: { params: { username } },
@@ -90,7 +89,7 @@ export default function PlayerVsPlayer({ username }) {
   const latestMoveHistory = moveHistory[moveHistory.length - 1];
 
   //temporarily static player-names
-  const playerName = { username };
+  const playerName = "Player One";
   const oppenentName = "Player Two";
 
   // const handleSubmit = (event) => {
@@ -243,16 +242,6 @@ export default function PlayerVsPlayer({ username }) {
           </form>
         </div> */}
       </div>
-
-      {moveStatus.gameOver && (
-        <>
-          <p>Date: {new Date().toLocaleString()}</p>
-          <p>
-            Player Names: {playerName}, {oppenentName}
-          </p>
-          <p>Fen History: {fenHistory}</p>
-        </>
-      )}
     </>
   );
 }
