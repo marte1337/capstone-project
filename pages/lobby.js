@@ -4,6 +4,7 @@ import Pusher from "pusher-js";
 import axios from "axios";
 
 import Link from "next/link";
+import styled from "styled-components";
 
 //prevents undefined
 let pusher = null;
@@ -78,39 +79,43 @@ export default function Lobby({ username }) {
     <>
       <div>
         <p>
-          Hello, <span>{username}</span>
+          Hello, <strong>{username}</strong>
         </p>
         <div>
-          <button onClick={handleSignOut}>Sign out</button>
+          <StyledButton onClick={handleSignOut}>Sign out</StyledButton>
         </div>
-        <div>{onlineUsersCount} user(s) online now</div>
-
-        <h2>Chat</h2>
         <div>
-          {/* show online users */}
-          {onlineUsers.map((user, id) => (
+          <strong> {onlineUsersCount} user(s) online now</strong>
+        </div>
+        {/* show online users */}
+        {onlineUsers.map((user, id) => (
+          <div key={id}>
+            <small>
+              {" "}
+              <span>{user.username}</span> joined the chat!
+            </small>
+          </div>
+        ))}
+        <div>
+          {/* show users leaving the chat */}
+          {usersRemoved.map((user, id) => (
             <div key={id}>
               <small>
                 {" "}
-                <span>{user.username}</span> joined the chat!
+                <span>{user}</span> left the chat.
               </small>
             </div>
           ))}
-
-          {/* show users leaving the chat */}
-          {usersRemoved.map((user, id) => (
-            <small key={id}>
-              {" "}
-              <span>{user}</span> left the chat.
-            </small>
-          ))}
         </div>
+
+        <h2>Chat</h2>
 
         <div>
           {chats.map((chat, id) => (
             <div key={id}>
-              <p>{chat.message}</p>
-              <small>{chat.username}</small>
+              <p>
+                <small>{chat.username}:</small> {chat.message}
+              </p>
             </div>
           ))}
         </div>
@@ -128,8 +133,21 @@ export default function Lobby({ username }) {
         </div>
       </div>
       <Link href="/multiplayer">
-        <button type="text">Go to Chess-Board</button>
+        <StyledButton type="text">Go to Chess-Board</StyledButton>
       </Link>
     </>
   );
 }
+
+const StyledButton = styled.button`
+  text-align: center;
+
+  font-weight: bold;
+  color: black;
+  background-color: beige;
+  border: solid black 0.2rem;
+  border-radius: 5px;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 1rem;
+`;

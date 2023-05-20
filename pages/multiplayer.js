@@ -5,6 +5,7 @@ import MoveInfo from "@/components//MoveInfo";
 import PlayerNameDisplay from "@/components/PlayerNameDisplay";
 import GameTerminal from "@/components/GameTerminal";
 import BoardWrapper from "@/components/BoardWrapper";
+import styled from "styled-components";
 
 import { useRouter } from "next/router";
 import Pusher from "pusher-js";
@@ -28,6 +29,8 @@ export default function MultiPlayerPage({ username }) {
   const router = useRouter();
   const [messageToReceive, setMessageToReceive] = useState([]);
   const [messageToSend, setMessageToSend] = useState("");
+  const [moveToReceive, setMoveToReceive] = useState([]);
+  const [moveToSend, setMoveToSend] = useState("");
   const [onlineUsersCount, setOnlineUsersCount] = useState(0);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [usersRemoved, setUsersRemoved] = useState([]);
@@ -64,8 +67,11 @@ export default function MultiPlayerPage({ username }) {
 
     // ---PERFORM CHAT---
     channel.bind("chess-update", (data) => {
-      const { username, message } = data;
-      setMessageToReceive((prevState) => [...prevState, { username, message }]);
+      const { username, message, chessmove } = data;
+      setMessageToReceive((prevState) => [
+        ...prevState,
+        { username, message, chessmove },
+      ]);
     });
 
     // when closing channel: unsubscribe user
@@ -79,23 +85,29 @@ export default function MultiPlayerPage({ username }) {
 
   // post chat to api
   const handleSubmit = async (event) => {
-    // console.log(event.target.elements.chatInput.value);
-    // setMessageToSend(event.target.elements.chatInput.value);
-    event.preventDefault();
+    event?.preventDefault();
     await axios.post("/api/pusher/presence-board", {
+      chessmove: moveToSend,
       message: messageToSend,
       username,
     });
+    // makeAMove(moveToSend);
     setMessageToSend("");
   };
+  // console.log(moveToSend);
+  // console.log("sendmessage:", messageToSend);
+  // console.log("sendmove:", moveToSend);
+  // console.log("receive:", messageToReceive);
 
   // useEffect(() => {
-  //   console.log(messageToReceive[messageToReceive.length - 1]?.message);
-  //   makeAMove(messageToReceive[messageToReceive.length - 1]?.message);
+  //   console.log(messageToReceive);
+  //   console.log(messageToReceive[messageToReceive.length - 1]?.chessmove);
+  //   // makeAMove(messageToReceive[messageToReceive.length - 1]?.chessmove);
   // }, []);
 
   // makeAMove(messageToReceive[messageToReceive.length - 1]?.message);
   // console.log(messageToReceive[messageToReceive.length - 1]?.message);
+  // console.log(messageToReceive[messageToReceive.length - 1]?.chessmove);
   // console.log(messageToReceive);
 
   // const handleSubmit = (event) => {
@@ -166,14 +178,15 @@ export default function MultiPlayerPage({ username }) {
       isStalemate: game.in_stalemate(),
       gameOver: game.game_over(),
     });
-    // console.log("send this to server: ", result?.san);
-    // setMessageToSend(result?.san);
+
+    // :::PUSHER MOVE:::
+    setMoveToSend(result?.san);
     // handleSubmit();
 
     return result; // null if the move was illegal, the move object if the move was legal
   }
 
-  // // ---ON DROP = PASS WHITE MOVE TO makeAMove + TRIGGER BLACK MOVE CREATION
+  // // ---ON DROP = PASS MOVE TO makeAMove
   function onDrop(sourceSquare, targetSquare) {
     const move = makeAMove({
       from: sourceSquare,
@@ -210,12 +223,34 @@ export default function MultiPlayerPage({ username }) {
       </>
       <>
         <p>
-          Hello, <span>{username}</span>
+          Hello, <strong>{username}</strong>
         </p>
         <div>
-          <button onClick={handleSignOut}>Sign out</button>
+          <StyledButton onClick={handleSignOut}>Sign out</StyledButton>
         </div>
-        <div>{onlineUsersCount} user(s) online now</div>
+        <div>
+          <strong> {onlineUsersCount} user(s) online now</strong>
+        </div>
+        {/* show online users */}
+        {onlineUsers.map((user, id) => (
+          <div key={id}>
+            <small>
+              {" "}
+              <span>{user.username}</span> joined the chat!
+            </small>
+          </div>
+        ))}
+        <div>
+          {/* show users leaving the chat */}
+          {usersRemoved.map((user, id) => (
+            <div key={id}>
+              <small>
+                {" "}
+                <span>{user}</span> left the chat.
+              </small>
+            </div>
+          ))}
+        </div>
 
         <h2>Chat</h2>
         <div>
@@ -237,10 +272,12 @@ export default function MultiPlayerPage({ username }) {
         </div>
 
         <div>
-          {messageToReceive.map((chat, id) => (
+          {messageToReceive.map((data, id) => (
             <div key={id}>
-              <p>{chat.message}</p>
-              <small>{chat.username}</small>
+              <p>
+                <small>{data.username}:</small> {data.message}
+              </p>
+              <small>move: {data.chessmove}</small>
             </div>
           ))}
         </div>
@@ -263,138 +300,14 @@ export default function MultiPlayerPage({ username }) {
   );
 }
 
-// // :::::::::::::WORKING VERSION CHATROOM ONLY:::::::::::::::::::::::
-
-// import PlayerVsPlayer from "@/components/Boards/PlayerVsPlayer";
-// import BoardWrapper from "@/components/BoardWrapper";
-
-// import { useState, useEffect } from "react";
-// import { useRouter } from "next/router";
-// import Pusher from "pusher-js";
-// import axios from "axios";
-
-// //prevents undefined
-// let pusher = null;
-
-// export default function MultiPlayerPage({ username }) {
-//   // // :::::PUSHER:::::
-//   const router = useRouter();
-//   const [messageToReceive, setMessageToReceive] = useState([]);
-//   const [messageToSend, setMessageToSend] = useState("");
-//   const [onlineUsersCount, setOnlineUsersCount] = useState(0);
-//   const [onlineUsers, setOnlineUsers] = useState([]);
-//   const [usersRemoved, setUsersRemoved] = useState([]);
-
-//   useEffect(() => {
-//     // pusher = new Pusher(process.env.NEXT_PUBLIC_KEY, {
-//     pusher = new Pusher("2fd14399437ec77964ee", {
-//       cluster: "eu",
-//       authEndpoint: `api/pusher/auth`,
-//       auth: { params: { username } },
-//     });
-
-//     // Subscribe to "presence-channel" (relying on user authorization)
-//     const channel = pusher.subscribe("presence-board");
-
-//     // count: when a new member successfully subscribes to the channel
-//     channel.bind("pusher:subscription_succeeded", (members) => {
-//       setOnlineUsersCount(members.count);
-//     });
-
-//     // count: when a new member joins the chat
-//     channel.bind("pusher:member_added", (member) => {
-//       setOnlineUsersCount(channel.members.count);
-//       setOnlineUsers((prevState) => [
-//         ...prevState,
-//         { username: member.info.username },
-//       ]);
-//     });
-
-//     // update count: when a member leaves the chat
-//     channel.bind("pusher:member_removed", (member) => {
-//       setOnlineUsersCount(channel.members.count);
-//       setUsersRemoved((prevState) => [...prevState, member.info.username]);
-//     });
-
-//     // ---PERFORM CHAT---
-//     channel.bind("chess-update", (data) => {
-//       const { username, message } = data;
-//       setMessageToReceive((prevState) => [...prevState, { username, message }]);
-//       // makeAMove(messageToReceive.message);
-//     });
-
-//     // when closing channel: unsubscribe user
-//     return () => pusher.unsubscribe("presence-board");
-//   }, [username]);
-
-//   const handleSignOut = () => {
-//     pusher?.unsubscribe("presence-board");
-//     router.push("/");
-//   };
-
-//   // post chat to api
-//   const handleSubmit = async (event) => {
-//     event.preventDefault();
-//     await axios.post("/api/pusher/presence-board", {
-//       message: messageToSend,
-//       username,
-//     });
-//     setMessageToSend("");
-//   };
-//   // // :::::PUSHER:::::
-
-//   return (
-//     <BoardWrapper>
-//       {/* <PlayerVsPlayer username={username} /> */}
-//       <div>
-//         <p>
-//           Hello, <span>{username}</span>
-//         </p>
-//         <div>
-//           <button onClick={handleSignOut}>Sign out</button>
-//         </div>
-//         <div>{onlineUsersCount} user(s) online now</div>
-
-//         <h2>Chat</h2>
-//         <div>
-//           {onlineUsers.map((user, id) => (
-//             <div key={id}>
-//               <small>
-//                 {" "}
-//                 <span>{user.username}</span> joined the chat!
-//               </small>
-//             </div>
-//           ))}
-
-//           {usersRemoved.map((user, id) => (
-//             <small key={id}>
-//               {" "}
-//               <span>{user}</span> left the chat.
-//             </small>
-//           ))}
-//         </div>
-
-//         <div>
-//           {messageToReceive.map((chat, id) => (
-//             <div key={id}>
-//               <p>{chat.message}</p>
-//               <small>{chat.username}</small>
-//             </div>
-//           ))}
-//         </div>
-
-//         <div>
-//           <form onSubmit={handleSubmit}>
-//             <input
-//               type="text"
-//               value={messageToSend}
-//               onChange={(event) => setMessageToSend(event.target.value)}
-//               placeholder="start typing...."
-//             />
-//             <button type="submit">Send</button>
-//           </form>
-//         </div>
-//       </div>
-//     </BoardWrapper>
-//   );
-// }
+const StyledButton = styled.button`
+  text-align: center;
+  font-weight: bold;
+  color: black;
+  background-color: beige;
+  border: solid black 0.2rem;
+  border-radius: 5px;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 1rem;
+`;
