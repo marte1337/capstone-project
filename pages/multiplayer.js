@@ -97,6 +97,7 @@ export default function MultiPlayerPage({ username }) {
   // makeAMove(messageToReceive[messageToReceive.length - 1]?.message);
   // console.log(messageToReceive[messageToReceive.length - 1]?.message);
   // console.log(messageToReceive);
+
   // const handleSubmit = (event) => {
   //   event.preventDefault();
   //   const inputValue = event.target.elements.myInput.value;
@@ -202,10 +203,10 @@ export default function MultiPlayerPage({ username }) {
           oppenentName={oppenentName}
         /> */}
 
-        <form onSubmit={handleSubmit}>
+        {/* <form onSubmit={handleSubmit}>
           <input type="text" name="myInput" />
           <button type="submit">Submit Move</button>
-        </form>
+        </form> */}
       </>
       <>
         <p>
