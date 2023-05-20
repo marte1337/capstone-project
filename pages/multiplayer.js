@@ -27,9 +27,8 @@ export default function MultiPlayerPage({ username }) {
 
   // // :::::PUSHER:::::
   const router = useRouter();
-  const [messageToReceive, setMessageToReceive] = useState([]);
+  const [dataReceived, setDataReceived] = useState([]);
   const [messageToSend, setMessageToSend] = useState("");
-  const [moveToReceive, setMoveToReceive] = useState([]);
   const [moveToSend, setMoveToSend] = useState("");
   const [onlineUsersCount, setOnlineUsersCount] = useState(0);
   const [onlineUsers, setOnlineUsers] = useState([]);
@@ -65,13 +64,20 @@ export default function MultiPlayerPage({ username }) {
       setUsersRemoved((prevState) => [...prevState, member.info.username]);
     });
 
-    // ---PERFORM CHAT---
+    // ---PERFORM CHAT + MOVE---
     channel.bind("chess-update", (data) => {
       const { username, message, chessmove } = data;
-      setMessageToReceive((prevState) => [
+      setDataReceived((prevState) => [
         ...prevState,
         { username, message, chessmove },
       ]);
+
+      const move = data.chessmove;
+      if (move) {
+        const newGame = new Chess(move);
+        setGame(newGame);
+        setFen(newGame.fen());
+      }
     });
 
     // when closing channel: unsubscribe user
@@ -91,32 +97,9 @@ export default function MultiPlayerPage({ username }) {
       message: messageToSend,
       username,
     });
-    // makeAMove(moveToSend);
     setMessageToSend("");
   };
-  // console.log(moveToSend);
-  // console.log("sendmessage:", messageToSend);
-  // console.log("sendmove:", moveToSend);
-  // console.log("receive:", messageToReceive);
-
-  // useEffect(() => {
-  //   console.log(messageToReceive);
-  //   console.log(messageToReceive[messageToReceive.length - 1]?.chessmove);
-  //   // makeAMove(messageToReceive[messageToReceive.length - 1]?.chessmove);
-  // }, []);
-
-  // makeAMove(messageToReceive[messageToReceive.length - 1]?.message);
-  // console.log(messageToReceive[messageToReceive.length - 1]?.message);
-  // console.log(messageToReceive[messageToReceive.length - 1]?.chessmove);
-  // console.log(messageToReceive);
-
-  // const handleSubmit = (event) => {
-  //   event.preventDefault();
-  //   const inputValue = event.target.elements.myInput.value;
-  //   console.log(inputValue);
-  //   makeAMove(inputValue);
-  // };
-  // // :::::PUSHER:::::
+  // // :::::PUSHER-END:::::
 
   const latestMoveHistory = moveHistory[moveHistory.length - 1];
 
@@ -138,7 +121,14 @@ export default function MultiPlayerPage({ username }) {
   //Without useEffect,fenHistory only updates one before last
   useEffect(() => {
     setFenHistory([...fenHistory, fen]);
+    //:::SETMOVE FOR PUSHER:::
+    setMoveToSend(fen);
   }, [fen]);
+
+  //:::SUBMIT MOVE TO PUSHER:::
+  useEffect(() => {
+    handleSubmit();
+  }, [moveToSend]);
 
   // ---ZOMBIE FUNCTION => RESPAWN ZOMBIE => RESET GAME OBJECT WITH .fen()---
   function zombieMove(latestResult, game) {
@@ -159,7 +149,7 @@ export default function MultiPlayerPage({ username }) {
   // // ---MAKE A MOVE AND UPDATE GAME OBJECT---
   function makeAMove(move) {
     const gameCopy = { ...game };
-    const result = gameCopy.move(move);
+    const result = gameCopy?.move(move);
     setFen(gameCopy.fen());
 
     // ---CHECK FOR ZOMBIE PIECE---
@@ -178,10 +168,6 @@ export default function MultiPlayerPage({ username }) {
       isStalemate: game.in_stalemate(),
       gameOver: game.game_over(),
     });
-
-    // :::PUSHER MOVE:::
-    setMoveToSend(result?.san);
-    // handleSubmit();
 
     return result; // null if the move was illegal, the move object if the move was legal
   }
@@ -231,53 +217,15 @@ export default function MultiPlayerPage({ username }) {
         <div>
           <strong> {onlineUsersCount} user(s) online now</strong>
         </div>
-        {/* show online users */}
-        {onlineUsers.map((user, id) => (
-          <div key={id}>
-            <small>
-              {" "}
-              <span>{user.username}</span> joined the chat!
-            </small>
-          </div>
-        ))}
-        <div>
-          {/* show users leaving the chat */}
-          {usersRemoved.map((user, id) => (
-            <div key={id}>
-              <small>
-                {" "}
-                <span>{user}</span> left the chat.
-              </small>
-            </div>
-          ))}
-        </div>
 
         <h2>Chat</h2>
-        <div>
-          {onlineUsers.map((user, id) => (
-            <div key={id}>
-              <small>
-                {" "}
-                <span>{user.username}</span> joined the chat!
-              </small>
-            </div>
-          ))}
-
-          {usersRemoved.map((user, id) => (
-            <small key={id}>
-              {" "}
-              <span>{user}</span> left the chat.
-            </small>
-          ))}
-        </div>
 
         <div>
-          {messageToReceive.map((data, id) => (
+          {dataReceived.map((data, id) => (
             <div key={id}>
               <p>
                 <small>{data.username}:</small> {data.message}
               </p>
-              <small>move: {data.chessmove}</small>
             </div>
           ))}
         </div>
@@ -288,12 +236,32 @@ export default function MultiPlayerPage({ username }) {
               name="chatInput"
               type="text"
               value={messageToSend}
-              // Fix  setMessageToSend on Submit
               onChange={(event) => setMessageToSend(event.target.value)}
               placeholder="start typing...."
             />
             <button type="submit">Send</button>
           </form>
+        </div>
+
+        <div>
+          {/* show online users */}
+          {onlineUsers.map((user, id) => (
+            <div key={id}>
+              <small>
+                {" "}
+                <span>{user.username}</span> joined the chat!
+              </small>
+            </div>
+          ))}
+          {/* show users leaving the chat */}
+          {usersRemoved.map((user, id) => (
+            <div key={id}>
+              <small>
+                {" "}
+                <span>{user}</span> left the chat.
+              </small>
+            </div>
+          ))}
         </div>
       </>
     </BoardWrapper>
