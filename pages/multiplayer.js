@@ -23,13 +23,17 @@ export default function MultiPlayerPage({ username }) {
     "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
   );
   const [fenHistory, setFenHistory] = useState([]);
+  const [boardOrientation, setBoardOrientation] = useState("white");
+
   // // ____PlayerVsPlayer______
 
   // // :::::PUSHER:::::
   const router = useRouter();
   const [messageToSend, setMessageToSend] = useState("");
+  const [chatStorage, setChatStorage] = useState([]);
   const [moveToSend, setMoveToSend] = useState("");
-  const [chatStorage, setchatStorage] = useState([]);
+  const [historyToSend, setHistoryToSend] = useState(undefined);
+  const [historyStorage, setHistoryStorage] = useState([]);
   const [onlineUsersCount, setOnlineUsersCount] = useState(0);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [usersRemoved, setUsersRemoved] = useState([]);
@@ -67,16 +71,23 @@ export default function MultiPlayerPage({ username }) {
 
     // ---PERFORM CHAT + MOVE---
     channel.bind("chess-update", (data) => {
-      const { username, message, chessmove } = data;
-
+      const { username, message, chessmove, history } = data;
+      // console.log(history);
       if (chessmove) {
         const newGame = new Chess(chessmove);
         setGame(newGame);
         setFen(newGame.fen());
+        setHistoryToSend(undefined);
       }
 
       if (message.length > 1) {
-        setchatStorage((prevState) => [...prevState, { username, message }]);
+        setChatStorage((prevState) => [...prevState, { username, message }]);
+      }
+
+      if (history) {
+        // if (history?.color !== historyStorage[historyStorage.length - 1]?.color) {
+        setHistoryStorage((prevState) => [...prevState, history]);
+        // setHistoryStorage(history);
       }
     });
 
@@ -94,12 +105,16 @@ export default function MultiPlayerPage({ username }) {
     event?.preventDefault();
     await axios.post("/api/pusher/presence-board", {
       chessmove: moveToSend,
+      history: historyToSend,
       message: messageToSend,
       username,
     });
     setMessageToSend("");
+    setHistoryToSend(undefined);
   };
   // // :::::PUSHER-END:::::
+  console.log("moveHistory: ", moveHistory);
+  console.log("historyStorage: ", historyStorage);
 
   const latestMoveHistory = moveHistory[moveHistory.length - 1];
 
@@ -113,7 +128,7 @@ export default function MultiPlayerPage({ username }) {
   }, []);
 
   // // ---CREATE SEPERATE MOVE/FEN HISTORY TO BYPASS GAME RESETS---
-  function historyStorage(latestResult) {
+  function localHistoryStorage(latestResult) {
     if (latestResult !== null) {
       setMoveHistory([...moveHistory, latestResult]);
     }
@@ -123,9 +138,10 @@ export default function MultiPlayerPage({ username }) {
     setFenHistory([...fenHistory, fen]);
     //:::SETMOVE FOR PUSHER:::
     setMoveToSend(fen);
+    setHistoryToSend(moveHistory[moveHistory.length - 1]);
   }, [fen]);
 
-  //:::SUBMIT MOVE TO PUSHER:::
+  //:::SUBMIT MOVE TO PUSHER (need own useEffect to update correctly):::
   useEffect(() => {
     handleSubmit();
   }, [moveToSend]);
@@ -158,7 +174,7 @@ export default function MultiPlayerPage({ username }) {
     }
 
     // fetch move-history/game-data
-    historyStorage(result);
+    localHistoryStorage(result);
     setMoveStatus({
       moveNumber: moveHistory.length + 1,
       inCheck: game.in_check(),
@@ -184,7 +200,11 @@ export default function MultiPlayerPage({ username }) {
     return true; // successful move
   }
 
-  console.log(onlineUsers);
+  const handleOrientationToggle = () => {
+    setBoardOrientation((prevOrientation) =>
+      prevOrientation === "white" ? "black" : "white"
+    );
+  };
 
   return (
     <BoardWrapper>
@@ -192,10 +212,16 @@ export default function MultiPlayerPage({ username }) {
         <h2>
           TOTALLY <i>ZOMBIFIED</i> CHESS
         </h2>
-        {game && <Chessboard position={fen} onPieceDrop={onDrop} />}
+        {game && (
+          <Chessboard
+            position={fen}
+            onPieceDrop={onDrop}
+            boardOrientation={boardOrientation}
+          />
+        )}
         {moveStatus.gameOver && <GameTerminal moveStatus={moveStatus} />}
-        {latestMoveHistory ? (
-          <MoveInfo moveData={latestMoveHistory} moveStatus={moveStatus} />
+        {historyStorage ? (
+          <MoveInfo moveData={historyStorage} moveStatus={moveStatus} />
         ) : (
           <p>Make a move...</p>
         )}
@@ -203,6 +229,9 @@ export default function MultiPlayerPage({ username }) {
           playerName={playerName}
           oppenentName={oppenentName}
         /> */}
+        <StyledButton onClick={handleOrientationToggle}>
+          Switch View: {boardOrientation === "white" ? "Black" : "White"}
+        </StyledButton>
       </>
       <>
         <p>
@@ -212,56 +241,57 @@ export default function MultiPlayerPage({ username }) {
         <div>
           <strong> {onlineUsersCount} user(s) online now</strong>
         </div>
+        <StyledChat>
+          <h2>GAMECHAT</h2>
 
-        <h2>Chat</h2>
+          <div>
+            {chatStorage.map((data, id) => (
+              <div key={id}>
+                <p>
+                  <small>{data.username}:</small> {data.message}
+                </p>
+              </div>
+            ))}
+          </div>
 
-        <div>
-          {chatStorage.map((data, id) => (
-            <div key={id}>
-              <p>
-                <small>{data.username}:</small> {data.message}
-              </p>
-            </div>
-          ))}
-        </div>
+          <div>
+            <form onSubmit={handleSubmit}>
+              <input
+                name="chatInput"
+                type="text"
+                value={messageToSend}
+                onChange={(event) => setMessageToSend(event.target.value)}
+                placeholder="start typing...."
+              />
+              <button type="submit">Send</button>
+            </form>
+          </div>
 
-        <div>
-          <form onSubmit={handleSubmit}>
-            <input
-              name="chatInput"
-              type="text"
-              value={messageToSend}
-              onChange={(event) => setMessageToSend(event.target.value)}
-              placeholder="start typing...."
-            />
-            <button type="submit">Send</button>
-          </form>
-        </div>
+          <div>
+            <StyledButton onClick={handleSignOut}>Sign out</StyledButton>
+          </div>
 
-        <div>
-          <StyledButton onClick={handleSignOut}>Sign out</StyledButton>
-        </div>
-
-        <div>
-          {/* show online users */}
-          {onlineUsers.map((user, id) => (
-            <div key={id}>
-              <small>
-                {" "}
-                <span>{user.username}</span> joined the chat!
-              </small>
-            </div>
-          ))}
-          {/* show users leaving the chat */}
-          {usersRemoved.map((user, id) => (
-            <div key={id}>
-              <small>
-                {" "}
-                <span>{user}</span> left the chat.
-              </small>
-            </div>
-          ))}
-        </div>
+          <div>
+            {/* show online users */}
+            {onlineUsers.map((user, id) => (
+              <div key={id}>
+                <small>
+                  {" "}
+                  <span>{user.username}</span> joined the chat!
+                </small>
+              </div>
+            ))}
+            {/* show users leaving the chat */}
+            {usersRemoved.map((user, id) => (
+              <div key={id}>
+                <small>
+                  {" "}
+                  <span>{user}</span> left the chat.
+                </small>
+              </div>
+            ))}
+          </div>
+        </StyledChat>
       </>
     </BoardWrapper>
   );
@@ -277,4 +307,19 @@ const StyledButton = styled.button`
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
   padding: 0.5rem 1rem;
+`;
+
+const StyledChat = styled.section`
+  text-align: center;
+  background-color: black;
+  color: white;
+  border-radius: 5px;
+  padding: 10px 1rem;
+  margin-top: 10px;
+  h2 {
+    margin: 0;
+    font-weight: 900;
+    font-size: x-large;
+    letter-spacing: 5px;
+  }
 `;
