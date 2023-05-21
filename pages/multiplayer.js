@@ -27,9 +27,10 @@ export default function MultiPlayerPage({ username }) {
 
   // // :::::PUSHER:::::
   const router = useRouter();
-  const [dataReceived, setDataReceived] = useState([]);
   const [messageToSend, setMessageToSend] = useState("");
   const [moveToSend, setMoveToSend] = useState("");
+  const [dataReceived, setDataReceived] = useState([]);
+  const [chatStorage, setchatStorage] = useState([]);
   const [onlineUsersCount, setOnlineUsersCount] = useState(0);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [usersRemoved, setUsersRemoved] = useState([]);
@@ -78,6 +79,10 @@ export default function MultiPlayerPage({ username }) {
         const newGame = new Chess(move);
         setGame(newGame);
         setFen(newGame.fen());
+      }
+
+      if (message.length > 1) {
+        setchatStorage((prevState) => [...prevState, { username, message }]);
       }
     });
 
@@ -185,6 +190,9 @@ export default function MultiPlayerPage({ username }) {
     return true; // successful move
   }
 
+  console.log(dataReceived);
+  console.log("chatstorage", chatStorage);
+
   return (
     <BoardWrapper>
       <>
@@ -222,7 +230,7 @@ export default function MultiPlayerPage({ username }) {
         <h2>Chat</h2>
 
         <div>
-          {dataReceived.map((data, id) => (
+          {chatStorage.map((data, id) => (
             <div key={id}>
               <p>
                 <small>{data.username}:</small> {data.message}
