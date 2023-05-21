@@ -29,7 +29,6 @@ export default function MultiPlayerPage({ username }) {
   const router = useRouter();
   const [messageToSend, setMessageToSend] = useState("");
   const [moveToSend, setMoveToSend] = useState("");
-  const [dataReceived, setDataReceived] = useState([]);
   const [chatStorage, setchatStorage] = useState([]);
   const [onlineUsersCount, setOnlineUsersCount] = useState(0);
   const [onlineUsers, setOnlineUsers] = useState([]);
@@ -69,14 +68,9 @@ export default function MultiPlayerPage({ username }) {
     // ---PERFORM CHAT + MOVE---
     channel.bind("chess-update", (data) => {
       const { username, message, chessmove } = data;
-      setDataReceived((prevState) => [
-        ...prevState,
-        { username, message, chessmove },
-      ]);
 
-      const move = data.chessmove;
-      if (move) {
-        const newGame = new Chess(move);
+      if (chessmove) {
+        const newGame = new Chess(chessmove);
         setGame(newGame);
         setFen(newGame.fen());
       }
@@ -190,8 +184,7 @@ export default function MultiPlayerPage({ username }) {
     return true; // successful move
   }
 
-  console.log(dataReceived);
-  console.log("chatstorage", chatStorage);
+  console.log(onlineUsers);
 
   return (
     <BoardWrapper>
@@ -210,19 +203,12 @@ export default function MultiPlayerPage({ username }) {
           playerName={playerName}
           oppenentName={oppenentName}
         /> */}
-
-        {/* <form onSubmit={handleSubmit}>
-          <input type="text" name="myInput" />
-          <button type="submit">Submit Move</button>
-        </form> */}
       </>
       <>
         <p>
           Hello, <strong>{username}</strong>
         </p>
-        <div>
-          <StyledButton onClick={handleSignOut}>Sign out</StyledButton>
-        </div>
+
         <div>
           <strong> {onlineUsersCount} user(s) online now</strong>
         </div>
@@ -250,6 +236,10 @@ export default function MultiPlayerPage({ username }) {
             />
             <button type="submit">Send</button>
           </form>
+        </div>
+
+        <div>
+          <StyledButton onClick={handleSignOut}>Sign out</StyledButton>
         </div>
 
         <div>
