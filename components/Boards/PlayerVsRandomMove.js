@@ -1,6 +1,7 @@
 import { Chessboard } from "react-chessboard";
 import Chess from "chess.js";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import MoveInfo from "../MoveInfo";
 import PlayerNameDisplay from "../PlayerNameDisplay";
 import GameTerminal from "../GameTerminal";
@@ -141,9 +142,14 @@ export default function RandomMoveEngine({ username }) {
       )}
       <PlayerNameDisplay playerName={username} oppenentName={oppenentName} />
       {!showReplayBoard && moveStatus.gameOver && (
-        <StyledButton onClick={handleShowReplayBoard}>
-          Show Game Replay?
-        </StyledButton>
+        <>
+          <StyledButton onClick={handleShowReplayBoard}>
+            Game Replay
+          </StyledButton>
+          <Link href="/prelobby">
+            <StyledButton type="text">Main Menu</StyledButton>
+          </Link>
+        </>
       )}
       {showReplayBoard && (
         <>
@@ -152,6 +158,11 @@ export default function RandomMoveEngine({ username }) {
               Previous Move
             </StyledButton>
             <StyledButton onClick={handleNextClick}>Next Move</StyledButton>
+          </div>
+          <div>
+            <Link href="/prelobby">
+              <StyledButton type="text">Main Menu</StyledButton>
+            </Link>
           </div>
           <small>Date: {new Date().toLocaleString()}</small>
         </>
