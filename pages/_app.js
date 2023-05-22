@@ -7,6 +7,12 @@ export default function App({ Component, pageProps }) {
 
   const router = useRouter();
 
+  const handleChange = (event) => {
+    const { value } = event.target;
+    const filteredValue = value.replace(/[^a-zA-Z0-9]/g, "");
+    setUsername(filteredValue);
+  };
+
   const handleLogin = (event) => {
     event.preventDefault();
     router.push("/prelobby");
@@ -16,7 +22,7 @@ export default function App({ Component, pageProps }) {
     <>
       <GlobalStyle />
       <Component
-        handleLoginChange={(event) => setUsername(event.target.value)}
+        handleLoginChange={handleChange}
         username={username}
         handleLogin={handleLogin}
         {...pageProps}

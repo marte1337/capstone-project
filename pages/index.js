@@ -1,7 +1,8 @@
 // import Link from "next/link";
 import styled from "styled-components";
+import Image from "next/image";
 
-export default function HomePage({ handleLogin, handleLoginChange }) {
+export default function HomePage({ handleLogin, handleLoginChange, username }) {
   return (
     <>
       <h2>
@@ -13,17 +14,23 @@ export default function HomePage({ handleLogin, handleLoginChange }) {
       <h2>
         TOTALLY <i>ZOMBIFIED</i> CHESS
       </h2>
+      <StyledImage
+        src="/landing-image2.jpg"
+        alt="zombies on a chessboard"
+        width={300}
+        height={300}
+      />
       <StyledSection>
         <form onSubmit={handleLogin}>
           <h3>CHOOSE YOUR PLAYERNAME:</h3>
           <div>
-            <input
+            <StyledInput
               type="text"
               onChange={handleLoginChange}
-              placeholder="playername..."
+              placeholder="Type here..."
               required
             />
-            <button type="submit">Enter Lobby</button>
+            <StyledButton type="submit">Enter Game</StyledButton>
           </div>
         </form>
       </StyledSection>
@@ -32,7 +39,7 @@ export default function HomePage({ handleLogin, handleLoginChange }) {
 }
 
 const StyledSection = styled.section`
-  margin: 5rem 0;
+  margin: 2rem 0;
 `;
 
 const StyledButton = styled.button`
@@ -44,42 +51,21 @@ const StyledButton = styled.button`
   border: solid black 0.2rem;
   border-radius: 5px;
   margin-top: 0.5rem;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.5rem;
 `;
 
-// import Link from "next/link";
-// import styled from "styled-components";
+const StyledInput = styled.input`
+  color: black;
+  background-color: beige;
+  border: solid black 0.1rem;
+  border-radius: 5px;
+  padding: 0.5rem 0.5rem;
+  margin: 0.5rem;
+`;
 
-// export default function HomePage() {
-//   return (
-//     <>
-//       <h2>
-//         TOTALLY <i>ZOMBIFIED</i> CHESS
-//       </h2>
-//       <h2>
-//         TOTALLY <i>ZOMBIFIED</i> CHESS
-//       </h2>
-//       <h2>
-//         TOTALLY <i>ZOMBIFIED</i> CHESS
-//       </h2>
-//       <StyledSection>
-//         <h3>CHOOSE YOUR BOARD:</h3>
-//         <div>
-//           <Link href="/tutorials">
-//             <StyledButton type="text">Tutorials</StyledButton>
-//           </Link>
-//         </div>
-//         <div>
-//           <Link href="/singleplayer">
-//             <StyledButton type="text">Player VS RandomMoveMachine</StyledButton>
-//           </Link>
-//         </div>
-//         <div>
-//           <Link href="/prelobby">
-//             <StyledButton type="text">Enter Game Lobby</StyledButton>
-//           </Link>
-//         </div>
-//       </StyledSection>
-//     </>
-//   );
-// }
+const StyledImage = styled(Image)`
+  border: solid black 0.3rem;
+  border-radius: 5px;
+  box-shadow: 0 2px 6px 2px rgba(0, 0, 0, 0.5);
+  margin-top: 0.8rem;
+`;

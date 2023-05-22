@@ -316,3 +316,10 @@ const StyledChat = styled.section`
     letter-spacing: 5px;
   }
 `;
+
+// lobby: create board -  create uuid for routing to multiplayerboard per dyn slug
+// BONUS: send created url to chat on create board (form with dedicated handlesubmit + special chatmessage with link and onclickhandler to delete onclick)
+
+// multiplayer: fetch slug per userouter + add slug to channel-description ("presence-board-slug") + when POST, send slug with every message to api/pusher/presence-board
+
+// api/pusher/presence-board: trigger dedicated channel with slug-info from message like `await pusher.trigger("presence-board-{slug}", "chess-update", ...`
