@@ -88,31 +88,31 @@ export default function Lobby({ username }) {
         <div>
           <StyledButton onClick={handleSignOut}>Sign out</StyledButton>
         </div>
-        <div>
-          <strong> {onlineUsersCount} user(s) online now</strong>
-        </div>
-        {/* show online users */}
-        {onlineUsers.map((user, id) => (
-          <div key={id}>
-            <small>
-              {" "}
-              <span>{user.username}</span> joined the chat!
-            </small>
-          </div>
-        ))}
-        <div>
-          {/* show users leaving the chat */}
-          {usersRemoved.map((user, id) => (
-            <div key={id}>
-              <small>
-                {" "}
-                <span>{user}</span> left the chat.
-              </small>
-            </div>
-          ))}
-        </div>
         <StyledChat>
           <h2>GAMELOBBY</h2>
+          <div>
+            <strong> {onlineUsersCount} user(s) online now</strong>
+          </div>
+          <div>
+            {/* show online users */}
+            {onlineUsers.map((user, id) => (
+              <div key={id}>
+                <small>
+                  {" "}
+                  <span>{user.username}</span> joined the chat!
+                </small>
+              </div>
+            ))}
+            {/* show users leaving the chat */}
+            {usersRemoved.map((user, id) => (
+              <div key={id}>
+                <small>
+                  {" "}
+                  <span>{user}</span> left the chat.
+                </small>
+              </div>
+            ))}
+          </div>
 
           <div>
             {chats.map((chat, id) => (
