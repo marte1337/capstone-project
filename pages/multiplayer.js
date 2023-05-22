@@ -118,8 +118,7 @@ export default function MultiPlayerPage({ username }) {
 
   const latestMoveHistory = moveHistory[moveHistory.length - 1];
 
-  //temporarily static player-names
-  // const playerName = "Player One";
+  //temporarily static player-names;
   const oppenentName = "Player Two";
 
   // // ---CREATE GAME OBJECT---
@@ -327,3 +326,5 @@ const StyledChat = styled.section`
 // multiplayer: fetch slug per userouter + add slug to channel-description ("presence-board-slug") + when POST, send slug with every message to api/pusher/presence-board
 
 // api/pusher/presence-board: trigger dedicated channel with slug-info from message like `await pusher.trigger("presence-board-{slug}", "chess-update", ...`
+
+// Also check if states for chessmove, fen, history are imperative + maybe create seperate handleMoveSubmit(move, fen, history) without preventdefault etc, for better playability
