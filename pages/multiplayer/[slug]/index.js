@@ -38,7 +38,7 @@ export default function MultiPlayerPage({ username }) {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [usersRemoved, setUsersRemoved] = useState([]);
 
-  const { id } = router.query;
+  const { slug } = router.query;
 
   useEffect(() => {
     pusher = new Pusher("2fd14399437ec77964ee", {
@@ -49,7 +49,7 @@ export default function MultiPlayerPage({ username }) {
     });
 
     // Subscribe to "presence-channel" (relying on user authorization)
-    const channel = pusher.subscribe("presence-board");
+    const channel = pusher.subscribe(`presence-board-${slug}`);
 
     // count: when a new member successfully subscribes to the channel
     channel.bind("pusher:subscription_succeeded", (members) => {
@@ -72,7 +72,7 @@ export default function MultiPlayerPage({ username }) {
     });
 
     // ---PERFORM CHAT + MOVE---
-    channel.bind("chess-update", (data) => {
+    channel.bind(`chess-update-${slug}`, (data) => {
       const { username, message, chessmove, history } = data;
       // console.log(history);
       if (chessmove) {
@@ -94,11 +94,11 @@ export default function MultiPlayerPage({ username }) {
     });
 
     // when closing channel: unsubscribe user
-    return () => pusher.unsubscribe("presence-board");
-  }, [username]);
+    return () => pusher.unsubscribe(`presence-board-${slug}`);
+  }, [slug]);
 
   const handleSignOut = () => {
-    pusher?.unsubscribe("presence-board");
+    pusher?.unsubscribe(`presence-board-${slug}`);
     router.push("/");
   };
 
@@ -110,13 +110,14 @@ export default function MultiPlayerPage({ username }) {
       history: historyToSend,
       message: messageToSend,
       username,
+      slug,
     });
     setMessageToSend("");
     setHistoryToSend(undefined);
   };
   // // :::::PUSHER-END:::::
-  console.log("moveHistory: ", moveHistory);
-  console.log("historyStorage: ", historyStorage);
+  //   console.log("moveHistory: ", moveHistory);
+  //   console.log("historyStorage: ", historyStorage);
 
   const latestMoveHistory = moveHistory[moveHistory.length - 1];
 
@@ -233,14 +234,14 @@ export default function MultiPlayerPage({ username }) {
       </>
       <>
         <StyledChat>
-          Boad-id: {id}
+          Boad-ID: {slug}
           <h2>GAMECHAT</h2>
           <div>
             <strong> {onlineUsersCount} user(s) online now</strong>
           </div>
           <div>
-            {chatStorage.map((data, id) => (
-              <div key={id}>
+            {chatStorage.map((data, index) => (
+              <div key={index}>
                 <p>
                   <small>{data.username}:</small> {data.message}
                 </p>
@@ -264,8 +265,8 @@ export default function MultiPlayerPage({ username }) {
           </div>
           <div>
             {/* show online users */}
-            {onlineUsers.map((user, id) => (
-              <div key={id}>
+            {onlineUsers.map((user, index) => (
+              <div key={index}>
                 <small>
                   {" "}
                   <span>{user.username}</span> joined the chat!
@@ -273,8 +274,8 @@ export default function MultiPlayerPage({ username }) {
               </div>
             ))}
             {/* show users leaving the chat */}
-            {usersRemoved.map((user, id) => (
-              <div key={id}>
+            {usersRemoved.map((user, index) => (
+              <div key={index}>
                 <small>
                   {" "}
                   <span>{user}</span> left the chat.
