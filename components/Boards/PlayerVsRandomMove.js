@@ -6,7 +6,7 @@ import PlayerNameDisplay from "../PlayerNameDisplay";
 import GameTerminal from "../GameTerminal";
 import styled from "styled-components";
 
-export default function RandomMoveEngine() {
+export default function RandomMoveEngine({ username }) {
   const [game, setGame] = useState(null);
   const [moveStatus, setMoveStatus] = useState({});
   const [moveHistory, setMoveHistory] = useState([]);
@@ -18,8 +18,6 @@ export default function RandomMoveEngine() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const latestMoveHistory = moveHistory[moveHistory.length - 1];
 
-  //temporarily static player-names
-  const playerName = "Player One";
   const oppenentName = "RandomMoveMachine";
 
   // // ---CREATE GAME OBJECT---
@@ -141,7 +139,7 @@ export default function RandomMoveEngine() {
       {!moveStatus.gameOver && (
         <MoveInfo moveData={latestMoveHistory} moveStatus={moveStatus} />
       )}
-      <PlayerNameDisplay playerName={playerName} oppenentName={oppenentName} />
+      <PlayerNameDisplay playerName={username} oppenentName={oppenentName} />
       {!showReplayBoard && moveStatus.gameOver && (
         <StyledButton onClick={handleShowReplayBoard}>
           Show Game Replay?

@@ -1,6 +1,7 @@
 import { Chessboard } from "react-chessboard";
 import Chess from "chess.js";
 import { useState, useEffect, use } from "react";
+import Link from "next/link";
 import styled from "styled-components";
 import MoveInfo from "../MoveInfo";
 import GameTerminal from "../GameTerminal";
@@ -156,6 +157,9 @@ export default function RandomMoveEngine() {
         <StyledButton onClick={handleNextClick}>
           Play Next Tutorial
         </StyledButton>
+        <Link href="/prelobby">
+          <StyledButton type="text">Main Menu</StyledButton>
+        </Link>
       </div>
     </>
   );
