@@ -133,7 +133,7 @@ export default function Lobby({ username }) {
           </div>
         </StyledChat>
       </div>
-      <Link href="/multiplayer/">
+      <Link href={`/multiplayer/${username}`}>
         <StyledButton type="text">Go to Chess-Board</StyledButton>
       </Link>
     </>
