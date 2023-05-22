@@ -53,9 +53,9 @@ const StyledButton = styled.button`
 `;
 
 const glowAnimation = keyframes`
-  0% { text-shadow: 0 0 7px rgba(253, 2, 219, 0.8); }
-  50% { text-shadow: 0 0 30px rgba(187, 255, 208, 0.9); }
-  100% { text-shadow: 0 0 7px rgba(253, 2, 219, 0.8); }
+  0% { text-shadow: 0 0 5px rgb(187, 255, 208); }
+  50% { text-shadow: 1px 2px 30px rgba(250, 254, 255, 1); }
+  100% { text-shadow: 0 0 5px rgb(187, 255, 208); }
 `;
 
 const StyledPlayerName = styled.h2`
