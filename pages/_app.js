@@ -1,15 +1,15 @@
 import GlobalStyle from "../styles";
-import { useState } from "react";
 import { useRouter } from "next/router";
+import useLocalStorageState from "use-local-storage-state";
 
 export default function App({ Component, pageProps }) {
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useLocalStorageState("username");
 
   const router = useRouter();
 
   const handleLogin = (event) => {
     event.preventDefault();
-    router.push("/lobby");
+    router.push("/prelobby");
   };
 
   return (
