@@ -1,5 +1,5 @@
 import Link from "next/link";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 
 export default function MainMenu({ username }) {
   return (
@@ -13,6 +13,7 @@ export default function MainMenu({ username }) {
       <h2>
         TOTALLY <i>ZOMBIFIED</i> CHESS
       </h2>
+      <StyledPlayerName>{username}</StyledPlayerName>
       <StyledSection>
         <h3>CHOOSE YOUR BOARD:</h3>
         <div>
@@ -51,21 +52,19 @@ const StyledButton = styled.button`
   padding: 0.5rem 1rem;
 `;
 
-// export default function PreGameLobby({ handleLogin, handleLoginChange }) {
-//   return (
-//     <>
-//       <form onSubmit={handleLogin}>
-//         <p>Choose your Playername:</p>
-//         <div>
-//           <input
-//             type="text"
-//             onChange={handleLoginChange}
-//             placeholder="playername..."
-//             required
-//           />
-//           <button type="submit">Enter Lobby</button>
-//         </div>
-//       </form>
-//     </>
-//   );
-// }
+const glowAnimation = keyframes`
+  0% { text-shadow: 0 0 7px rgba(253, 2, 219, 0.8); }
+  50% { text-shadow: 0 0 30px rgba(187, 255, 208, 0.9); }
+  100% { text-shadow: 0 0 7px rgba(253, 2, 219, 0.8); }
+`;
+
+const StyledPlayerName = styled.h2`
+  border-radius: 25px;
+  background-color: black;
+  margin: 4rem 3.5rem;
+  padding: 1rem;
+  text-align: center;
+  font-size: 2rem;
+  color: #ffffff;
+  animation: ${glowAnimation} 3s linear infinite;
+`;
