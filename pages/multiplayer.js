@@ -308,12 +308,16 @@ const StyledChat = styled.section`
   color: white;
   border-radius: 5px;
   padding: 10px 1rem;
-  margin-top: 10px;
+  margin: 5px 10px;
   h2 {
     margin: 0;
     font-weight: 900;
     font-size: x-large;
     letter-spacing: 5px;
+  }
+  h4 {
+    font-weight: 600;
+    margin: 0.6rem;
   }
 `;
 
