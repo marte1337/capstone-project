@@ -78,6 +78,9 @@ export default function Lobby({ username }) {
 
   return (
     <>
+      <h2>
+        TOTALLY <i>ZOMBIFIED</i> CHAT
+      </h2>
       <div>
         <p>
           Hello, <strong>{username}</strong>
@@ -108,30 +111,31 @@ export default function Lobby({ username }) {
             </div>
           ))}
         </div>
+        <StyledChat>
+          <h2>GAMELOBBY</h2>
 
-        <h2>Chat</h2>
+          <div>
+            {chats.map((chat, id) => (
+              <div key={id}>
+                <p>
+                  <small>{chat.username}:</small> {chat.message}
+                </p>
+              </div>
+            ))}
+          </div>
 
-        <div>
-          {chats.map((chat, id) => (
-            <div key={id}>
-              <p>
-                <small>{chat.username}:</small> {chat.message}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        <div>
-          <form onSubmit={handleSubmit}>
-            <input
-              type="text"
-              value={messageToSend}
-              onChange={(event) => setMessageToSend(event.target.value)}
-              placeholder="start typing...."
-            />
-            <button type="submit">Send</button>
-          </form>
-        </div>
+          <div>
+            <form onSubmit={handleSubmit}>
+              <input
+                type="text"
+                value={messageToSend}
+                onChange={(event) => setMessageToSend(event.target.value)}
+                placeholder="start typing...."
+              />
+              <button type="submit">Send</button>
+            </form>
+          </div>
+        </StyledChat>
       </div>
       <Link href="/multiplayer">
         <StyledButton type="text">Go to Chess-Board</StyledButton>
@@ -142,7 +146,6 @@ export default function Lobby({ username }) {
 
 const StyledButton = styled.button`
   text-align: center;
-
   font-weight: bold;
   color: black;
   background-color: beige;
@@ -151,4 +154,19 @@ const StyledButton = styled.button`
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
   padding: 0.5rem 1rem;
+`;
+
+const StyledChat = styled.section`
+  text-align: center;
+  background-color: black;
+  color: white;
+  border-radius: 5px;
+  padding: 10px 1rem;
+  margin-top: 10px;
+  h2 {
+    margin: 0;
+    font-weight: 900;
+    font-size: x-large;
+    letter-spacing: 5px;
+  }
 `;
