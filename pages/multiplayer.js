@@ -119,7 +119,7 @@ export default function MultiPlayerPage({ username }) {
   const latestMoveHistory = moveHistory[moveHistory.length - 1];
 
   //temporarily static player-names
-  const playerName = "Player One";
+  // const playerName = "Player One";
   const oppenentName = "Player Two";
 
   // // ---CREATE GAME OBJECT---
@@ -225,24 +225,17 @@ export default function MultiPlayerPage({ username }) {
         ) : (
           <p>Make a move...</p>
         )}
-        {/* <PlayerNameDisplay
-          playerName={playerName}
-          oppenentName={oppenentName}
-        /> */}
+        <PlayerNameDisplay playerName={username} oppenentName={oppenentName} />
         <StyledButton onClick={handleOrientationToggle}>
           Switch View: {boardOrientation === "white" ? "Black" : "White"}
         </StyledButton>
       </>
       <>
-        <p>
-          Hello, <strong>{username}</strong>
-        </p>
-
-        <div>
-          <strong> {onlineUsersCount} user(s) online now</strong>
-        </div>
         <StyledChat>
           <h2>GAMECHAT</h2>
+          <div>
+            <strong> {onlineUsersCount} user(s) online now</strong>
+          </div>
 
           <div>
             {chatStorage.map((data, id) => (
