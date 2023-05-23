@@ -127,13 +127,13 @@ export default function Lobby({ username }) {
 
           <div>
             <form onSubmit={handleSubmit}>
-              <input
+              <StyledInput
                 type="text"
                 value={messageToSend}
                 onChange={(event) => setMessageToSend(event.target.value)}
                 placeholder="start typing...."
               />
-              <button type="submit">Send</button>
+              <StyledButton type="submit">Send</StyledButton>
             </form>
           </div>
         </StyledChat>
@@ -161,7 +161,7 @@ const StyledButton = styled.button`
   background-color: beige;
   border: solid black 0.2rem;
   border-radius: 5px;
-  margin: 0.5rem;
+  margin: 0.2rem;
   padding: 0.5rem 1rem;
 `;
 
@@ -185,9 +185,11 @@ const StyledChat = styled.section`
 `;
 
 const StyledMessage = styled.div`
-  background-color: grey;
+  background-color: white;
+  color: black;
   border-radius: 5px;
-  margin: 5px 15px;
+  margin: 5px 3rem;
+  padding: 3px 0;
 `;
 
 const StyledInput = styled.input`
@@ -196,5 +198,5 @@ const StyledInput = styled.input`
   border: solid black 0.1rem;
   border-radius: 5px;
   padding: 0.5rem 0.5rem;
-  margin: 0.5rem;
+  margin: 0.1rem;
 `;

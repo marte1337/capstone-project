@@ -210,23 +210,21 @@ export default function MultiPlayerPage({ username }) {
               <h2>GAMECHAT</h2>
               <div>
                 {chatStorage.map((data, index) => (
-                  <div key={index}>
-                    <p>
-                      <small>{data.username}:</small> {data.message}
-                    </p>
-                  </div>
+                  <StyledMessage key={index}>
+                    <small>{data.username}:</small> {data.message}
+                  </StyledMessage>
                 ))}
               </div>
               <div>
                 <form onSubmit={handleSubmit}>
-                  <input
+                  <StyledInput
                     name="chatInput"
                     type="text"
                     value={messageToSend}
                     onChange={(event) => setMessageToSend(event.target.value)}
                     placeholder="start typing...."
                   />
-                  <button type="submit">Send</button>
+                  <StyledButton type="submit">Send</StyledButton>
                 </form>
               </div>
 
@@ -291,4 +289,21 @@ const StyledChat = styled.section`
     font-weight: 600;
     margin: 0.6rem;
   }
+`;
+
+const StyledMessage = styled.div`
+  background-color: white;
+  color: black;
+  border-radius: 5px;
+  margin: 5px 3rem;
+  padding: 3px 0;
+`;
+
+const StyledInput = styled.input`
+  color: black;
+  background-color: beige;
+  border: solid black 0.1rem;
+  border-radius: 5px;
+  padding: 0.5rem 0.5rem;
+  margin: 0.1rem;
 `;
