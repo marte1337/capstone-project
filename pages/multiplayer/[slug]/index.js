@@ -1,44 +1,35 @@
+import Pusher from "pusher-js";
+import axios from "axios";
 import { Chessboard } from "react-chessboard";
 import Chess from "chess.js";
+import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import MoveInfo from "@/components//MoveInfo";
+import styled from "styled-components";
+import MoveInfoMultiplayer from "@/components//MoveInfoMultiplayer";
 import PlayerNameDisplay from "@/components/PlayerNameDisplay";
 import GameTerminal from "@/components/GameTerminal";
 import BoardWrapper from "@/components/BoardWrapper";
-import styled from "styled-components";
-
-import { useRouter } from "next/router";
-import Pusher from "pusher-js";
-import axios from "axios";
 
 //prevents undefined
 let pusher = null;
 
 export default function MultiPlayerPage({ username }) {
-  // // ____PlayerVsPlayer______
   const [game, setGame] = useState(null);
   const [moveStatus, setMoveStatus] = useState({});
-  const [moveHistory, setMoveHistory] = useState([]);
   const [fen, setFen] = useState(
     "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
   );
   const [fenHistory, setFenHistory] = useState([]);
   const [boardOrientation, setBoardOrientation] = useState("white");
   const [showChat, setShowChat] = useState(true);
-
-  // // ____PlayerVsPlayer______
-
-  // // :::::PUSHER:::::
   const [messageToSend, setMessageToSend] = useState("");
   const [chatStorage, setChatStorage] = useState([]);
-  const [historyStorage, setHistoryStorage] = useState([]);
   const [onlineUsersCount, setOnlineUsersCount] = useState(0);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [usersRemoved, setUsersRemoved] = useState([]);
 
   const router = useRouter();
   const { slug } = router.query;
-
   const [oppenentName, setOpponentName] = useState(slug);
 
   useEffect(() => {
@@ -86,17 +77,11 @@ export default function MultiPlayerPage({ username }) {
       if (message.length > 1) {
         setChatStorage((prevState) => [...prevState, { username, message }]);
       }
-      if (chessmove !== historyStorage[historyStorage.length - 1]) {
-        setHistoryStorage((prevState) => [...prevState, chessmove]);
-      }
     });
 
     // when closing channel: unsubscribe user
     return () => pusher.unsubscribe(`presence-board-${slug}`);
   }, [slug]);
-
-  console.log("online: ", historyStorage);
-  console.log("local: ", fenHistory);
 
   const handleSignOut = () => {
     pusher?.unsubscribe(`presence-board-${slug}`);
@@ -114,20 +99,12 @@ export default function MultiPlayerPage({ username }) {
     });
     setMessageToSend("");
   };
-
   // // :::::PUSHER-END:::::
 
   // // ---CREATE GAME OBJECT---
   useEffect(() => {
     setGame(new Chess());
   }, []);
-
-  // // ---CREATE SEPERATE MOVE/FEN HISTORY TO BYPASS GAME RESETS---
-  // function localHistoryStorage(latestResult) {
-  //   if (latestResult !== null) {
-  //     setMoveHistory([...moveHistory, latestResult]);
-  //   }
-  // }
 
   //Without useEffect,fenHistory only updates one before last
   useEffect(() => {
@@ -141,7 +118,6 @@ export default function MultiPlayerPage({ username }) {
       isStalemate: game?.in_stalemate(),
       gameOver: game?.game_over(),
     });
-
     //:::PUSHER:::
     handleSubmit();
   }, [fen]);
@@ -212,10 +188,11 @@ export default function MultiPlayerPage({ username }) {
           />
         )}
         {moveStatus.gameOver && <GameTerminal moveStatus={moveStatus} />}
-        {historyStorage ? (
-          <MoveInfo moveData={historyStorage} moveStatus={moveStatus} />
-        ) : (
-          <p>Make a move...</p>
+        {fenHistory && (
+          <MoveInfoMultiplayer
+            moveData={fenHistory[fenHistory.length - 1]}
+            moveStatus={moveStatus}
+          />
         )}
         <PlayerNameDisplay playerName={username} oppenentName={oppenentName} />
         <StyledButton onClick={handleOrientationToggle}>
@@ -315,12 +292,3 @@ const StyledChat = styled.section`
     margin: 0.6rem;
   }
 `;
-
-// lobby: create board -  create uuid for routing to multiplayerboard per dyn slug
-// BONUS: send created url to chat on create board (form with dedicated handlesubmit + special chatmessage with link and onclickhandler to delete onclick)
-
-// multiplayer: fetch slug per userouter + add slug to channel-description ("presence-board-slug") + when POST, send slug with every message to api/pusher/presence-board
-
-// api/pusher/presence-board: trigger dedicated channel with slug-info from message like `await pusher.trigger("presence-board-{slug}", "chess-update", ...`
-
-// Also check if states for chessmove, fen, history are imperative + maybe create seperate handleMoveSubmit(move, fen, history) without preventdefault etc, for better playability

@@ -119,11 +119,9 @@ export default function Lobby({ username }) {
 
           <div>
             {chats.map((chat, id) => (
-              <div key={id}>
-                <p>
-                  <small>{chat.username}:</small> {chat.message}
-                </p>
-              </div>
+              <StyledMessage key={id}>
+                <small>{chat.username}:</small> {chat.message}
+              </StyledMessage>
             ))}
           </div>
 
@@ -184,6 +182,12 @@ const StyledChat = styled.section`
     font-weight: 600;
     margin: 0.6rem;
   }
+`;
+
+const StyledMessage = styled.div`
+  background-color: grey;
+  border-radius: 5px;
+  margin: 5px 15px;
 `;
 
 const StyledInput = styled.input`
