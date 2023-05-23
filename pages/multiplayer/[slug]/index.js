@@ -4,6 +4,7 @@ import { Chessboard } from "react-chessboard";
 import Chess from "chess.js";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import styled from "styled-components";
 import MoveInfoMultiplayer from "@/components//MoveInfoMultiplayer";
 import PlayerNameDisplay from "@/components/PlayerNameDisplay";
@@ -21,6 +22,9 @@ export default function MultiPlayerPage({ username }) {
   );
   const [fenHistory, setFenHistory] = useState([]);
   const [boardOrientation, setBoardOrientation] = useState("white");
+  const [showReplayBoard, setShowReplayBoard] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
   const [showChat, setShowChat] = useState(true);
   const [messageToSend, setMessageToSend] = useState("");
   const [chatStorage, setChatStorage] = useState([]);
@@ -174,27 +178,78 @@ export default function MultiPlayerPage({ username }) {
     setShowChat(!showChat);
   };
 
+  const handleShowReplayBoard = () => {
+    setShowReplayBoard(true);
+  };
+  const handleNextClick = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % fenHistory.length);
+  };
+  const handlePreviousClick = () => {
+    setCurrentIndex(
+      (prevIndex) => (prevIndex - 1 + fenHistory.length) % fenHistory.length
+    );
+  };
+
   return (
     <BoardWrapper>
       <>
         <h2>
           TOTALLY <i>ZOMBIFIED</i> CHESS
         </h2>
-        {game && (
+        {game && !showReplayBoard && (
           <Chessboard
             position={fen}
             onPieceDrop={onDrop}
             boardOrientation={boardOrientation}
+            id={"PlayBoard"}
           />
         )}
-        {moveStatus.gameOver && <GameTerminal moveStatus={moveStatus} />}
-        {fenHistory && (
+        {showReplayBoard && (
+          <>
+            <h3>GAME REPLAY</h3>
+            <Chessboard
+              position={fenHistory[currentIndex]}
+              boardOrientation={boardOrientation}
+              id={"ReplayBoard"}
+            />
+          </>
+        )}
+        {moveStatus.gameOver && !showReplayBoard && (
+          <GameTerminal moveStatus={moveStatus} />
+        )}
+
+        {!moveStatus.gameOver && (
           <MoveInfoMultiplayer
             moveData={fenHistory[fenHistory.length - 1]}
             moveStatus={moveStatus}
           />
         )}
         <PlayerNameDisplay playerName={username} oppenentName={oppenentName} />
+
+        {!showReplayBoard && moveStatus.gameOver && (
+          <>
+            <StyledButton onClick={handleShowReplayBoard}>
+              Game Replay
+            </StyledButton>
+            <Link href="/prelobby">
+              <StyledButton type="text">Main Menu</StyledButton>
+            </Link>
+          </>
+        )}
+        {showReplayBoard && (
+          <>
+            <div>
+              <StyledButton onClick={handlePreviousClick}>
+                Previous Move
+              </StyledButton>
+              <StyledButton onClick={handleNextClick}>Next Move</StyledButton>
+            </div>
+            <div>
+              <small>Date: {new Date().toLocaleString()}</small>
+            </div>
+          </>
+        )}
+
         <StyledButton onClick={handleOrientationToggle}>
           Switch View: {boardOrientation === "white" ? "Black" : "White"}
         </StyledButton>
