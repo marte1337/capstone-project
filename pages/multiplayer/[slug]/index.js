@@ -112,8 +112,10 @@ export default function MultiPlayerPage({ username }) {
   const handleSubmit = async (event) => {
     event?.preventDefault();
     await axios.post("../api/pusher/presence-board", {
-      chessmove: moveToSend,
-      history: historyToSend,
+      chessmove: fen,
+      history: moveHistory[moveHistory.length - 1],
+      // chessmove: moveToSend,
+      // history: historyToSend,
       message: messageToSend,
       username,
       slug,
@@ -128,8 +130,8 @@ export default function MultiPlayerPage({ username }) {
     setGame(new Chess());
   }, []);
 
-  //   console.log("moveHistory: ", moveHistory);
-  //   console.log("historyStorage: ", historyStorage);
+  console.log("moveHistory: ", moveHistory);
+  console.log("historyStorage: ", historyStorage);
   // const latestMoveHistory = moveHistory[moveHistory.length - 1];
 
   // // ---CREATE SEPERATE MOVE/FEN HISTORY TO BYPASS GAME RESETS---
@@ -142,14 +144,15 @@ export default function MultiPlayerPage({ username }) {
   useEffect(() => {
     setFenHistory([...fenHistory, fen]);
     //:::SETMOVE FOR PUSHER:::
-    setMoveToSend(fen);
-    setHistoryToSend(moveHistory[moveHistory.length - 1]);
+    // setMoveToSend(fen);
+    // setHistoryToSend(moveHistory[moveHistory.length - 1]);
+    handleSubmit();
   }, [fen]);
 
   //:::SUBMIT MOVE TO PUSHER (need own useEffect to update correctly):::
-  useEffect(() => {
-    handleSubmit();
-  }, [moveToSend]);
+  // useEffect(() => {
+  //   handleSubmit();
+  // }, [moveToSend]);
 
   // ---ZOMBIE FUNCTION => RESPAWN ZOMBIE => RESET GAME OBJECT WITH .fen()---
   function zombieMove(latestResult, game) {
@@ -214,15 +217,6 @@ export default function MultiPlayerPage({ username }) {
   const handleShowChatToggle = () => {
     setShowChat(!showChat);
   };
-
-  console.log("onlineUsers: ", onlineUsers);
-  console.log("onlineUsers.username: ", onlineUsers[0]?.username);
-
-  // if (onlineUsers > 1) {
-  //   setOpponentName(onlineUsers[0].username);
-  // }
-
-  console.log(oppenentName);
 
   return (
     <BoardWrapper>
