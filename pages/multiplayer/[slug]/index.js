@@ -75,8 +75,8 @@ export default function MultiPlayerPage({ username }) {
 
     // ---PERFORM CHAT + MOVE---
     channel.bind(`chess-update-${slug}`, (data) => {
-      const { username, message, chessmove, history } = data;
-      // console.log(history);
+      const { username, message, chessmove } = data;
+      console.log("Received data: ", data);
       if (chessmove) {
         const newGame = new Chess(chessmove);
         setGame(newGame);
@@ -86,11 +86,10 @@ export default function MultiPlayerPage({ username }) {
       if (message.length > 1) {
         setChatStorage((prevState) => [...prevState, { username, message }]);
       }
+      console.log(chessmove);
 
-      if (history) {
-        // if (history?.color !== historyStorage[historyStorage.length - 1]?.color) {
-        setHistoryStorage((prevState) => [...prevState, history]);
-        // setHistoryStorage(history);
+      if (chessmove !== historyStorage[historyStorage.length - 1]) {
+        setHistoryStorage((prevState) => [...prevState, chessmove]);
       }
     });
 
@@ -98,9 +97,11 @@ export default function MultiPlayerPage({ username }) {
     return () => pusher.unsubscribe(`presence-board-${slug}`);
   }, [slug]);
 
+  console.log(historyStorage);
+
   const handleSignOut = () => {
     pusher?.unsubscribe(`presence-board-${slug}`);
-    router.push("/lobby/");
+    router.push("/lobby");
   };
 
   // post chat to api
@@ -108,22 +109,19 @@ export default function MultiPlayerPage({ username }) {
     event?.preventDefault();
     await axios.post("../api/pusher/presence-board", {
       chessmove: fen,
-      history: moveHistory[moveHistory.length - 1],
       message: messageToSend,
       username,
       slug,
     });
     setMessageToSend("");
   };
+
   // // :::::PUSHER-END:::::
 
   // // ---CREATE GAME OBJECT---
   useEffect(() => {
     setGame(new Chess());
   }, []);
-
-  console.log("moveHistory: ", moveHistory);
-  console.log("historyStorage: ", historyStorage);
 
   // // ---CREATE SEPERATE MOVE/FEN HISTORY TO BYPASS GAME RESETS---
   function localHistoryStorage(latestResult) {
@@ -231,10 +229,7 @@ export default function MultiPlayerPage({ username }) {
       </>
       <>
         <StyledChat>
-          Boad-ID: {slug}
-          <div>
-            <strong> {onlineUsersCount} user(s) online now</strong>
-          </div>
+          <div>{onlineUsersCount} user(s) online now</div>
           {showChat && (
             <section>
               <h2>GAMECHAT</h2>
@@ -259,16 +254,18 @@ export default function MultiPlayerPage({ username }) {
                   <button type="submit">Send</button>
                 </form>
               </div>
+
               <div>
                 <StyledButton onClick={handleSignOut}>Leave Board</StyledButton>
               </div>
+              <small>Boad-ID: {slug}</small>
               <div>
                 {/* show online users */}
                 {onlineUsers.map((user, index) => (
                   <div key={index}>
                     <small>
                       {" "}
-                      <span>{user.username}</span> joined the chat!
+                      <span>{user.username}</span> joined Game!
                     </small>
                   </div>
                 ))}
@@ -277,7 +274,7 @@ export default function MultiPlayerPage({ username }) {
                   <div key={index}>
                     <small>
                       {" "}
-                      <span>{user}</span> left the chat.
+                      <span>{user}</span> left Game.
                     </small>
                   </div>
                 ))}
