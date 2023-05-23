@@ -76,6 +76,13 @@ export default function Lobby({ username }) {
     setMessageToSend("");
   };
 
+  const handleJoinPlayer = (event) => {
+    event.preventDefault();
+    const hostName = event.target.elements[0].value;
+
+    router.push(`/multiplayer/${hostName}`);
+  };
+
   return (
     <>
       <h2>
@@ -133,9 +140,18 @@ export default function Lobby({ username }) {
           </div>
         </StyledChat>
       </div>
-      <Link href={`/multiplayer/${username}`}>
-        <StyledButton type="text">Go to Chess-Board</StyledButton>
-      </Link>
+      <div>
+        PLAYER ONE: <br />
+        <Link href={`/multiplayer/${username}`}>
+          <StyledButton type="text">Create Game</StyledButton>
+        </Link>
+        <br />
+        PLAYER TWO: <br />
+        <form onSubmit={handleJoinPlayer}>
+          <StyledInput type="text" placeholder="Player you want to join..." />
+          <StyledButton type="submit">Join Player</StyledButton>
+        </form>
+      </div>
     </>
   );
 }
@@ -168,4 +184,13 @@ const StyledChat = styled.section`
     font-weight: 600;
     margin: 0.6rem;
   }
+`;
+
+const StyledInput = styled.input`
+  color: black;
+  background-color: beige;
+  border: solid black 0.1rem;
+  border-radius: 5px;
+  padding: 0.5rem 0.5rem;
+  margin: 0.5rem;
 `;

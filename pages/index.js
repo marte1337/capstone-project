@@ -5,9 +5,9 @@ import Image from "next/image";
 export default function HomePage({ handleLogin, handleLoginChange, username }) {
   return (
     <>
-      <h2>
+      <StyledTitle>
         TOTALLY <i>ZOMBIFIED</i> CHESS
-      </h2>
+      </StyledTitle>
       <h2>
         TOTALLY <i>ZOMBIFIED</i> CHESS
       </h2>
@@ -40,6 +40,10 @@ export default function HomePage({ handleLogin, handleLoginChange, username }) {
 
 const StyledSection = styled.section`
   margin: 2rem 0;
+`;
+const StyledTitle = styled.h2`
+  margin-top: 0;
+  padding-top: 15px;
 `;
 
 const StyledButton = styled.button`
