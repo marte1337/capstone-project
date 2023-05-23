@@ -29,7 +29,6 @@ export default function MultiPlayerPage({ username }) {
   // // ____PlayerVsPlayer______
 
   // // :::::PUSHER:::::
-  const router = useRouter();
   const [messageToSend, setMessageToSend] = useState("");
   const [chatStorage, setChatStorage] = useState([]);
   const [moveToSend, setMoveToSend] = useState("");
@@ -39,7 +38,10 @@ export default function MultiPlayerPage({ username }) {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [usersRemoved, setUsersRemoved] = useState([]);
 
+  const router = useRouter();
   const { slug } = router.query;
+
+  const [oppenentName, setOpponentName] = useState(slug);
 
   useEffect(() => {
     pusher = new Pusher("2fd14399437ec77964ee", {
@@ -51,6 +53,8 @@ export default function MultiPlayerPage({ username }) {
 
     // Subscribe to "presence-channel" (relying on user authorization)
     const channel = pusher.subscribe(`presence-board-${slug}`);
+
+    console.log(channel);
 
     // count: when a new member successfully subscribes to the channel
     channel.bind("pusher:subscription_succeeded", (members) => {
@@ -64,6 +68,7 @@ export default function MultiPlayerPage({ username }) {
         ...prevState,
         { username: member.info.username },
       ]);
+      setOpponentName(member.info.username);
     });
 
     // update count: when a member leaves the chat
@@ -100,7 +105,7 @@ export default function MultiPlayerPage({ username }) {
 
   const handleSignOut = () => {
     pusher?.unsubscribe(`presence-board-${slug}`);
-    router.push("/");
+    router.push("/lobby/");
   };
 
   // post chat to api
@@ -117,18 +122,15 @@ export default function MultiPlayerPage({ username }) {
     setHistoryToSend(undefined);
   };
   // // :::::PUSHER-END:::::
-  //   console.log("moveHistory: ", moveHistory);
-  //   console.log("historyStorage: ", historyStorage);
-
-  const latestMoveHistory = moveHistory[moveHistory.length - 1];
-
-  //temporarily static player-names;
-  const oppenentName = "Player Two";
 
   // // ---CREATE GAME OBJECT---
   useEffect(() => {
     setGame(new Chess());
   }, []);
+
+  //   console.log("moveHistory: ", moveHistory);
+  //   console.log("historyStorage: ", historyStorage);
+  // const latestMoveHistory = moveHistory[moveHistory.length - 1];
 
   // // ---CREATE SEPERATE MOVE/FEN HISTORY TO BYPASS GAME RESETS---
   function localHistoryStorage(latestResult) {
@@ -213,6 +215,15 @@ export default function MultiPlayerPage({ username }) {
     setShowChat(!showChat);
   };
 
+  console.log("onlineUsers: ", onlineUsers);
+  console.log("onlineUsers.username: ", onlineUsers[0]?.username);
+
+  // if (onlineUsers > 1) {
+  //   setOpponentName(onlineUsers[0].username);
+  // }
+
+  console.log(oppenentName);
+
   return (
     <BoardWrapper>
       <>
@@ -271,7 +282,7 @@ export default function MultiPlayerPage({ username }) {
                 </form>
               </div>
               <div>
-                <StyledButton onClick={handleSignOut}>Sign out</StyledButton>
+                <StyledButton onClick={handleSignOut}>Leave Board</StyledButton>
               </div>
               <div>
                 {/* show online users */}
