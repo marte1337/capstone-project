@@ -76,7 +76,7 @@ export default function MultiPlayerPage({ username }) {
     // ---PERFORM CHAT + MOVE---
     channel.bind(`chess-update-${slug}`, (data) => {
       const { username, message, chessmove } = data;
-      console.log("Received data: ", data);
+
       if (chessmove) {
         const newGame = new Chess(chessmove);
         setGame(newGame);
@@ -86,8 +86,6 @@ export default function MultiPlayerPage({ username }) {
       if (message.length > 1) {
         setChatStorage((prevState) => [...prevState, { username, message }]);
       }
-      console.log(chessmove);
-
       if (chessmove !== historyStorage[historyStorage.length - 1]) {
         setHistoryStorage((prevState) => [...prevState, chessmove]);
       }
@@ -97,7 +95,8 @@ export default function MultiPlayerPage({ username }) {
     return () => pusher.unsubscribe(`presence-board-${slug}`);
   }, [slug]);
 
-  console.log(historyStorage);
+  console.log("online: ", historyStorage);
+  console.log("local: ", fenHistory);
 
   const handleSignOut = () => {
     pusher?.unsubscribe(`presence-board-${slug}`);
@@ -124,14 +123,25 @@ export default function MultiPlayerPage({ username }) {
   }, []);
 
   // // ---CREATE SEPERATE MOVE/FEN HISTORY TO BYPASS GAME RESETS---
-  function localHistoryStorage(latestResult) {
-    if (latestResult !== null) {
-      setMoveHistory([...moveHistory, latestResult]);
-    }
-  }
+  // function localHistoryStorage(latestResult) {
+  //   if (latestResult !== null) {
+  //     setMoveHistory([...moveHistory, latestResult]);
+  //   }
+  // }
+
   //Without useEffect,fenHistory only updates one before last
   useEffect(() => {
     setFenHistory([...fenHistory, fen]);
+    setMoveStatus({
+      moveNumber: fenHistory.length,
+      inCheck: game?.in_check(),
+      isCheckmate: game?.in_checkmate(),
+      isDraw: game?.in_draw(),
+      isThreefoldRep: game?.in_threefold_repetition(),
+      isStalemate: game?.in_stalemate(),
+      gameOver: game?.game_over(),
+    });
+
     //:::PUSHER:::
     handleSubmit();
   }, [fen]);
@@ -162,18 +172,6 @@ export default function MultiPlayerPage({ username }) {
     if (result?.flags === "c") {
       zombieMove(result, { ...game });
     }
-
-    // fetch move-history/game-data
-    localHistoryStorage(result);
-    setMoveStatus({
-      moveNumber: moveHistory.length + 1,
-      inCheck: game.in_check(),
-      isCheckmate: game.in_checkmate(),
-      isDraw: game.in_draw(),
-      isThreefoldRep: game.in_threefold_repetition(),
-      isStalemate: game.in_stalemate(),
-      gameOver: game.game_over(),
-    });
 
     return result; // null if the move was illegal, the move object if the move was legal
   }
