@@ -31,8 +31,6 @@ export default function MultiPlayerPage({ username }) {
   // // :::::PUSHER:::::
   const [messageToSend, setMessageToSend] = useState("");
   const [chatStorage, setChatStorage] = useState([]);
-  const [moveToSend, setMoveToSend] = useState("");
-  const [historyToSend, setHistoryToSend] = useState(undefined);
   const [historyStorage, setHistoryStorage] = useState([]);
   const [onlineUsersCount, setOnlineUsersCount] = useState(0);
   const [onlineUsers, setOnlineUsers] = useState([]);
@@ -53,8 +51,6 @@ export default function MultiPlayerPage({ username }) {
 
     // Subscribe to "presence-channel" (relying on user authorization)
     const channel = pusher.subscribe(`presence-board-${slug}`);
-
-    console.log(channel);
 
     // count: when a new member successfully subscribes to the channel
     channel.bind("pusher:subscription_succeeded", (members) => {
@@ -85,7 +81,6 @@ export default function MultiPlayerPage({ username }) {
         const newGame = new Chess(chessmove);
         setGame(newGame);
         setFen(newGame.fen());
-        setHistoryToSend(undefined);
       }
 
       if (message.length > 1) {
@@ -114,14 +109,11 @@ export default function MultiPlayerPage({ username }) {
     await axios.post("../api/pusher/presence-board", {
       chessmove: fen,
       history: moveHistory[moveHistory.length - 1],
-      // chessmove: moveToSend,
-      // history: historyToSend,
       message: messageToSend,
       username,
       slug,
     });
     setMessageToSend("");
-    setHistoryToSend(undefined);
   };
   // // :::::PUSHER-END:::::
 
@@ -132,7 +124,6 @@ export default function MultiPlayerPage({ username }) {
 
   console.log("moveHistory: ", moveHistory);
   console.log("historyStorage: ", historyStorage);
-  // const latestMoveHistory = moveHistory[moveHistory.length - 1];
 
   // // ---CREATE SEPERATE MOVE/FEN HISTORY TO BYPASS GAME RESETS---
   function localHistoryStorage(latestResult) {
@@ -143,16 +134,9 @@ export default function MultiPlayerPage({ username }) {
   //Without useEffect,fenHistory only updates one before last
   useEffect(() => {
     setFenHistory([...fenHistory, fen]);
-    //:::SETMOVE FOR PUSHER:::
-    // setMoveToSend(fen);
-    // setHistoryToSend(moveHistory[moveHistory.length - 1]);
+    //:::PUSHER:::
     handleSubmit();
   }, [fen]);
-
-  //:::SUBMIT MOVE TO PUSHER (need own useEffect to update correctly):::
-  // useEffect(() => {
-  //   handleSubmit();
-  // }, [moveToSend]);
 
   // ---ZOMBIE FUNCTION => RESPAWN ZOMBIE => RESET GAME OBJECT WITH .fen()---
   function zombieMove(latestResult, game) {
