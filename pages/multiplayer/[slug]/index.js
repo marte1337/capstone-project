@@ -24,6 +24,7 @@ export default function MultiPlayerPage({ username }) {
   );
   const [fenHistory, setFenHistory] = useState([]);
   const [boardOrientation, setBoardOrientation] = useState("white");
+  const [showChat, setShowChat] = useState(true);
 
   // // ____PlayerVsPlayer______
 
@@ -208,6 +209,10 @@ export default function MultiPlayerPage({ username }) {
     );
   };
 
+  const handleShowChatToggle = () => {
+    setShowChat(!showChat);
+  };
+
   return (
     <BoardWrapper>
       <>
@@ -231,58 +236,65 @@ export default function MultiPlayerPage({ username }) {
         <StyledButton onClick={handleOrientationToggle}>
           Switch View: {boardOrientation === "white" ? "Black" : "White"}
         </StyledButton>
+        <StyledButton onClick={handleShowChatToggle}>
+          {showChat ? "Hide Chat" : "Show Chat"}
+        </StyledButton>
       </>
       <>
         <StyledChat>
           Boad-ID: {slug}
-          <h2>GAMECHAT</h2>
           <div>
             <strong> {onlineUsersCount} user(s) online now</strong>
           </div>
-          <div>
-            {chatStorage.map((data, index) => (
-              <div key={index}>
-                <p>
-                  <small>{data.username}:</small> {data.message}
-                </p>
+          {showChat && (
+            <section>
+              <h2>GAMECHAT</h2>
+              <div>
+                {chatStorage.map((data, index) => (
+                  <div key={index}>
+                    <p>
+                      <small>{data.username}:</small> {data.message}
+                    </p>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          <div>
-            <form onSubmit={handleSubmit}>
-              <input
-                name="chatInput"
-                type="text"
-                value={messageToSend}
-                onChange={(event) => setMessageToSend(event.target.value)}
-                placeholder="start typing...."
-              />
-              <button type="submit">Send</button>
-            </form>
-          </div>
-          <div>
-            <StyledButton onClick={handleSignOut}>Sign out</StyledButton>
-          </div>
-          <div>
-            {/* show online users */}
-            {onlineUsers.map((user, index) => (
-              <div key={index}>
-                <small>
-                  {" "}
-                  <span>{user.username}</span> joined the chat!
-                </small>
+              <div>
+                <form onSubmit={handleSubmit}>
+                  <input
+                    name="chatInput"
+                    type="text"
+                    value={messageToSend}
+                    onChange={(event) => setMessageToSend(event.target.value)}
+                    placeholder="start typing...."
+                  />
+                  <button type="submit">Send</button>
+                </form>
               </div>
-            ))}
-            {/* show users leaving the chat */}
-            {usersRemoved.map((user, index) => (
-              <div key={index}>
-                <small>
-                  {" "}
-                  <span>{user}</span> left the chat.
-                </small>
+              <div>
+                <StyledButton onClick={handleSignOut}>Sign out</StyledButton>
               </div>
-            ))}
-          </div>
+              <div>
+                {/* show online users */}
+                {onlineUsers.map((user, index) => (
+                  <div key={index}>
+                    <small>
+                      {" "}
+                      <span>{user.username}</span> joined the chat!
+                    </small>
+                  </div>
+                ))}
+                {/* show users leaving the chat */}
+                {usersRemoved.map((user, index) => (
+                  <div key={index}>
+                    <small>
+                      {" "}
+                      <span>{user}</span> left the chat.
+                    </small>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
         </StyledChat>
       </>
     </BoardWrapper>
