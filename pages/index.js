@@ -1,42 +1,49 @@
-import Link from "next/link";
+// import Link from "next/link";
 import styled from "styled-components";
+import Image from "next/image";
 
-export default function HomePage() {
+export default function HomePage({ handleLogin, handleLoginChange, username }) {
   return (
     <>
+      <StyledTitle>
+        TOTALLY <i>ZOMBIFIED</i> CHESS
+      </StyledTitle>
       <h2>
         TOTALLY <i>ZOMBIFIED</i> CHESS
       </h2>
       <h2>
         TOTALLY <i>ZOMBIFIED</i> CHESS
       </h2>
-      <h2>
-        TOTALLY <i>ZOMBIFIED</i> CHESS
-      </h2>
+      <StyledImage
+        src="/landing-image2.jpg"
+        alt="zombies on a chessboard"
+        width={300}
+        height={300}
+      />
       <StyledSection>
-        <h3>CHOOSE YOUR BOARD:</h3>
-        <div>
-          <Link href="/tutorials">
-            <StyledButton type="text">Tutorials</StyledButton>
-          </Link>
-        </div>
-        <div>
-          <Link href="/singleplayer">
-            <StyledButton type="text">Player VS RandomMoveMachine</StyledButton>
-          </Link>
-        </div>
-        <div>
-          <Link href="/multiplayer">
-            <StyledButton type="text">Player VS Player</StyledButton>
-          </Link>
-        </div>
+        <form onSubmit={handleLogin}>
+          <h3>CHOOSE YOUR PLAYERNAME:</h3>
+          <div>
+            <StyledInput
+              type="text"
+              onChange={handleLoginChange}
+              placeholder="Type here..."
+              required
+            />
+            <StyledButton type="submit">Enter Game</StyledButton>
+          </div>
+        </form>
       </StyledSection>
     </>
   );
 }
 
 const StyledSection = styled.section`
-  margin: 5rem 0;
+  margin: 2rem 0;
+`;
+const StyledTitle = styled.h2`
+  margin-top: 0;
+  padding-top: 15px;
 `;
 
 const StyledButton = styled.button`
@@ -48,5 +55,31 @@ const StyledButton = styled.button`
   border: solid black 0.2rem;
   border-radius: 5px;
   margin-top: 0.5rem;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.5rem;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+
+  &:hover {
+    background-color: #e6e6e6;
+    cursor: pointer;
+  }
+
+  &:active {
+    transform: translateY(2px);
+  }
+`;
+
+const StyledInput = styled.input`
+  color: black;
+  background-color: beige;
+  border: solid black 0.1rem;
+  border-radius: 5px;
+  padding: 0.5rem 0.5rem;
+  margin: 0.5rem;
+`;
+
+const StyledImage = styled(Image)`
+  border: solid black 0.3rem;
+  border-radius: 5px;
+  box-shadow: 0 2px 6px 2px rgba(0, 0, 0, 0.5);
+  margin-top: 0.8rem;
 `;
