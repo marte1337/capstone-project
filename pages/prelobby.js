@@ -16,21 +16,11 @@ export default function MainMenu({ username }) {
       <StyledPlayerName>{username}</StyledPlayerName>
       <StyledSection>
         <h3>CHOOSE YOUR BOARD:</h3>
-        <div>
-          <Link href="/tutorials">
-            <StyledButton type="text">Tutorials</StyledButton>
-          </Link>
-        </div>
-        <div>
-          <Link href="/singleplayer">
-            <StyledButton type="text">Player VS RandomMoveMachine</StyledButton>
-          </Link>
-        </div>
-        <div>
-          <Link href="/lobby">
-            <StyledButton type="text">Enter Game Lobby</StyledButton>
-          </Link>
-        </div>
+        <StyledLink href="/tutorials">Tutorials</StyledLink>
+        <StyledLink href="/singleplayer">
+          Player VS RandomMoveMachine
+        </StyledLink>
+        <StyledLink href="/lobby">Enter Game Lobby</StyledLink>
       </StyledSection>
     </>
   );
@@ -42,11 +32,16 @@ const StyledTitle = styled.h2`
 `;
 
 const StyledSection = styled.section`
-  margin: 5rem 0;
+  display: flex;
+  flex-direction: column;
+
   align-items: center;
+  justify-content: center;
+  gap: 5px;
 `;
 
-const StyledButton = styled.button`
+const StyledLink = styled(Link)`
+  text-decoration: none;
   text-align: center;
   font-size: large;
   font-weight: bold;
@@ -81,7 +76,7 @@ const StyledPlayerName = styled.h2`
   max-width: 300px;
   overflow-wrap: break-word;
   border-radius: 25px;
-  margin: 5rem auto;
+  margin: 4.8rem auto;
   padding: 1rem;
   font-size: 2rem;
   color: #ffffff;

@@ -106,7 +106,6 @@ export default function Lobby({ username }) {
         </div>
 
         <StyledChatCanvas ref={chatCanvasRef}>
-          {/* show online users */}
           {onlineUsers.map((user, id) => (
             <div key={id}>
               <small>
@@ -115,7 +114,6 @@ export default function Lobby({ username }) {
               </small>
             </div>
           ))}
-          {/* show users leaving the chat */}
           {usersRemoved.map((user, id) => (
             <div key={id}>
               <small>
@@ -139,12 +137,13 @@ export default function Lobby({ username }) {
         </StyledChatCanvas>
 
         <div>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} aria-label="Chat Submit Form">
             <StyledInput
               type="text"
               value={messageToSend}
               onChange={(event) => setMessageToSend(event.target.value)}
               placeholder="start typing...."
+              aria-label="Chat Input"
             />
             <StyledButton type="submit">Send</StyledButton>
           </form>

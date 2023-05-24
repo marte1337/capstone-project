@@ -3,7 +3,7 @@ import axios from "axios";
 import { Chessboard } from "react-chessboard";
 import Chess from "chess.js";
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import styled from "styled-components";
 import MoveInfoMultiplayer from "@/components//MoveInfoMultiplayer";
@@ -190,12 +190,19 @@ export default function MultiPlayerPage({ username }) {
     );
   };
 
+  // const chatCanvasRef = useRef(null);
+
+  // useEffect(() => {
+  //   // Scroll to the bottom of the chat canvas when new messages are added
+  //   chatCanvasRef.current.scrollTop = chatCanvasRef.current.scrollHeight;
+  // }, [chatStorage]);
+
   return (
     <BoardWrapper>
       <>
-        <h2>
+        <StyledTitle>
           TOTALLY <i>ZOMBIFIED</i> CHESS
-        </h2>
+        </StyledTitle>
         {game && !showReplayBoard && (
           <Chessboard
             position={fen}
@@ -226,36 +233,33 @@ export default function MultiPlayerPage({ username }) {
         )}
         <PlayerNameDisplay playerName={username} oppenentName={oppenentName} />
 
-        {!showReplayBoard && moveStatus.gameOver && (
-          <>
-            <StyledButton onClick={handleShowReplayBoard}>
-              Game Replay
-            </StyledButton>
-            <Link href="/prelobby">
-              <StyledButton type="text">Main Menu</StyledButton>
-            </Link>
-          </>
-        )}
-        {showReplayBoard && (
-          <>
-            <div>
-              <StyledButton onClick={handlePreviousClick}>
-                Previous Move
-              </StyledButton>
-              <StyledButton onClick={handleNextClick}>Next Move</StyledButton>
-            </div>
-            <div>
-              <small>Date: {new Date().toLocaleString()}</small>
-            </div>
-          </>
-        )}
-
         <StyledButton onClick={handleOrientationToggle}>
-          Switch View: {boardOrientation === "white" ? "Black" : "White"}
+          Flip Board: {boardOrientation === "white" ? "Black" : "White"}
         </StyledButton>
         <StyledButton onClick={handleShowChatToggle}>
           {showChat ? "Hide Chat" : "Show Chat"}
         </StyledButton>
+
+        {!showReplayBoard && moveStatus.gameOver && (
+          <StyledButtonContainer>
+            <StyledButton onClick={handleShowReplayBoard}>
+              GAME REPLAY
+            </StyledButton>
+            <StyledLink href="/prelobby">MAIN MENU</StyledLink>
+          </StyledButtonContainer>
+        )}
+        {showReplayBoard && (
+          <>
+            <div>
+              <StyledReviewButton onClick={handlePreviousClick}>
+                Previous Move
+              </StyledReviewButton>
+              <StyledReviewButton onClick={handleNextClick}>
+                Next Move
+              </StyledReviewButton>
+            </div>
+          </>
+        )}
       </>
       <>
         <StyledChat>
@@ -263,13 +267,36 @@ export default function MultiPlayerPage({ username }) {
           {showChat && (
             <section>
               <h2>GAMECHAT</h2>
-              <div>
-                {chatStorage.map((data, index) => (
-                  <StyledMessage key={index}>
-                    <small>{data.username}:</small> {data.message}
-                  </StyledMessage>
+              <StyledChatCanvas>
+                {onlineUsers.map((user, id) => (
+                  <div key={id}>
+                    <small>
+                      {" "}
+                      <span>{user.username}</span> joined the game!
+                    </small>
+                  </div>
                 ))}
-              </div>
+                {usersRemoved.map((user, id) => (
+                  <div key={id}>
+                    <small>
+                      {" "}
+                      <span>{user}</span> left the game.
+                    </small>
+                  </div>
+                ))}
+
+                {chatStorage.map((chat, id) =>
+                  chat.username === username ? (
+                    <StyledMessageUser key={id}>
+                      <small>{chat.username}:</small> {chat.message}
+                    </StyledMessageUser>
+                  ) : (
+                    <StyledMessage key={id}>
+                      <small>{chat.username}:</small> {chat.message}
+                    </StyledMessage>
+                  )
+                )}
+              </StyledChatCanvas>
               <div>
                 <form onSubmit={handleSubmit} aria-label="Game Chat">
                   <StyledInput
@@ -283,38 +310,23 @@ export default function MultiPlayerPage({ username }) {
                   <StyledButton type="submit">Send</StyledButton>
                 </form>
               </div>
-
               <div>
                 <StyledButton onClick={handleSignOut}>Leave Board</StyledButton>
               </div>
               <small>Boad-ID: {slug}</small>
-              <div>
-                {/* show online users */}
-                {onlineUsers.map((user, index) => (
-                  <div key={index}>
-                    <small>
-                      {" "}
-                      <span>{user.username}</span> joined Game!
-                    </small>
-                  </div>
-                ))}
-                {/* show users leaving the chat */}
-                {usersRemoved.map((user, index) => (
-                  <div key={index}>
-                    <small>
-                      {" "}
-                      <span>{user}</span> left Game.
-                    </small>
-                  </div>
-                ))}
-              </div>
             </section>
           )}
         </StyledChat>
       </>
+      {showReplayBoard && <small>Date: {new Date().toLocaleString()}</small>}
     </BoardWrapper>
   );
 }
+
+const StyledTitle = styled.h2`
+  margin-top: 0;
+  padding-top: 10px;
+`;
 
 const StyledButton = styled.button`
   text-align: center;
@@ -326,15 +338,96 @@ const StyledButton = styled.button`
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
   padding: 0.5rem 1rem;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+  &:hover {
+    background-color: #e6e6e6;
+    cursor: pointer;
+  }
+
+  &:active {
+    transform: translateY(2px);
+  }
+`;
+
+const StyledButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  margin: 0 auto;
+`;
+
+const StyledReviewButton = styled.button`
+  text-align: center;
+  font-size: large;
+  background-color: #2c2c2c;
+  color: white;
+  border-radius: 5px;
+  margin: 0.5rem 1px;
+  padding: 0.5rem 1rem;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:active {
+    transform: translateY(2px);
+  }
+`;
+
+// const StyledButton = styled.button`
+//   text-align: center;
+//   font-size: large;
+//   color: black;
+//   background-color: beige;
+//   border: solid black 0.2rem;
+//   border-radius: 5px;
+//   margin-top: 0.5rem;
+//   margin-bottom: 0.5rem;
+//   padding: 0.5rem 1rem;
+//   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+//   &:hover {
+//     background-color: #e6e6e6;
+//     cursor: pointer;
+//   }
+
+//   &:active {
+//     transform: translateY(2px);
+//   }
+// `;
+
+const StyledLink = styled(Link)`
+  text-decoration: none;
+  text-align: center;
+  font-size: large;
+  color: black;
+  background-color: beige;
+  border: solid black 0.2rem;
+  border-radius: 5px;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 1rem;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+  &:hover {
+    background-color: #e6e6e6;
+    cursor: pointer;
+  }
+
+  &:active {
+    transform: translateY(2px);
+  }
 `;
 
 const StyledChat = styled.section`
+  max-width: 600px;
   text-align: center;
   background-color: black;
   color: white;
   border-radius: 5px;
   padding: 10px 1rem;
-  margin: 5px 10px;
+  margin: 10px;
   h2 {
     margin: 0;
     font-weight: 900;
@@ -347,12 +440,33 @@ const StyledChat = styled.section`
   }
 `;
 
+const StyledChatCanvas = styled.div`
+  height: 270px;
+  background-color: #2c2c2c;
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  overflow: auto;
+`;
+
 const StyledMessage = styled.div`
+  text-align: left;
   background-color: white;
+  overflow-wrap: break-word;
   color: black;
   border-radius: 5px;
-  margin: 5px 3rem;
-  padding: 3px 0;
+  margin: 5px auto 5px 7rem;
+  padding: 4px;
+`;
+const StyledMessageUser = styled.div`
+  text-align: left;
+  background-color: #8f43ee;
+  overflow-wrap: break-word;
+  color: white;
+  border-radius: 5px;
+  margin: 5px 7rem 5px auto;
+  padding: 4px;
 `;
 
 const StyledInput = styled.input`
