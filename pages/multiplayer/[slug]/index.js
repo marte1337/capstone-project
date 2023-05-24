@@ -3,7 +3,7 @@ import axios from "axios";
 import { Chessboard } from "react-chessboard";
 import Chess from "chess.js";
 import { useRouter } from "next/router";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import styled from "styled-components";
 import MoveInfoMultiplayer from "@/components//MoveInfoMultiplayer";
@@ -190,13 +190,6 @@ export default function MultiPlayerPage({ username }) {
     );
   };
 
-  // const chatCanvasRef = useRef(null);
-
-  // useEffect(() => {
-  //   // Scroll to the bottom of the chat canvas when new messages are added
-  //   chatCanvasRef.current.scrollTop = chatCanvasRef.current.scrollHeight;
-  // }, [chatStorage]);
-
   return (
     <BoardWrapper>
       <>
@@ -242,23 +235,21 @@ export default function MultiPlayerPage({ username }) {
 
         {!showReplayBoard && moveStatus.gameOver && (
           <StyledButtonContainer>
-            <StyledButton onClick={handleShowReplayBoard}>
+            <StyledButton2 onClick={handleShowReplayBoard}>
               GAME REPLAY
-            </StyledButton>
+            </StyledButton2>
             <StyledLink href="/prelobby">MAIN MENU</StyledLink>
           </StyledButtonContainer>
         )}
         {showReplayBoard && (
-          <>
-            <div>
-              <StyledReviewButton onClick={handlePreviousClick}>
-                Previous Move
-              </StyledReviewButton>
-              <StyledReviewButton onClick={handleNextClick}>
-                Next Move
-              </StyledReviewButton>
-            </div>
-          </>
+          <div>
+            <StyledReviewButton onClick={handlePreviousClick}>
+              Previous Move
+            </StyledReviewButton>
+            <StyledReviewButton onClick={handleNextClick}>
+              Next Move
+            </StyledReviewButton>
+          </div>
         )}
       </>
       <>
@@ -335,8 +326,8 @@ const StyledButton = styled.button`
   background-color: beige;
   border: solid black 0.2rem;
   border-radius: 5px;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
+  margin: 0.5rem 1px;
+
   padding: 0.5rem 1rem;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
   &:hover {
@@ -377,26 +368,26 @@ const StyledReviewButton = styled.button`
   }
 `;
 
-// const StyledButton = styled.button`
-//   text-align: center;
-//   font-size: large;
-//   color: black;
-//   background-color: beige;
-//   border: solid black 0.2rem;
-//   border-radius: 5px;
-//   margin-top: 0.5rem;
-//   margin-bottom: 0.5rem;
-//   padding: 0.5rem 1rem;
-//   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
-//   &:hover {
-//     background-color: #e6e6e6;
-//     cursor: pointer;
-//   }
+const StyledButton2 = styled.button`
+  text-align: center;
+  font-size: large;
+  color: black;
+  background-color: beige;
+  border: solid black 0.2rem;
+  border-radius: 5px;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 1rem;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+  &:hover {
+    background-color: #e6e6e6;
+    cursor: pointer;
+  }
 
-//   &:active {
-//     transform: translateY(2px);
-//   }
-// `;
+  &:active {
+    transform: translateY(2px);
+  }
+`;
 
 const StyledLink = styled(Link)`
   text-decoration: none;
