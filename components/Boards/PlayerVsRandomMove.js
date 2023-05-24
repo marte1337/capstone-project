@@ -122,9 +122,9 @@ export default function RandomMoveEngine({ username }) {
 
   return (
     <>
-      <h2>
+      <StyledTitle>
         TOTALLY <i>ZOMBIFIED</i> CHESS
-      </h2>
+      </StyledTitle>
       {game && !showReplayBoard && (
         <Chessboard position={fen} onPieceDrop={onDrop} id={"PlayBoard"} />
       )}
@@ -170,6 +170,11 @@ export default function RandomMoveEngine({ username }) {
     </>
   );
 }
+
+const StyledTitle = styled.h2`
+  margin-top: 0;
+  padding-top: 10px;
+`;
 
 const StyledButton = styled.button`
   text-align: center;

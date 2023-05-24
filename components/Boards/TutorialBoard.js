@@ -166,7 +166,7 @@ export default function RandomMoveEngine() {
 
 const StyledTitle = styled.h2`
   margin-top: 0;
-  padding-top: 15px;
+  padding-top: 10px;
 `;
 
 const StyledButton = styled.button`
