@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
 import Pusher from "pusher-js";
 import axios from "axios";
@@ -83,6 +83,13 @@ export default function Lobby({ username }) {
     router.push(`/multiplayer/${hostName}`);
   };
 
+  const chatCanvasRef = useRef(null);
+
+  useEffect(() => {
+    // Scroll to the bottom of the chat canvas when new messages are added
+    chatCanvasRef.current.scrollTop = chatCanvasRef.current.scrollHeight;
+  }, [chats]);
+
   return (
     <>
       <StyledTitle>
@@ -98,7 +105,7 @@ export default function Lobby({ username }) {
           <h4> {onlineUsersCount} user(s) online now</h4>
         </div>
 
-        <StyledChatCanvas>
+        <StyledChatCanvas ref={chatCanvasRef}>
           {/* show online users */}
           {onlineUsers.map((user, id) => (
             <div key={id}>
@@ -118,11 +125,17 @@ export default function Lobby({ username }) {
             </div>
           ))}
 
-          {chats.map((chat, id) => (
-            <StyledMessage key={id}>
-              <small>{chat.username}:</small> {chat.message}
-            </StyledMessage>
-          ))}
+          {chats.map((chat, id) =>
+            chat.username === username ? (
+              <StyledMessageUser key={id}>
+                <small>{chat.username}:</small> {chat.message}
+              </StyledMessageUser>
+            ) : (
+              <StyledMessage key={id}>
+                <small>{chat.username}:</small> {chat.message}
+              </StyledMessage>
+            )
+          )}
         </StyledChatCanvas>
 
         <div>
@@ -168,19 +181,28 @@ const StyledNameContainer = styled.div`
 
 const StyledPlayerNameSmall = styled.span`
   font-size: larger;
-  font-style: bold;
+  font-weight: bold;
   text-shadow: 1px 1px 20px rgba(250, 254, 255, 1);
 `;
 
 const StyledButton = styled.button`
   text-align: center;
-  font-weight: bold;
+  font-weight: bolder;
   color: black;
   background-color: beige;
   border: solid black 0.2rem;
   border-radius: 5px;
   margin: 0.2rem;
   padding: 0.5rem 1rem;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+  &:hover {
+    background-color: #e6e6e6;
+    cursor: pointer;
+  }
+
+  &:active {
+    transform: translateY(2px);
+  }
 `;
 
 const StyledChat = styled.section`
@@ -207,18 +229,28 @@ const StyledChatCanvas = styled.div`
   height: 270px;
   background-color: #2c2c2c;
   border-radius: 5px;
-  padding: 5px;
+  padding: 5px 10px;
   margin-bottom: 10px;
   overflow: auto;
 `;
 
 const StyledMessage = styled.div`
+  text-align: left;
   background-color: white;
   overflow-wrap: break-word;
   color: black;
   border-radius: 5px;
-  margin: 5px 3rem;
-  padding: 2px 0;
+  margin: 5px auto 5px 7rem;
+  padding: 4px;
+`;
+const StyledMessageUser = styled.div`
+  text-align: left;
+  background-color: #8f43ee;
+  overflow-wrap: break-word;
+  color: white;
+  border-radius: 5px;
+  margin: 5px 7rem 5px auto;
+  padding: 4px;
 `;
 
 const StyledInput = styled.input`
