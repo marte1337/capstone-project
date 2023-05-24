@@ -56,6 +56,16 @@ const StyledButton = styled.button`
   border-radius: 5px;
   margin-top: 0.5rem;
   padding: 0.5rem 0.5rem;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+
+  &:hover {
+    background-color: #e6e6e6;
+    cursor: pointer;
+  }
+
+  &:active {
+    transform: translateY(2px);
+  }
 `;
 
 const StyledInput = styled.input`

@@ -9,11 +9,11 @@ import GameTerminal from "../GameTerminal";
 const tutorialFens = [
   {
     fen: "8/2rkr3/2rrr3/8/8/3RRR2/3RKR2/8 w KQkq - 0 1",
-    text: "In this ZOMBIFIED CHESS tutorial you will get used to the zombie-mechanics. It´s pretty simple though: If you capture an opponent piece, it will respawn as your piece on the square it has been attacked from. Try to zombify some of your enemies and checkmate their king...",
+    text: "In this tutorial you will get used to the zombie-mechanics. It´s pretty simple though: If you capture an opponent piece, it will respawn as your piece on the square it has been attacked from. Zombify some of your enemies and checkmate their king...",
   },
   {
     fen: "3k4/pppppppp/8/8/8/8/PPPPPPPP/4K3 w KQkq - 0 1",
-    text: "You can get pretty interesting pawn-stand-offs in ZOMBIFIED CHESS, see for yourself! Be aware that, while you can capture & promote with a pawn, you can not respawn and promote. Respawned pawns on their final rank are doomed to stay on their square forever...true dead undead zombies!",
+    text: "You can get pretty interesting pawn-stand-offs in ZOMBIFIED CHESS! Be aware that, while you can capture & promote with a pawn, you can not respawn and promote. Respawned pawns on their final rank are doomed to stay on their square forever...true dead undead zombies!",
   },
   {
     fen: "8/2nkn3/2nnn3/8/8/3NNN2/3NKN2/8 w KQkq - 0 1",
@@ -138,19 +138,18 @@ export default function RandomMoveEngine() {
 
   return (
     <>
-      <h2>
+      <StyledTitle>
         TOTALLY <i>ZOMBIFIED</i> CHESS
-      </h2>
-      <h3>TUTORIALS</h3>
+      </StyledTitle>
       {game && <Chessboard position={fen} onPieceDrop={onDrop} />}
       {moveStatus.gameOver && <GameTerminal moveStatus={moveStatus} />}
 
       <MoveInfo moveData={latestMoveHistory} moveStatus={moveStatus} />
 
       {moveStatus.gameOver ? (
-        <p>Well done...</p>
+        <StyledTextField>Well done...</StyledTextField>
       ) : (
-        <div>{tutorialFens[currentIndex].text}</div>
+        <StyledTextField>{tutorialFens[currentIndex].text}</StyledTextField>
       )}
 
       <div>
@@ -165,6 +164,11 @@ export default function RandomMoveEngine() {
   );
 }
 
+const StyledTitle = styled.h2`
+  margin-top: 0;
+  padding-top: 15px;
+`;
+
 const StyledButton = styled.button`
   text-align: center;
 
@@ -175,4 +179,24 @@ const StyledButton = styled.button`
   border-radius: 5px;
   margin-top: 0.5rem;
   padding: 0.5rem 1rem;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+
+  &:hover {
+    background-color: #e6e6e6;
+    cursor: pointer;
+  }
+
+  &:active {
+    transform: translateY(2px);
+  }
+`;
+
+const StyledTextField = styled.div`
+  background-color: #2c2c2c;
+  /* border: beige solid 2px; */
+  border-radius: 5px;
+  color: white;
+  padding: 10px;
+  margin-top: 7px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
 `;
