@@ -259,7 +259,7 @@ export default function MultiPlayerPage({ username }) {
       </>
       <>
         <StyledChat>
-          <div>{onlineUsersCount} user(s) online now</div>
+          <div>{onlineUsersCount} Player(s) online now</div>
           {showChat && (
             <section>
               <h2>GAMECHAT</h2>
@@ -271,13 +271,14 @@ export default function MultiPlayerPage({ username }) {
                 ))}
               </div>
               <div>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} aria-label="Game Chat">
                   <StyledInput
                     name="chatInput"
                     type="text"
                     value={messageToSend}
                     onChange={(event) => setMessageToSend(event.target.value)}
                     placeholder="start typing...."
+                    aria-label="Chat Input"
                   />
                   <StyledButton type="submit">Send</StyledButton>
                 </form>

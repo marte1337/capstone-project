@@ -17,6 +17,7 @@ export default function PlayerNameDisplay({ playerName, oppenentName }) {
 
 const StyledContainer = styled.section`
   display: flex;
+  gap: 1px;
   flex-wrap: wrap;
   justify-content: center;
 `;
@@ -29,4 +30,5 @@ const StyledBox = styled.div`
   border-radius: 5px;
   margin-top: 0.5rem;
   padding: 0.2rem 0.5rem;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
 `;

@@ -63,7 +63,7 @@ export default function Lobby({ username }) {
 
   const handleSignOut = () => {
     pusher?.unsubscribe("presence-channel");
-    router.push("/");
+    router.push("/prelobby");
   };
 
   // post chat to api
@@ -85,59 +85,59 @@ export default function Lobby({ username }) {
 
   return (
     <>
-      <h2>
+      <StyledTitle>
         TOTALLY <i>ZOMBIFIED</i> CHAT
-      </h2>
-      <div>
-        <strong>{username}</strong>
+      </StyledTitle>
+      <StyledNameContainer>
+        <StyledPlayerNameSmall>{username}</StyledPlayerNameSmall>
         <StyledButton onClick={handleSignOut}>Sign out</StyledButton>
-        <StyledChat>
-          <h2>GAMELOBBY</h2>
-          <div>
-            <h4> {onlineUsersCount} user(s) online now</h4>
-          </div>
-          <div>
-            {/* show online users */}
-            {onlineUsers.map((user, id) => (
-              <div key={id}>
-                <small>
-                  {" "}
-                  <span>{user.username}</span> joined the chat!
-                </small>
-              </div>
-            ))}
-            {/* show users leaving the chat */}
-            {usersRemoved.map((user, id) => (
-              <div key={id}>
-                <small>
-                  {" "}
-                  <span>{user}</span> left the chat.
-                </small>
-              </div>
-            ))}
-          </div>
+      </StyledNameContainer>
+      <StyledChat>
+        <h2>GAMELOBBY</h2>
+        <div>
+          <h4> {onlineUsersCount} user(s) online now</h4>
+        </div>
 
-          <div>
-            {chats.map((chat, id) => (
-              <StyledMessage key={id}>
-                <small>{chat.username}:</small> {chat.message}
-              </StyledMessage>
-            ))}
-          </div>
+        <StyledChatCanvas>
+          {/* show online users */}
+          {onlineUsers.map((user, id) => (
+            <div key={id}>
+              <small>
+                {" "}
+                <span>{user.username}</span> joined the chat!
+              </small>
+            </div>
+          ))}
+          {/* show users leaving the chat */}
+          {usersRemoved.map((user, id) => (
+            <div key={id}>
+              <small>
+                {" "}
+                <span>{user}</span> left the chat.
+              </small>
+            </div>
+          ))}
 
-          <div>
-            <form onSubmit={handleSubmit}>
-              <StyledInput
-                type="text"
-                value={messageToSend}
-                onChange={(event) => setMessageToSend(event.target.value)}
-                placeholder="start typing...."
-              />
-              <StyledButton type="submit">Send</StyledButton>
-            </form>
-          </div>
-        </StyledChat>
-      </div>
+          {chats.map((chat, id) => (
+            <StyledMessage key={id}>
+              <small>{chat.username}:</small> {chat.message}
+            </StyledMessage>
+          ))}
+        </StyledChatCanvas>
+
+        <div>
+          <form onSubmit={handleSubmit}>
+            <StyledInput
+              type="text"
+              value={messageToSend}
+              onChange={(event) => setMessageToSend(event.target.value)}
+              placeholder="start typing...."
+            />
+            <StyledButton type="submit">Send</StyledButton>
+          </form>
+        </div>
+      </StyledChat>
+
       <div>
         PLAYER ONE: <br />
         <Link href={`/multiplayer/${username}`}>
@@ -145,7 +145,7 @@ export default function Lobby({ username }) {
         </Link>
         <br />
         PLAYER TWO: <br />
-        <form onSubmit={handleJoinPlayer}>
+        <form onSubmit={handleJoinPlayer} aria-label="Join PLayer Form">
           <StyledInput type="text" placeholder="Player you want to join..." />
           <StyledButton type="submit">Join Player</StyledButton>
         </form>
@@ -153,6 +153,24 @@ export default function Lobby({ username }) {
     </>
   );
 }
+
+const StyledTitle = styled.h2`
+  margin-top: 0;
+  padding-top: 15px;
+`;
+
+const StyledNameContainer = styled.div`
+  max-width: 600px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+`;
+
+const StyledPlayerNameSmall = styled.span`
+  font-size: larger;
+  font-style: bold;
+  text-shadow: 1px 1px 20px rgba(250, 254, 255, 1);
+`;
 
 const StyledButton = styled.button`
   text-align: center;
@@ -166,12 +184,13 @@ const StyledButton = styled.button`
 `;
 
 const StyledChat = styled.section`
+  max-width: 600px;
   text-align: center;
   background-color: black;
   color: white;
   border-radius: 5px;
   padding: 10px 1rem;
-  margin: 5px 10px;
+  margin: 10px;
   h2 {
     margin: 0;
     font-weight: 900;
@@ -184,12 +203,22 @@ const StyledChat = styled.section`
   }
 `;
 
+const StyledChatCanvas = styled.div`
+  height: 270px;
+  background-color: #2c2c2c;
+  border-radius: 5px;
+  padding: 5px;
+  margin-bottom: 10px;
+  overflow: auto;
+`;
+
 const StyledMessage = styled.div`
   background-color: white;
+  overflow-wrap: break-word;
   color: black;
   border-radius: 5px;
   margin: 5px 3rem;
-  padding: 3px 0;
+  padding: 2px 0;
 `;
 
 const StyledInput = styled.input`

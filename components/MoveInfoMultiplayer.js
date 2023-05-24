@@ -20,12 +20,12 @@ export default function MoveInfoMultiplayer({ moveData, moveStatus }) {
 
 const StyledSection = styled.section`
   text-align: center;
-  color: black;
-  background-color: beige;
-  border: solid black 0.2rem;
+  background-color: #2c2c2c;
+  color: white;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
   border-radius: 5px;
   margin-top: 0.5rem;
-  margin-bottom: 0.2rem;
+
   padding: 0.2rem 0.5rem;
   h4,
   h3 {
