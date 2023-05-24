@@ -25,6 +25,9 @@ export default function MultiPlayerPage({ username }) {
   const [showReplayBoard, setShowReplayBoard] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  const [moveFrom, setMoveFrom] = useState("");
+  const [optionSquares, setOptionSquares] = useState({});
+
   const [showChat, setShowChat] = useState(true);
   const [messageToSend, setMessageToSend] = useState("");
   const [chatStorage, setChatStorage] = useState([]);
@@ -143,29 +146,91 @@ export default function MultiPlayerPage({ username }) {
   }
 
   // // ---MAKE A MOVE AND UPDATE GAME OBJECT---
-  function makeAMove(move) {
+  // function makeAMove(move) {
+  //   const gameCopy = { ...game };
+  //   const move = gameCopy?.move(move);
+  //   setFen(gameCopy.fen());
+
+  //   // ---CHECK FOR ZOMBIE PIECE---
+  //   if (move?.flags === "c") {
+  //     zombieMove(move, { ...game });
+  //   }
+
+  //   return move; // null if the move was illegal, the move object if the move was legal
+  // }
+
+  // // ---ON DROP = PASS MOVE TO makeAMove
+  function onSquareClick(square) {
+    // reset getMoveOptions if user clicks on a new/different square
+    // set moveFrom if new square has legal moves
+    function resetFirstMove(square) {
+      const hasOptions = getMoveOptions(square);
+      if (hasOptions) setMoveFrom(square);
+    }
+    // if moveForm is falsy - new square does not have legal moves => resetFirstMove and return (do not trigger random move)
+    if (!moveFrom) {
+      resetFirstMove(square);
+      return;
+    }
+
+    // --trigger move--
     const gameCopy = { ...game };
-    const result = gameCopy?.move(move);
+    const move = gameCopy.move({
+      from: moveFrom,
+      to: square,
+      promotion: "q", // always promote to a queen for example simplicity
+    });
     setFen(gameCopy.fen());
 
     // ---CHECK FOR ZOMBIE PIECE---
-    if (result?.flags === "c") {
-      zombieMove(result, { ...game });
+    if (move?.flags === "c") {
+      zombieMove(move, { ...game });
     }
 
-    return result; // null if the move was illegal, the move object if the move was legal
+    // checks illegal move, if invalid => reset setMoveFrom and getMoveOptions
+    if (move === null) {
+      resetFirstMove(square);
+      return;
+    }
+
+    //empty current legal move option data for next move
+    setMoveFrom("");
+    setOptionSquares({});
   }
 
-  // // ---ON DROP = PASS MOVE TO makeAMove
-  function onDrop(sourceSquare, targetSquare) {
-    const move = makeAMove({
-      from: sourceSquare,
-      to: targetSquare,
-      promotion: "q",
+  //---GET MOVE OPTIONS---
+  function getMoveOptions(square) {
+    //game.moves({ square: "e4", verbose: true }) returns a list of legal moves from the current position
+    //array of objects: {color: 'w', from: 'e4', to: 'e5', flags: 'n', piece: 'p', …}
+    const moves = game.moves({
+      square,
+      verbose: true,
     });
-    if (move === null) return false; // check illegal move
-
-    return true; // successful move
+    if (moves.length === 0) {
+      return false;
+    }
+    //map over .to-value in moves, push value + background-color styles to newSquares-object
+    const newSquares = {};
+    moves.map((move) => {
+      newSquares[move.to] = {
+        background:
+          //.get(square): returns the piece on the square or null
+          //game.get('a5') -> { type: 'p', color: 'b' }
+          game.get(move.to) &&
+          //different background if move.to piece color is !== color of piece from clicked square
+          //(means move.to piece is enemy => gets red background)
+          game.get(move.to).color !== game.get(square).color
+            ? "radial-gradient(circle, rgba(255,0,0,.4) 60%, transparent 85%)"
+            : "radial-gradient(circle, rgba(85,0,133,.4) 32%, transparent 45%)",
+      };
+      return move;
+    });
+    //also push current square (/w yellow background) to newSquares
+    newSquares[square] = {
+      background: "rgba(255, 255, 0, 0.4)",
+    };
+    setOptionSquares(newSquares);
+    return true;
   }
 
   const handleOrientationToggle = () => {
@@ -199,9 +264,18 @@ export default function MultiPlayerPage({ username }) {
         {game && !showReplayBoard && (
           <Chessboard
             position={fen}
-            onPieceDrop={onDrop}
             boardOrientation={boardOrientation}
             id={"PlayBoard"}
+            animationDuration={200}
+            arePiecesDraggable={false}
+            onSquareClick={onSquareClick}
+            customBoardStyle={{
+              borderRadius: "4px",
+              boxShadow: "1px -2px 30px white",
+            }}
+            customSquareStyles={{
+              ...optionSquares,
+            }}
           />
         )}
         {showReplayBoard && (
