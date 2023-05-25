@@ -1,5 +1,9 @@
 # Capstone Project Template
 
+Deployment: https://totally-unhinged-chess.vercel.app/
+
+Video: https://www.youtube.com/watch?v=rgZAIcMJD0A
+
 This project was created from the neuefische Next.js template.
 
 ## Local development
