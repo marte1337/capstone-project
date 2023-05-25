@@ -25,7 +25,7 @@ export default function MultiPlayerPage({ username }) {
   const [showReplayBoard, setShowReplayBoard] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const [showChat, setShowChat] = useState(true);
+  const [showChat, setShowChat] = useState(false);
   const [messageToSend, setMessageToSend] = useState("");
   const [chatStorage, setChatStorage] = useState([]);
   const [onlineUsersCount, setOnlineUsersCount] = useState(0);
@@ -326,8 +326,29 @@ const StyledButton = styled.button`
   background-color: beige;
   border: solid black 0.2rem;
   border-radius: 5px;
-  margin: 0.5rem 1px;
+  margin: 4px 1px;
 
+  padding: 0.5rem 1rem;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+  &:hover {
+    background-color: #e6e6e6;
+    cursor: pointer;
+  }
+
+  &:active {
+    transform: translateY(2px);
+  }
+`;
+
+const StyledButton2 = styled.button`
+  text-align: center;
+  font-size: large;
+  color: black;
+  background-color: beige;
+  border: solid black 0.2rem;
+  border-radius: 5px;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
   padding: 0.5rem 1rem;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
   &:hover {
@@ -360,27 +381,6 @@ const StyledReviewButton = styled.button`
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
 
   &:hover {
-    cursor: pointer;
-  }
-
-  &:active {
-    transform: translateY(2px);
-  }
-`;
-
-const StyledButton2 = styled.button`
-  text-align: center;
-  font-size: large;
-  color: black;
-  background-color: beige;
-  border: solid black 0.2rem;
-  border-radius: 5px;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  padding: 0.5rem 1rem;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
-  &:hover {
-    background-color: #e6e6e6;
     cursor: pointer;
   }
 
