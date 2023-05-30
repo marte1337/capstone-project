@@ -95,6 +95,7 @@ export default function Lobby({ username }) {
       <StyledTitle>
         TOTALLY <i>ZOMBIFIED</i> CHAT
       </StyledTitle>
+
       <StyledNameContainer>
         <StyledPlayerNameSmall>{username}</StyledPlayerNameSmall>
         <StyledButton onClick={handleSignOut}>Sign out</StyledButton>
@@ -176,6 +177,7 @@ const StyledNameContainer = styled.div`
   display: flex;
   justify-content: space-around;
   align-items: center;
+  margin: auto;
 `;
 
 const StyledPlayerNameSmall = styled.span`
@@ -205,13 +207,14 @@ const StyledButton = styled.button`
 `;
 
 const StyledChat = styled.section`
-  max-width: 600px;
+  width: 95%;
+  max-width: 400px;
   text-align: center;
   background-color: black;
   color: white;
   border-radius: 5px;
   padding: 10px 1rem;
-  margin: 10px;
+  margin: 10px auto;
   h2 {
     margin: 0;
     font-weight: 900;
