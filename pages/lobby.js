@@ -18,8 +18,6 @@ export default function Lobby({ username }) {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [usersRemoved, setUsersRemoved] = useState([]);
 
-  // Derived from: https://pusher.com/docs/channels/getting_started/javascript-realtime-user-list/
-
   useEffect(() => {
     // pusher = new Pusher(process.env.NEXT_PUBLIC_KEY, {
     pusher = new Pusher("2fd14399437ec77964ee", {
