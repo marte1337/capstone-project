@@ -1,5 +1,5 @@
 import TutorialBoard from "@/components/Boards/TutorialBoard";
-import BoardWrapper from "@/components/BoardWrapper";
+import BoardWrapper from "@/components/styles/BoardWrapper";
 
 export default function TutorialPage() {
   return (

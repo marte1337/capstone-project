@@ -1,5 +1,5 @@
 import PlayerVsRandomMove from "@/components/Boards/PlayerVsRandomMove";
-import BoardWrapper from "@/components/BoardWrapper";
+import BoardWrapper from "@/components/styles/BoardWrapper";
 
 export default function SinglePlayerPage({ username }) {
   return (
