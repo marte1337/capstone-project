@@ -1,10 +1,14 @@
 import { Chessboard } from "react-chessboard";
 import Chess from "chess.js";
-import { useState, useEffect, use } from "react";
-import Link from "next/link";
-import styled from "styled-components";
+import { useState, useEffect } from "react";
 import MoveInfo from "../MoveInfo";
 import GameTerminal from "../GameTerminal";
+import styled from "styled-components";
+import {
+  StyledButtonContainer,
+  StyledButton,
+  StyledLinkButton,
+} from "@/components/styles/ButtonStyles";
 
 const tutorialFens = [
   {
@@ -155,7 +159,7 @@ export default function RandomMoveEngine() {
       <StyledButtonContainer>
         <StyledButton onClick={handleNextClick}>NEXT TUTORIAL</StyledButton>
 
-        <StyledLink href="/prelobby">MAIN MENU</StyledLink>
+        <StyledLinkButton href="/prelobby">MAIN MENU</StyledLinkButton>
       </StyledButtonContainer>
     </>
   );
@@ -164,61 +168,6 @@ export default function RandomMoveEngine() {
 const StyledTitle = styled.h2`
   margin-top: 0;
   padding-top: 10px;
-`;
-
-const StyledButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  position: fixed;
-  bottom: 12px;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-`;
-
-const StyledButton = styled.button`
-  text-align: center;
-  font-size: large;
-  color: black;
-  background-color: beige;
-  border: solid black 0.2rem;
-  border-radius: 5px;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  padding: 0.5rem 1rem;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
-  &:hover {
-    background-color: #e6e6e6;
-    cursor: pointer;
-  }
-
-  &:active {
-    transform: translateY(2px);
-  }
-`;
-
-const StyledLink = styled(Link)`
-  text-decoration: none;
-  text-align: center;
-  font-size: large;
-  color: black;
-  background-color: beige;
-  border: solid black 0.2rem;
-  border-radius: 5px;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  padding: 0.5rem 1rem;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
-  &:hover {
-    background-color: #e6e6e6;
-    cursor: pointer;
-  }
-
-  &:active {
-    transform: translateY(2px);
-  }
 `;
 
 const StyledTextField = styled.div`
