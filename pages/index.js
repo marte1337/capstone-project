@@ -1,13 +1,16 @@
 // import Link from "next/link";
-import styled from "styled-components";
 import Image from "next/image";
+import styled from "styled-components";
+import { StyledTripleTitle } from "@/components/styles/TitleStyles";
+import { StyledInput } from "@/components/styles/InputStyles";
+import { StyledEnterGameButton } from "@/components/styles/ButtonStyles";
 
 export default function HomePage({ handleLogin, handleLoginChange, username }) {
   return (
     <>
-      <StyledTitle>
+      <StyledTripleTitle>
         TOTALLY <i>ZOMBIFIED</i> CHESS
-      </StyledTitle>
+      </StyledTripleTitle>
       <h2>
         TOTALLY <i>ZOMBIFIED</i> CHESS
       </h2>
@@ -30,7 +33,9 @@ export default function HomePage({ handleLogin, handleLoginChange, username }) {
               placeholder="Type here..."
               required
             />
-            <StyledButton type="submit">Enter Game</StyledButton>
+            <StyledEnterGameButton type="submit">
+              Enter Game
+            </StyledEnterGameButton>
           </div>
         </form>
       </StyledSection>
@@ -40,41 +45,6 @@ export default function HomePage({ handleLogin, handleLoginChange, username }) {
 
 const StyledSection = styled.section`
   margin: 2rem 0;
-`;
-const StyledTitle = styled.h2`
-  margin-top: 0;
-  padding-top: 15px;
-`;
-
-const StyledButton = styled.button`
-  text-align: center;
-  font-size: large;
-  font-weight: bold;
-  color: black;
-  background-color: beige;
-  border: solid black 0.2rem;
-  border-radius: 5px;
-  margin-top: 0.5rem;
-  padding: 0.5rem 0.5rem;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
-
-  &:hover {
-    background-color: #e6e6e6;
-    cursor: pointer;
-  }
-
-  &:active {
-    transform: translateY(2px);
-  }
-`;
-
-const StyledInput = styled.input`
-  color: black;
-  background-color: beige;
-  border: solid black 0.1rem;
-  border-radius: 5px;
-  padding: 0.5rem 0.5rem;
-  margin: 0.5rem;
 `;
 
 const StyledImage = styled(Image)`

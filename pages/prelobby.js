@@ -1,12 +1,13 @@
 import Link from "next/link";
 import styled, { keyframes } from "styled-components";
+import { StyledTripleTitle } from "@/components/styles/TitleStyles";
 
 export default function MainMenu({ username }) {
   return (
     <>
-      <StyledTitle>
+      <StyledTripleTitle>
         TOTALLY <i>ZOMBIFIED</i> CHESS
-      </StyledTitle>
+      </StyledTripleTitle>
       <h2>
         TOTALLY <i>ZOMBIFIED</i> CHESS
       </h2>
@@ -26,15 +27,9 @@ export default function MainMenu({ username }) {
   );
 }
 
-const StyledTitle = styled.h2`
-  margin-top: 0;
-  padding-top: 15px;
-`;
-
 const StyledSection = styled.section`
   display: flex;
   flex-direction: column;
-
   align-items: center;
   justify-content: center;
   gap: 5px;

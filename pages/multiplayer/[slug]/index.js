@@ -9,7 +9,7 @@ import styled from "styled-components";
 import MoveInfoMultiplayer from "@/components//MoveInfoMultiplayer";
 import PlayerNameDisplay from "@/components/PlayerNameDisplay";
 import GameTerminal from "@/components/GameTerminal";
-import BoardWrapper from "@/components/styles/BoardWrapper";
+import BoardWrapper from "@/components/BoardWrapper";
 
 //prevents undefined
 let pusher = null;
