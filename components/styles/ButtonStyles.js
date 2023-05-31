@@ -56,6 +56,31 @@ export const StyledLinkButton = styled(Link)`
   }
 `;
 
+export const StyledMenuLinkButton = styled(Link)`
+  text-decoration: none;
+  text-align: center;
+  font-size: large;
+  font-weight: bold;
+  color: black;
+  background-color: beige;
+  border: solid black 0.2rem;
+  border-radius: 5px;
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+
+  &:hover {
+    background-color: #2c2c2c;
+    border-color: #2c2c2c;
+    color: beige;
+    cursor: pointer;
+  }
+
+  &:active {
+    transform: translateY(2px);
+  }
+`;
+
 export const StyledReplayButton = styled.button`
   text-align: center;
   font-size: large;
