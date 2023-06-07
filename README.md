@@ -24,7 +24,8 @@ To add to the fun and enhance the replayability factor, the app also provides th
 
 <strong>Main-Stack:</strong>  Next.js, Pusher-Channels, Pusher-js, Chess.js, React-Chessboard, Axios, Styled Components <br />
 
-<strong>View the app and join the fun:</strong> https://totally-unhinged-chess.vercel.app/  <br />
+<strong>View the app and join the fun:</strong>  https://totally-unhinged-chess.vercel.app/  <br />
+(optimized for mobile devices, larger viewport support comig soon!)<br />
 
 
 ## Impressions
