@@ -38,7 +38,6 @@ export default function MultiPlayerPage({ username }) {
 
   useEffect(() => {
     pusher = new Pusher("2fd14399437ec77964ee", {
-      // pusher = new Pusher(process.env.NEXT_PUBLIC_KEY, {
       cluster: "eu",
       authEndpoint: `../api/pusher/auth`,
       auth: { params: { username } },

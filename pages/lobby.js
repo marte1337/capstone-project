@@ -19,7 +19,6 @@ export default function Lobby({ username }) {
   const [usersRemoved, setUsersRemoved] = useState([]);
 
   useEffect(() => {
-    // pusher = new Pusher(process.env.NEXT_PUBLIC_KEY, {
     pusher = new Pusher("2fd14399437ec77964ee", {
       cluster: "eu",
       authEndpoint: `api/pusher/auth`,
