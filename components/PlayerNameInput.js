@@ -2,11 +2,7 @@ import { StyledInput } from "@/components/styles/InputStyles";
 import { StyledSection } from "@/components/styles/SectionStyles";
 import { StyledEnterGameButton } from "@/components/styles/ButtonStyles";
 
-export default function PlayerNameInput({
-  handleLogin,
-  handleLoginChange,
-  username,
-}) {
+export default function PlayerNameInput({ handleLogin, handleLoginChange }) {
   return (
     <>
       <StyledSection>
