@@ -44,3 +44,17 @@ export const StyledPlayerName = styled.h2`
     }
   }
 `;
+
+export const StyledPlayerNameSmallContainer = styled.div`
+  max-width: 600px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: auto;
+`;
+
+export const StyledPlayerNameSmall = styled.span`
+  font-size: larger;
+  font-weight: bold;
+  text-shadow: 1px 1px 20px rgba(250, 254, 255, 1);
+`;

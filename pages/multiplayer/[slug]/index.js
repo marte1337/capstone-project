@@ -4,13 +4,25 @@ import { Chessboard } from "react-chessboard";
 import Chess from "chess.js";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import Link from "next/link";
-import styled from "styled-components";
 import HeaderSmall from "@/components/HeaderSmall";
 import MoveInfoMultiplayer from "@/components//MoveInfoMultiplayer";
 import PlayerNameDisplay from "@/components/PlayerNameDisplay";
 import GameTerminal from "@/components/GameTerminal";
 import BoardWrapper from "@/components/BoardWrapper";
+import {
+  StyledButton,
+  StyledReplayButton,
+  StyledLinkButton,
+  StyledMultiPlayerButtonContainer,
+  StyledMultiPlayerButton,
+} from "@/components/styles/ButtonStyles";
+import {
+  StyledChat,
+  StyledChatCanvas,
+  StyledMessage,
+  StyledMessageUser,
+  StyledInput,
+} from "@/components/styles/ChatMultiPlayerStyles";
 
 //prevents undefined
 let pusher = null;
@@ -224,29 +236,29 @@ export default function MultiPlayerPage({ username }) {
         )}
         <PlayerNameDisplay playerName={username} oppenentName={oppenentName} />
 
-        <StyledButton onClick={handleOrientationToggle}>
+        <StyledMultiPlayerButton onClick={handleOrientationToggle}>
           Flip Board: {boardOrientation === "white" ? "Black" : "White"}
-        </StyledButton>
-        <StyledButton onClick={handleShowChatToggle}>
-          {showChat ? "Hide Chat" : "Show Chat"}
-        </StyledButton>
+        </StyledMultiPlayerButton>
+        <StyledMultiPlayerButton onClick={handleShowChatToggle}>
+          {showChat ? "Hide Chat/Options" : "Show Chat/Options"}
+        </StyledMultiPlayerButton>
 
         {!showReplayBoard && moveStatus.gameOver && (
-          <StyledButtonContainer>
-            <StyledButton2 onClick={handleShowReplayBoard}>
+          <StyledMultiPlayerButtonContainer>
+            <StyledButton onClick={handleShowReplayBoard}>
               GAME REPLAY
-            </StyledButton2>
-            <StyledLink href="/prelobby">MAIN MENU</StyledLink>
-          </StyledButtonContainer>
+            </StyledButton>
+            <StyledLinkButton href="/mainmenu">MAIN MENU</StyledLinkButton>
+          </StyledMultiPlayerButtonContainer>
         )}
         {showReplayBoard && (
           <div>
-            <StyledReviewButton onClick={handlePreviousClick}>
+            <StyledReplayButton onClick={handlePreviousClick}>
               Previous Move
-            </StyledReviewButton>
-            <StyledReviewButton onClick={handleNextClick}>
+            </StyledReplayButton>
+            <StyledReplayButton onClick={handleNextClick}>
               Next Move
-            </StyledReviewButton>
+            </StyledReplayButton>
           </div>
         )}
       </>
@@ -296,11 +308,15 @@ export default function MultiPlayerPage({ username }) {
                     placeholder="start typing...."
                     aria-label="Chat Input"
                   />
-                  <StyledButton type="submit">Send</StyledButton>
+                  <StyledMultiPlayerButton type="submit">
+                    Send
+                  </StyledMultiPlayerButton>
                 </form>
               </div>
               <div>
-                <StyledButton onClick={handleSignOut}>Leave Board</StyledButton>
+                <StyledMultiPlayerButton onClick={handleSignOut}>
+                  Leave Board
+                </StyledMultiPlayerButton>
               </div>
               <small>Boad-ID: {slug}</small>
             </section>
@@ -311,153 +327,3 @@ export default function MultiPlayerPage({ username }) {
     </BoardWrapper>
   );
 }
-
-const StyledButton = styled.button`
-  text-align: center;
-  font-weight: bold;
-  color: black;
-  background-color: beige;
-  border: solid black 0.2rem;
-  border-radius: 5px;
-  margin: 4px 1px;
-
-  padding: 0.5rem 1rem;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
-  &:hover {
-    background-color: #e6e6e6;
-    cursor: pointer;
-  }
-
-  &:active {
-    transform: translateY(2px);
-  }
-`;
-
-const StyledButton2 = styled.button`
-  text-align: center;
-  font-size: large;
-  color: black;
-  background-color: beige;
-  border: solid black 0.2rem;
-  border-radius: 5px;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  padding: 0.5rem 1rem;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
-  &:hover {
-    background-color: #e6e6e6;
-    cursor: pointer;
-  }
-
-  &:active {
-    transform: translateY(2px);
-  }
-`;
-
-const StyledButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-
-  margin: 0 auto;
-`;
-
-const StyledReviewButton = styled.button`
-  text-align: center;
-  font-size: large;
-  background-color: #2c2c2c;
-  color: white;
-  border-radius: 5px;
-  margin: 0.5rem 1px;
-  padding: 0.5rem 1rem;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
-
-  &:hover {
-    cursor: pointer;
-  }
-
-  &:active {
-    transform: translateY(2px);
-  }
-`;
-
-const StyledLink = styled(Link)`
-  text-decoration: none;
-  text-align: center;
-  font-size: large;
-  color: black;
-  background-color: beige;
-  border: solid black 0.2rem;
-  border-radius: 5px;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  padding: 0.5rem 1rem;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
-  &:hover {
-    background-color: #e6e6e6;
-    cursor: pointer;
-  }
-
-  &:active {
-    transform: translateY(2px);
-  }
-`;
-
-const StyledChat = styled.section`
-  max-width: 600px;
-  text-align: center;
-  background-color: black;
-  color: white;
-  border-radius: 5px;
-  padding: 10px 1rem;
-  margin: 10px;
-  h2 {
-    margin: 0;
-    font-weight: 900;
-    font-size: x-large;
-    letter-spacing: 5px;
-  }
-  h4 {
-    font-weight: 600;
-    margin: 0.6rem;
-  }
-`;
-
-const StyledChatCanvas = styled.div`
-  height: 270px;
-  background-color: #2c2c2c;
-  border-radius: 5px;
-  padding: 5px 10px;
-  margin-top: 5px;
-  margin-bottom: 10px;
-  overflow: auto;
-`;
-
-const StyledMessage = styled.div`
-  text-align: left;
-  background-color: white;
-  overflow-wrap: break-word;
-  color: black;
-  border-radius: 5px;
-  margin: 5px auto 5px 7rem;
-  padding: 4px;
-`;
-const StyledMessageUser = styled.div`
-  text-align: left;
-  background-color: #8f43ee;
-  overflow-wrap: break-word;
-  color: white;
-  border-radius: 5px;
-  margin: 5px 7rem 5px auto;
-  padding: 4px;
-`;
-
-const StyledInput = styled.input`
-  color: black;
-  background-color: beige;
-  border: solid black 0.1rem;
-  border-radius: 5px;
-  padding: 0.5rem 0.5rem;
-  margin: 0.1rem;
-`;
