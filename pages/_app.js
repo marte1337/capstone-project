@@ -4,7 +4,6 @@ import useLocalStorageState from "use-local-storage-state";
 
 export default function App({ Component, pageProps }) {
   const [username, setUsername] = useLocalStorageState("username");
-
   const router = useRouter();
 
   const handleChange = (event) => {
@@ -15,7 +14,7 @@ export default function App({ Component, pageProps }) {
 
   const handleLogin = (event) => {
     event.preventDefault();
-    router.push("/prelobby");
+    router.push("/mainmenu");
   };
 
   return (

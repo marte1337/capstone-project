@@ -60,7 +60,7 @@ export default function Lobby({ username }) {
 
   const handleSignOut = () => {
     pusher?.unsubscribe("presence-channel");
-    router.push("/prelobby");
+    router.push("/mainmenu");
   };
 
   // post chat to api

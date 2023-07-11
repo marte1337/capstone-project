@@ -1,21 +1,15 @@
+import HeaderLarge from "@/components/HeaderLarge";
+import MainMenuBoardOptions from "@/components/MainMenuBoardOptions";
 import styled, { keyframes } from "styled-components";
-import { StyledTripleTitle } from "@/components/styles/TitleStyles";
 import { StyledMenuLinkButton } from "@/components/styles/ButtonStyles";
 
 export default function MainMenu({ username }) {
   return (
     <>
-      <StyledTripleTitle>
-        TOTALLY <i>ZOMBIFIED</i> CHESS
-      </StyledTripleTitle>
-      <h2>
-        TOTALLY <i>ZOMBIFIED</i> CHESS
-      </h2>
-      <h2>
-        TOTALLY <i>ZOMBIFIED</i> CHESS
-      </h2>
+      <HeaderLarge />
       <StyledPlayerName>{username}</StyledPlayerName>
-      <StyledSection>
+      <MainMenuBoardOptions />
+      {/* <StyledSection>
         <h3>CHOOSE YOUR BOARD:</h3>
         <StyledMenuLinkButton href="/tutorials">Tutorials</StyledMenuLinkButton>
         <StyledMenuLinkButton href="/singleplayer">
@@ -24,18 +18,18 @@ export default function MainMenu({ username }) {
         <StyledMenuLinkButton href="/lobby">
           Enter Game Lobby
         </StyledMenuLinkButton>
-      </StyledSection>
+      </StyledSection> */}
     </>
   );
 }
 
-const StyledSection = styled.section`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-`;
+// const StyledSection = styled.section`
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   justify-content: center;
+//   gap: 5px;
+// `;
 
 const glowAnimation = keyframes`
   0% { text-shadow: 0 0 5px rgb(187, 255, 208); }

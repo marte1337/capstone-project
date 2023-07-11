@@ -168,7 +168,7 @@ export default function RandomMoveEngine({ username }) {
             <small>Date: {new Date().toLocaleString()}</small>
           </div>
           <StyledButtonContainer>
-            <StyledLinkButton href="/prelobby">MAIN MENU</StyledLinkButton>
+            <StyledLinkButton href="/mainmenu">MAIN MENU</StyledLinkButton>
           </StyledButtonContainer>
         </>
       )}

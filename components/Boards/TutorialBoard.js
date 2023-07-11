@@ -159,7 +159,7 @@ export default function RandomMoveEngine() {
       <StyledButtonContainer>
         <StyledButton onClick={handleNextClick}>NEXT TUTORIAL</StyledButton>
 
-        <StyledLinkButton href="/prelobby">MAIN MENU</StyledLinkButton>
+        <StyledLinkButton href="/mainmenu">MAIN MENU</StyledLinkButton>
       </StyledButtonContainer>
     </>
   );
