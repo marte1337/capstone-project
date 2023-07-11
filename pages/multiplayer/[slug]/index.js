@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import styled from "styled-components";
+import HeaderSmall from "@/components/HeaderSmall";
 import MoveInfoMultiplayer from "@/components//MoveInfoMultiplayer";
 import PlayerNameDisplay from "@/components/PlayerNameDisplay";
 import GameTerminal from "@/components/GameTerminal";
@@ -192,9 +193,7 @@ export default function MultiPlayerPage({ username }) {
   return (
     <BoardWrapper>
       <>
-        <StyledTitle>
-          TOTALLY <i>ZOMBIFIED</i> CHESS
-        </StyledTitle>
+        <HeaderSmall />
         {game && !showReplayBoard && (
           <Chessboard
             position={fen}
@@ -312,11 +311,6 @@ export default function MultiPlayerPage({ username }) {
     </BoardWrapper>
   );
 }
-
-const StyledTitle = styled.h2`
-  margin-top: 0;
-  padding-top: 10px;
-`;
 
 const StyledButton = styled.button`
   text-align: center;
