@@ -1,10 +1,15 @@
 import { Chessboard } from "react-chessboard";
 import Chess from "chess.js";
-import { useState, useEffect, use } from "react";
-import Link from "next/link";
-import styled from "styled-components";
+import { useState, useEffect } from "react";
+import HeaderSmall from "../HeaderSmall";
 import MoveInfo from "../MoveInfo";
 import GameTerminal from "../GameTerminal";
+import {
+  StyledButtonContainer,
+  StyledButton,
+  StyledLinkButton,
+} from "@/components/styles/ButtonStyles";
+import { StyledTextField } from "../styles/TextfieldStyles";
 
 const tutorialFens = [
   {
@@ -138,94 +143,19 @@ export default function RandomMoveEngine() {
 
   return (
     <>
-      <StyledTitle>
-        TOTALLY <i>ZOMBIFIED</i> CHESS
-      </StyledTitle>
+      <HeaderSmall />
       {game && <Chessboard position={fen} onPieceDrop={onDrop} />}
       {moveStatus.gameOver && <GameTerminal moveStatus={moveStatus} />}
-
       <MoveInfo moveData={latestMoveHistory} moveStatus={moveStatus} />
-
       {moveStatus.gameOver ? (
         <StyledTextField>Well done...</StyledTextField>
       ) : (
         <StyledTextField>{tutorialFens[currentIndex].text}</StyledTextField>
       )}
-
       <StyledButtonContainer>
         <StyledButton onClick={handleNextClick}>NEXT TUTORIAL</StyledButton>
-
-        <StyledLink href="/prelobby">MAIN MENU</StyledLink>
+        <StyledLinkButton href="/mainmenu">MAIN MENU</StyledLinkButton>
       </StyledButtonContainer>
     </>
   );
 }
-
-const StyledTitle = styled.h2`
-  margin-top: 0;
-  padding-top: 10px;
-`;
-
-const StyledButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  position: fixed;
-  bottom: 12px;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-`;
-
-const StyledButton = styled.button`
-  text-align: center;
-  font-size: large;
-  color: black;
-  background-color: beige;
-  border: solid black 0.2rem;
-  border-radius: 5px;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  padding: 0.5rem 1rem;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
-  &:hover {
-    background-color: #e6e6e6;
-    cursor: pointer;
-  }
-
-  &:active {
-    transform: translateY(2px);
-  }
-`;
-
-const StyledLink = styled(Link)`
-  text-decoration: none;
-  text-align: center;
-  font-size: large;
-  color: black;
-  background-color: beige;
-  border: solid black 0.2rem;
-  border-radius: 5px;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  padding: 0.5rem 1rem;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
-  &:hover {
-    background-color: #e6e6e6;
-    cursor: pointer;
-  }
-
-  &:active {
-    transform: translateY(2px);
-  }
-`;
-
-const StyledTextField = styled.div`
-  background-color: beige;
-  color: black;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
-  border-radius: 5px;
-  padding: 10px;
-  margin-top: 8px;
-`;

@@ -1,11 +1,16 @@
 import { Chessboard } from "react-chessboard";
 import Chess from "chess.js";
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import MoveInfo from "../MoveInfo";
 import PlayerNameDisplay from "../PlayerNameDisplay";
 import GameTerminal from "../GameTerminal";
-import styled from "styled-components";
+import HeaderSmall from "../HeaderSmall";
+import {
+  StyledButtonContainer,
+  StyledButton,
+  StyledLinkButton,
+  StyledReplayButton,
+} from "@/components/styles/ButtonStyles";
 
 export default function RandomMoveEngine({ username }) {
   const [game, setGame] = useState(null);
@@ -122,9 +127,7 @@ export default function RandomMoveEngine({ username }) {
 
   return (
     <>
-      <StyledTitle>
-        TOTALLY <i>ZOMBIFIED</i> CHESS
-      </StyledTitle>
+      <HeaderSmall />
       {game && !showReplayBoard && (
         <Chessboard position={fen} onPieceDrop={onDrop} id={"PlayBoard"} />
       )}
@@ -146,106 +149,27 @@ export default function RandomMoveEngine({ username }) {
           <StyledButton onClick={handleShowReplayBoard}>
             GAME REPLAY
           </StyledButton>
-          <StyledLink href="/prelobby">MAIN MENU</StyledLink>
+          <StyledLinkButton href="/mainmenu">MAIN MENU</StyledLinkButton>
         </StyledButtonContainer>
       )}
       {showReplayBoard && (
         <>
           <div>
-            <StyledReviewButton onClick={handlePreviousClick}>
+            <StyledReplayButton onClick={handlePreviousClick}>
               Previous Move
-            </StyledReviewButton>
-            <StyledReviewButton onClick={handleNextClick}>
+            </StyledReplayButton>
+            <StyledReplayButton onClick={handleNextClick}>
               Next Move
-            </StyledReviewButton>
+            </StyledReplayButton>
           </div>
           <div>
             <small>Date: {new Date().toLocaleString()}</small>
           </div>
           <StyledButtonContainer>
-            <StyledLink href="/prelobby">MAIN MENU</StyledLink>
+            <StyledLinkButton href="/mainmenu">MAIN MENU</StyledLinkButton>
           </StyledButtonContainer>
         </>
       )}
     </>
   );
 }
-
-const StyledTitle = styled.h2`
-  margin-top: 0;
-  padding-top: 10px;
-`;
-
-const StyledButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  position: fixed;
-  bottom: 12px;
-  left: 0;
-  right: 0;
-  margin: 0 auto;
-`;
-
-const StyledReviewButton = styled.button`
-  text-align: center;
-  font-size: large;
-  background-color: #2c2c2c;
-  color: white;
-  border-radius: 5px;
-  margin: 0.5rem 1px;
-  padding: 0.5rem 1rem;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
-
-  &:hover {
-    cursor: pointer;
-  }
-
-  &:active {
-    transform: translateY(2px);
-  }
-`;
-
-const StyledButton = styled.button`
-  text-align: center;
-  font-size: large;
-  color: black;
-  background-color: beige;
-  border: solid black 0.2rem;
-  border-radius: 5px;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  padding: 0.5rem 1rem;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
-  &:hover {
-    background-color: #e6e6e6;
-    cursor: pointer;
-  }
-
-  &:active {
-    transform: translateY(2px);
-  }
-`;
-
-const StyledLink = styled(Link)`
-  text-decoration: none;
-  text-align: center;
-  font-size: large;
-  color: black;
-  background-color: beige;
-  border: solid black 0.2rem;
-  border-radius: 5px;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  padding: 0.5rem 1rem;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
-  &:hover {
-    background-color: #e6e6e6;
-    cursor: pointer;
-  }
-
-  &:active {
-    transform: translateY(2px);
-  }
-`;

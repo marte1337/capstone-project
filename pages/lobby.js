@@ -2,9 +2,20 @@ import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
 import Pusher from "pusher-js";
 import axios from "axios";
-
 import Link from "next/link";
-import styled from "styled-components";
+import HeaderSmall from "@/components/HeaderSmall";
+import {
+  StyledPlayerNameSmall,
+  StyledPlayerNameSmallContainer,
+} from "@/components/styles/PlayerNameStyles";
+import {
+  StyledChat,
+  StyledChatCanvas,
+  StyledMessage,
+  StyledMessageUser,
+  StyledInput,
+} from "@/components/styles/ChatLobbyStyles";
+import { StyledLobbyButton } from "@/components/styles/ButtonStyles";
 
 //prevents undefined
 let pusher = null;
@@ -18,10 +29,7 @@ export default function Lobby({ username }) {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [usersRemoved, setUsersRemoved] = useState([]);
 
-  // Derived from: https://pusher.com/docs/channels/getting_started/javascript-realtime-user-list/
-
   useEffect(() => {
-    // pusher = new Pusher(process.env.NEXT_PUBLIC_KEY, {
     pusher = new Pusher("2fd14399437ec77964ee", {
       cluster: "eu",
       authEndpoint: `api/pusher/auth`,
@@ -63,7 +71,7 @@ export default function Lobby({ username }) {
 
   const handleSignOut = () => {
     pusher?.unsubscribe("presence-channel");
-    router.push("/prelobby");
+    router.push("/mainmenu");
   };
 
   // post chat to api
@@ -92,20 +100,16 @@ export default function Lobby({ username }) {
 
   return (
     <>
-      <StyledTitle>
-        TOTALLY <i>ZOMBIFIED</i> CHAT
-      </StyledTitle>
-
-      <StyledNameContainer>
+      <HeaderSmall />
+      <StyledPlayerNameSmallContainer>
         <StyledPlayerNameSmall>{username}</StyledPlayerNameSmall>
-        <StyledButton onClick={handleSignOut}>Sign out</StyledButton>
-      </StyledNameContainer>
+        <StyledLobbyButton onClick={handleSignOut}>Sign out</StyledLobbyButton>
+      </StyledPlayerNameSmallContainer>
       <StyledChat>
         <h2>GAMELOBBY</h2>
         <div>
           <h4> {onlineUsersCount} user(s) online now</h4>
         </div>
-
         <StyledChatCanvas ref={chatCanvasRef}>
           {onlineUsers.map((user, id) => (
             <div key={id}>
@@ -123,7 +127,6 @@ export default function Lobby({ username }) {
               </small>
             </div>
           ))}
-
           {chats.map((chat, id) =>
             chat.username === username ? (
               <StyledMessageUser key={id}>
@@ -136,7 +139,6 @@ export default function Lobby({ username }) {
             )
           )}
         </StyledChatCanvas>
-
         <div>
           <form onSubmit={handleSubmit} aria-label="Chat Submit Form">
             <StyledInput
@@ -146,120 +148,22 @@ export default function Lobby({ username }) {
               placeholder="start typing...."
               aria-label="Chat Input"
             />
-            <StyledButton type="submit">Send</StyledButton>
+            <StyledLobbyButton type="submit">Send</StyledLobbyButton>
           </form>
         </div>
       </StyledChat>
-
       <div>
         PLAYER ONE: <br />
         <Link href={`/multiplayer/${username}`}>
-          <StyledButton type="text">Create Game</StyledButton>
+          <StyledLobbyButton type="text">Create Game</StyledLobbyButton>
         </Link>
         <br />
         PLAYER TWO: <br />
         <form onSubmit={handleJoinPlayer} aria-label="Join PLayer Form">
           <StyledInput type="text" placeholder="Player you want to join..." />
-          <StyledButton type="submit">Join Player</StyledButton>
+          <StyledLobbyButton type="submit">Join Player</StyledLobbyButton>
         </form>
       </div>
     </>
   );
 }
-
-const StyledTitle = styled.h2`
-  margin-top: 0;
-  padding-top: 15px;
-`;
-
-const StyledNameContainer = styled.div`
-  max-width: 600px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  margin: auto;
-`;
-
-const StyledPlayerNameSmall = styled.span`
-  font-size: larger;
-  font-weight: bold;
-  text-shadow: 1px 1px 20px rgba(250, 254, 255, 1);
-`;
-
-const StyledButton = styled.button`
-  text-align: center;
-  font-weight: bolder;
-  color: black;
-  background-color: beige;
-  border: solid black 0.2rem;
-  border-radius: 5px;
-  margin: 0.2rem;
-  padding: 0.5rem 1rem;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
-  &:hover {
-    background-color: #e6e6e6;
-    cursor: pointer;
-  }
-
-  &:active {
-    transform: translateY(2px);
-  }
-`;
-
-const StyledChat = styled.section`
-  width: 95%;
-  max-width: 400px;
-  text-align: center;
-  background-color: black;
-  color: white;
-  border-radius: 5px;
-  padding: 10px 1rem;
-  margin: 10px auto;
-  h2 {
-    margin: 0;
-    font-weight: 900;
-    font-size: x-large;
-    letter-spacing: 5px;
-  }
-  h4 {
-    font-weight: 600;
-    margin: 0.6rem;
-  }
-`;
-
-const StyledChatCanvas = styled.div`
-  height: 270px;
-  background-color: #2c2c2c;
-  border-radius: 5px;
-  padding: 5px 10px;
-  margin-bottom: 10px;
-  overflow: auto;
-`;
-
-const StyledMessage = styled.div`
-  text-align: left;
-  background-color: white;
-  overflow-wrap: break-word;
-  color: black;
-  border-radius: 5px;
-  margin: 5px auto 5px 7rem;
-  padding: 4px;
-`;
-const StyledMessageUser = styled.div`
-  text-align: left;
-  background-color: #8f43ee;
-  overflow-wrap: break-word;
-  color: white;
-  border-radius: 5px;
-  margin: 5px 7rem 5px auto;
-  padding: 4px;
-`;
-
-const StyledInput = styled.input`
-  color: black;
-  background-color: beige;
-  border: solid black 0.1rem;
-  border-radius: 5px;
-  padding: 0.5rem 0.5rem;
-  margin: 0.1rem;
-`;
