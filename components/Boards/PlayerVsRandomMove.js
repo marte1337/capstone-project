@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import MoveInfo from "../MoveInfo";
 import PlayerNameDisplay from "../PlayerNameDisplay";
 import GameTerminal from "../GameTerminal";
-import styled from "styled-components";
+import HeaderSmall from "../HeaderSmall";
 import {
   StyledButtonContainer,
   StyledButton,
@@ -127,9 +127,7 @@ export default function RandomMoveEngine({ username }) {
 
   return (
     <>
-      <StyledTitle>
-        TOTALLY <i>ZOMBIFIED</i> CHESS
-      </StyledTitle>
+      <HeaderSmall />
       {game && !showReplayBoard && (
         <Chessboard position={fen} onPieceDrop={onDrop} id={"PlayBoard"} />
       )}
@@ -151,7 +149,7 @@ export default function RandomMoveEngine({ username }) {
           <StyledButton onClick={handleShowReplayBoard}>
             GAME REPLAY
           </StyledButton>
-          <StyledLinkButton href="/prelobby">MAIN MENU</StyledLinkButton>
+          <StyledLinkButton href="/mainmenu">MAIN MENU</StyledLinkButton>
         </StyledButtonContainer>
       )}
       {showReplayBoard && (
@@ -175,8 +173,3 @@ export default function RandomMoveEngine({ username }) {
     </>
   );
 }
-
-const StyledTitle = styled.h2`
-  margin-top: 0;
-  padding-top: 10px;
-`;

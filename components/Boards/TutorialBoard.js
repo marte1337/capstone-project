@@ -1,14 +1,15 @@
 import { Chessboard } from "react-chessboard";
 import Chess from "chess.js";
 import { useState, useEffect } from "react";
+import HeaderSmall from "../HeaderSmall";
 import MoveInfo from "../MoveInfo";
 import GameTerminal from "../GameTerminal";
-import styled from "styled-components";
 import {
   StyledButtonContainer,
   StyledButton,
   StyledLinkButton,
 } from "@/components/styles/ButtonStyles";
+import { StyledTextField } from "../styles/TextfieldStyles";
 
 const tutorialFens = [
   {
@@ -142,39 +143,19 @@ export default function RandomMoveEngine() {
 
   return (
     <>
-      <StyledTitle>
-        TOTALLY <i>ZOMBIFIED</i> CHESS
-      </StyledTitle>
+      <HeaderSmall />
       {game && <Chessboard position={fen} onPieceDrop={onDrop} />}
       {moveStatus.gameOver && <GameTerminal moveStatus={moveStatus} />}
-
       <MoveInfo moveData={latestMoveHistory} moveStatus={moveStatus} />
-
       {moveStatus.gameOver ? (
         <StyledTextField>Well done...</StyledTextField>
       ) : (
         <StyledTextField>{tutorialFens[currentIndex].text}</StyledTextField>
       )}
-
       <StyledButtonContainer>
         <StyledButton onClick={handleNextClick}>NEXT TUTORIAL</StyledButton>
-
         <StyledLinkButton href="/mainmenu">MAIN MENU</StyledLinkButton>
       </StyledButtonContainer>
     </>
   );
 }
-
-const StyledTitle = styled.h2`
-  margin-top: 0;
-  padding-top: 10px;
-`;
-
-const StyledTextField = styled.div`
-  background-color: beige;
-  color: black;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5);
-  border-radius: 5px;
-  padding: 10px;
-  margin-top: 8px;
-`;

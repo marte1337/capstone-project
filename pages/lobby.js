@@ -2,8 +2,8 @@ import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
 import Pusher from "pusher-js";
 import axios from "axios";
-
 import Link from "next/link";
+import HeaderSmall from "@/components/HeaderSmall";
 import styled from "styled-components";
 
 //prevents undefined
@@ -89,9 +89,7 @@ export default function Lobby({ username }) {
 
   return (
     <>
-      <StyledTitle>
-        TOTALLY <i>ZOMBIFIED</i> CHAT
-      </StyledTitle>
+      <HeaderSmall />
 
       <StyledNameContainer>
         <StyledPlayerNameSmall>{username}</StyledPlayerNameSmall>
@@ -102,7 +100,6 @@ export default function Lobby({ username }) {
         <div>
           <h4> {onlineUsersCount} user(s) online now</h4>
         </div>
-
         <StyledChatCanvas ref={chatCanvasRef}>
           {onlineUsers.map((user, id) => (
             <div key={id}>
@@ -120,7 +117,6 @@ export default function Lobby({ username }) {
               </small>
             </div>
           ))}
-
           {chats.map((chat, id) =>
             chat.username === username ? (
               <StyledMessageUser key={id}>
@@ -133,7 +129,6 @@ export default function Lobby({ username }) {
             )
           )}
         </StyledChatCanvas>
-
         <div>
           <form onSubmit={handleSubmit} aria-label="Chat Submit Form">
             <StyledInput
@@ -147,7 +142,6 @@ export default function Lobby({ username }) {
           </form>
         </div>
       </StyledChat>
-
       <div>
         PLAYER ONE: <br />
         <Link href={`/multiplayer/${username}`}>
@@ -163,11 +157,6 @@ export default function Lobby({ username }) {
     </>
   );
 }
-
-const StyledTitle = styled.h2`
-  margin-top: 0;
-  padding-top: 15px;
-`;
 
 const StyledNameContainer = styled.div`
   max-width: 600px;
