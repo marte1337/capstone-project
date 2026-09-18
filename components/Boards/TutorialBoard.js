@@ -1,6 +1,6 @@
 import { Chessboard } from "react-chessboard";
-import Chess from "chess.js";
-import { useState, useEffect } from "react";
+import { Chess } from "chess.js";
+import { useState, useEffect, useRef } from "react";
 import HeaderSmall from "../HeaderSmall";
 import MoveInfo from "../MoveInfo";
 import GameTerminal from "../GameTerminal";
@@ -31,30 +31,33 @@ const tutorialFens = [
 ];
 
 export default function RandomMoveEngine() {
-  const [game, setGame] = useState(null);
+  const [game, setGame] = useState(() => new Chess(tutorialFens[0].fen));
   const [moveStatus, setMoveStatus] = useState({});
   const [moveHistory, setMoveHistory] = useState([]);
-  const [fenHistory, setFenHistory] = useState([]);
+  const [fenHistory, setFenHistory] = useState([tutorialFens[0].fen]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [fen, setFen] = useState(tutorialFens[currentIndex].fen);
 
   const latestMoveHistory = moveHistory[moveHistory.length - 1];
-
-  // // ---CREATE GAME OBJECT---
-  useEffect(() => {
-    setGame(new Chess(fen));
-  }, []);
+  const makeRandomMoveRef = useRef(null);
 
   // // ---CREATE SEPERATE MOVE/FEN HISTORY TO BYPASS GAME RESETS---
   function historyStorage(latestResult) {
     if (latestResult !== null) {
-      setMoveHistory([...moveHistory, latestResult]);
+      setMoveHistory((previousHistory) => [
+        ...previousHistory,
+        latestResult,
+      ]);
     }
   }
   //Without useEffect,fenHistory only updates one before last
   useEffect(() => {
-    setFenHistory([...fenHistory, fen]);
+    setFenHistory((previousHistory) =>
+      previousHistory.at(-1) === fen
+        ? previousHistory
+        : [...previousHistory, fen]
+    );
   }, [fen]);
 
   // ---ZOMBIE FUNCTION => RESPAWN ZOMBIE => RESET GAME OBJECT WITH .fen()---
@@ -112,11 +115,18 @@ export default function RandomMoveEngine() {
 
   // ---TRIGGER BLACK MOVE---
   useEffect(() => {
+    makeRandomMoveRef.current = makeRandomMove;
+  });
+
+  useEffect(() => {
     if (latestMoveHistory?.color === "w") {
-      setFen(game.fen());
-      setTimeout(makeRandomMove, 1200);
+      const randomMoveTimer = setTimeout(
+        () => makeRandomMoveRef.current?.(),
+        1200
+      );
+      return () => clearTimeout(randomMoveTimer);
     }
-  }, [latestMoveHistory]);
+  }, [latestMoveHistory, game]);
 
   // // ---CREATE A RANDOMMOVE---
   function makeRandomMove() {
@@ -129,17 +139,17 @@ export default function RandomMoveEngine() {
   }
 
   const handleNextClick = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % tutorialFens.length);
-  };
-
-  useEffect(() => {
-    const newGameFen = tutorialFens[currentIndex].fen;
+    const nextIndex = (currentIndex + 1) % tutorialFens.length;
+    const newGameFen = tutorialFens[nextIndex].fen;
     const newGame = new Chess(newGameFen);
+
+    setCurrentIndex(nextIndex);
     setGame(newGame);
     setFen(newGame.fen());
+    setFenHistory([newGameFen]);
     setMoveStatus({});
     setMoveHistory([]);
-  }, [currentIndex]);
+  };
 
   return (
     <>

@@ -12,6 +12,7 @@ export default function LoginPage({ handleLogin, handleLoginChange }) {
         alt="zombies on a chessboard"
         width={300}
         height={300}
+        loading="eager"
       />
       <PlayerNameInput
         handleLogin={handleLogin}

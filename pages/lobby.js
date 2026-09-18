@@ -17,11 +17,9 @@ import {
 } from "@/components/styles/ChatLobbyStyles";
 import { StyledLobbyButton } from "@/components/styles/ButtonStyles";
 
-//prevents undefined
-let pusher = null;
-
 export default function Lobby({ username }) {
   const router = useRouter();
+  const pusherRef = useRef(null);
 
   const [chats, setChats] = useState([]);
   const [messageToSend, setMessageToSend] = useState("");
@@ -30,14 +28,19 @@ export default function Lobby({ username }) {
   const [usersRemoved, setUsersRemoved] = useState([]);
 
   useEffect(() => {
-    pusher = new Pusher("2fd14399437ec77964ee", {
-      cluster: "eu",
-      authEndpoint: `api/pusher/auth`,
+    const pusherKey = process.env.NEXT_PUBLIC_KEY;
+    const pusherCluster = process.env.NEXT_PUBLIC_PUSHER_CLUSTER;
+    if (!pusherKey || !pusherCluster || !username) return undefined;
+
+    const pusherClient = new Pusher(pusherKey, {
+      cluster: pusherCluster,
+      authEndpoint: "/api/pusher/auth",
       auth: { params: { username } },
     });
+    pusherRef.current = pusherClient;
 
     // Subscribe to "presence-channel" (relying on user authorization)
-    const channel = pusher.subscribe("presence-channel");
+    const channel = pusherClient.subscribe("presence-channel");
 
     // count: when a new member successfully subscribes to the channel
     channel.bind("pusher:subscription_succeeded", (members) => {
@@ -65,28 +68,38 @@ export default function Lobby({ username }) {
       setChats((prevState) => [...prevState, { username, message }]);
     });
 
-    // when closing channel: unsubscribe user
-    return () => pusher.unsubscribe("presence-channel");
+    // when closing channel: remove handlers and disconnect the client
+    return () => {
+      channel.unbind_all();
+      pusherClient.unsubscribe("presence-channel");
+      pusherClient.disconnect();
+      if (pusherRef.current === pusherClient) pusherRef.current = null;
+    };
   }, [username]);
 
   const handleSignOut = () => {
-    pusher?.unsubscribe("presence-channel");
+    pusherRef.current?.unsubscribe("presence-channel");
     router.push("/mainmenu");
   };
 
   // post chat to api
   const handleSubmit = async (event) => {
     event.preventDefault();
-    await axios.post("/api/pusher", {
-      message: messageToSend,
-      username,
-    });
-    setMessageToSend("");
+    const message = messageToSend.trim();
+    if (!message || !username) return;
+
+    try {
+      await axios.post("/api/pusher", { message, username });
+      setMessageToSend("");
+    } catch (error) {
+      console.error("Unable to send lobby message", error);
+    }
   };
 
   const handleJoinPlayer = (event) => {
     event.preventDefault();
-    const hostName = event.target.elements[0].value;
+    const hostName = event.target.elements[0].value.trim();
+    if (!hostName) return;
 
     router.push(`/multiplayer/${hostName}`);
   };
@@ -95,7 +108,9 @@ export default function Lobby({ username }) {
 
   useEffect(() => {
     // Scroll to the bottom of the chat canvas when new messages are added
-    chatCanvasRef.current.scrollTop = chatCanvasRef.current.scrollHeight;
+    if (chatCanvasRef.current) {
+      chatCanvasRef.current.scrollTop = chatCanvasRef.current.scrollHeight;
+    }
   }, [chats]);
 
   return (

@@ -1,9 +1,9 @@
 import Pusher from "pusher-js";
 import axios from "axios";
 import { Chessboard } from "react-chessboard";
-import Chess from "chess.js";
+import { Chess } from "chess.js";
 import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import HeaderSmall from "@/components/HeaderSmall";
 import MoveInfoMultiplayer from "@/components//MoveInfoMultiplayer";
 import PlayerNameDisplay from "@/components/PlayerNameDisplay";
@@ -24,16 +24,14 @@ import {
   StyledInput,
 } from "@/components/styles/ChatMultiPlayerStyles";
 
-//prevents undefined
-let pusher = null;
+const INITIAL_FEN =
+  "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 export default function MultiPlayerPage({ username }) {
-  const [game, setGame] = useState(null);
+  const [game, setGame] = useState(() => new Chess());
   const [moveStatus, setMoveStatus] = useState({});
-  const [fen, setFen] = useState(
-    "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-  );
-  const [fenHistory, setFenHistory] = useState([]);
+  const [fen, setFen] = useState(INITIAL_FEN);
+  const [fenHistory, setFenHistory] = useState([INITIAL_FEN]);
   const [boardOrientation, setBoardOrientation] = useState("white");
   const [showReplayBoard, setShowReplayBoard] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -48,16 +46,33 @@ export default function MultiPlayerPage({ username }) {
   const router = useRouter();
   const { slug } = router.query;
   const [oppenentName, setOpponentName] = useState(slug);
+  const pusherRef = useRef(null);
+  const lastPublishedFenRef = useRef(INITIAL_FEN);
 
   useEffect(() => {
-    pusher = new Pusher("2fd14399437ec77964ee", {
-      cluster: "eu",
-      authEndpoint: `../api/pusher/auth`,
+    const pusherKey = process.env.NEXT_PUBLIC_KEY;
+    const pusherCluster = process.env.NEXT_PUBLIC_PUSHER_CLUSTER;
+    if (
+      !router.isReady ||
+      !pusherKey ||
+      !pusherCluster ||
+      !slug ||
+      !username
+    ) {
+      return undefined;
+    }
+
+    setOpponentName(slug);
+
+    const pusherClient = new Pusher(pusherKey, {
+      cluster: pusherCluster,
+      authEndpoint: "/api/pusher/auth",
       auth: { params: { username } },
     });
+    pusherRef.current = pusherClient;
 
     // Subscribe to "presence-channel" (relying on user authorization)
-    const channel = pusher.subscribe(`presence-board-${slug}`);
+    const channel = pusherClient.subscribe(`presence-board-${slug}`);
 
     // count: when a new member successfully subscribes to the channel
     channel.bind("pusher:subscription_succeeded", (members) => {
@@ -86,47 +101,63 @@ export default function MultiPlayerPage({ username }) {
 
       if (chessmove) {
         const newGame = new Chess(chessmove);
+        lastPublishedFenRef.current = chessmove;
         setGame(newGame);
         setFen(newGame.fen());
       }
 
-      if (message.length > 1) {
+      if (message?.length > 1) {
         setChatStorage((prevState) => [...prevState, { username, message }]);
       }
     });
 
-    // when closing channel: unsubscribe user
-    return () => pusher.unsubscribe(`presence-board-${slug}`);
-  }, [slug]);
+    // when closing channel: remove handlers and disconnect the client
+    return () => {
+      channel.unbind_all();
+      pusherClient.unsubscribe(`presence-board-${slug}`);
+      pusherClient.disconnect();
+      if (pusherRef.current === pusherClient) pusherRef.current = null;
+    };
+  }, [router.isReady, slug, username]);
 
   const handleSignOut = () => {
-    pusher?.unsubscribe(`presence-board-${slug}`);
+    pusherRef.current?.unsubscribe(`presence-board-${slug}`);
     router.push("/lobby");
   };
 
   // post chat to api
   const handleSubmit = async (event) => {
     event?.preventDefault();
-    await axios.post("../api/pusher/presence-board", {
-      chessmove: fen,
-      message: messageToSend,
-      username,
-      slug,
-    });
-    setMessageToSend("");
+    const message = messageToSend.trim();
+    if (!message || !username || !slug) return;
+
+    try {
+      await axios.post("/api/pusher/presence-board", {
+        chessmove: null,
+        message,
+        username,
+        slug,
+      });
+      setMessageToSend("");
+    } catch (error) {
+      console.error("Unable to send game message", error);
+    }
   };
   // // :::::PUSHER-END:::::
 
-  // // ---CREATE GAME OBJECT---
-  useEffect(() => {
-    setGame(new Chess());
-  }, []);
-
   //Without useEffect,fenHistory only updates one before last
   useEffect(() => {
-    setFenHistory([...fenHistory, fen]);
+    const isNewPosition = fenHistory.at(-1) !== fen;
+
+    setFenHistory((previousHistory) =>
+      previousHistory.at(-1) === fen
+        ? previousHistory
+        : [...previousHistory, fen]
+    );
     setMoveStatus({
-      moveNumber: fenHistory.length,
+      moveNumber: isNewPosition
+        ? fenHistory.length
+        : Math.max(0, fenHistory.length - 1),
       inCheck: game?.in_check(),
       isCheckmate: game?.in_checkmate(),
       isDraw: game?.in_draw(),
@@ -134,9 +165,26 @@ export default function MultiPlayerPage({ username }) {
       isStalemate: game?.in_stalemate(),
       gameOver: game?.game_over(),
     });
-    //:::PUSHER:::
-    handleSubmit();
-  }, [fen]);
+
+    if (
+      router.isReady &&
+      slug &&
+      username &&
+      lastPublishedFenRef.current !== fen
+    ) {
+      lastPublishedFenRef.current = fen;
+      void axios
+        .post("/api/pusher/presence-board", {
+          chessmove: fen,
+          message: "",
+          username,
+          slug,
+        })
+        .catch((error) => {
+          console.error("Unable to publish board update", error);
+        });
+    }
+  }, [fen, fenHistory, game, router.isReady, slug, username]);
 
   // ---ZOMBIE FUNCTION => RESPAWN ZOMBIE => RESET GAME OBJECT WITH .fen()---
   function zombieMove(latestResult, game) {

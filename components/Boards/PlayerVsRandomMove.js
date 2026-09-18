@@ -1,6 +1,6 @@
 import { Chessboard } from "react-chessboard";
-import Chess from "chess.js";
-import { useState, useEffect } from "react";
+import { Chess } from "chess.js";
+import { useState, useEffect, useRef } from "react";
 import MoveInfo from "../MoveInfo";
 import PlayerNameDisplay from "../PlayerNameDisplay";
 import GameTerminal from "../GameTerminal";
@@ -12,34 +12,38 @@ import {
   StyledReplayButton,
 } from "@/components/styles/ButtonStyles";
 
+const INITIAL_FEN =
+  "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
 export default function RandomMoveEngine({ username }) {
-  const [game, setGame] = useState(null);
+  const [game, setGame] = useState(() => new Chess());
   const [moveStatus, setMoveStatus] = useState({});
   const [moveHistory, setMoveHistory] = useState([]);
-  const [fen, setFen] = useState(
-    "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-  );
-  const [fenHistory, setFenHistory] = useState([]);
+  const [fen, setFen] = useState(INITIAL_FEN);
+  const [fenHistory, setFenHistory] = useState([INITIAL_FEN]);
   const [showReplayBoard, setShowReplayBoard] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const latestMoveHistory = moveHistory[moveHistory.length - 1];
+  const makeRandomMoveRef = useRef(null);
 
   const oppenentName = "RandomMoveMachine";
-
-  // // ---CREATE GAME OBJECT---
-  useEffect(() => {
-    setGame(new Chess());
-  }, []);
 
   // // ---CREATE SEPERATE MOVE/FEN HISTORY TO BYPASS GAME RESETS---
   function historyStorage(latestResult) {
     if (latestResult !== null) {
-      setMoveHistory([...moveHistory, latestResult]);
+      setMoveHistory((previousHistory) => [
+        ...previousHistory,
+        latestResult,
+      ]);
     }
   }
   //Without useEffect,fenHistory only updates one before last
   useEffect(() => {
-    setFenHistory([...fenHistory, fen]);
+    setFenHistory((previousHistory) =>
+      previousHistory.at(-1) === fen
+        ? previousHistory
+        : [...previousHistory, fen]
+    );
   }, [fen]);
 
   // ---ZOMBIE FUNCTION => RESPAWN ZOMBIE => RESET GAME OBJECT WITH .fen()---
@@ -97,11 +101,18 @@ export default function RandomMoveEngine({ username }) {
 
   // ---TRIGGER BLACK MOVE---
   useEffect(() => {
+    makeRandomMoveRef.current = makeRandomMove;
+  });
+
+  useEffect(() => {
     if (latestMoveHistory?.color === "w") {
-      setFen(game.fen());
-      setTimeout(makeRandomMove, 1200);
+      const randomMoveTimer = setTimeout(
+        () => makeRandomMoveRef.current?.(),
+        1200
+      );
+      return () => clearTimeout(randomMoveTimer);
     }
-  }, [latestMoveHistory]);
+  }, [latestMoveHistory, game]);
 
   // // ---CREATE A RANDOMMOVE---
   function makeRandomMove() {
